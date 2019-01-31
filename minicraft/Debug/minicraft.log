@@ -1,0 +1,7 @@
+﻿  main.cpp
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\camera.h(162): warning C4305: '*=' : troncation de 'double' à 'float'
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\camera.h(173): warning C4305: '*=' : troncation de 'double' à 'float'
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\camera.h(184): warning C4305: '*=' : troncation de 'double' à 'float'
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\camera.h(201): warning C4305: '*=' : troncation de 'double' à 'float'
+  LINK : C:\Users\severin.michaut\Downloads\yocto_exercice_2\yocto_exercice\Debug\minicraft.exe introuvable ou non généré par la dernière édition de liens incrémentielle ; édition de liens complète en cours
+  minicraft.vcxproj -> C:\Users\severin.michaut\Downloads\yocto_exercice_2\yocto_exercice\Debug\minicraft.exe
