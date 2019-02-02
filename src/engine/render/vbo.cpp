@@ -20,7 +20,7 @@ void YVbo::createVboGpu() {
 
 
 	//On alloue et copie les datas
-	glBufferData(GL_ARRAY_BUFFER,
+	glBufferData(isArrayIndex ? GL_ELEMENT_ARRAY_BUFFER : GL_ARRAY_BUFFER,
 		TotalSizeFloats * sizeof(float),
 		ElementsValues,
 		GL_STATIC_DRAW);
@@ -50,6 +50,42 @@ void YVbo::render() {
 			glVertexAttribPointer(i, Elements[i].NbFloats, GL_FLOAT, GL_FALSE, TotalNbFloatForOneVertice * sizeof(float), (void*)(Elements[i].OffsetFloats * sizeof(float)));
 	}
 	
+	YEngine::Instance->TimerGPURender.startAccumPeriod();
+	glDrawArrays(GL_TRIANGLES, 0, NbVertices);
+	YEngine::Instance->TimerGPURender.endAccumPeriod();
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
+void YVbo::renderWithIndex(YVbo &arrayIndex)
+{
+	if (!arrayIndex.isArrayIndexType())
+	{
+		YLog::log(YLog::MSG_TYPE::USER_ERROR, "VBO passed hasn't index elements");
+
+	}
+
+	//La stat globales
+	YRenderer::NbVBOFacesRendered += NbVertices / 3;
+
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, arrayIndex.getIndexVBO());
+
+	for (int i = 0; i<NbElements; i++)
+		glEnableVertexAttribArray(i);
+
+	if (StorageMethod == PACK_BY_ELEMENT_TYPE) {
+		for (int i = 0; i<NbElements; i++)
+			glVertexAttribPointer(i, Elements[i].NbFloats, GL_FLOAT, GL_FALSE, 0, (void*)(Elements[i].OffsetFloats * sizeof(float)));
+	}
+	else {
+		for (int i = 0; i<NbElements; i++)
+			glVertexAttribPointer(i, Elements[i].NbFloats, GL_FLOAT, GL_FALSE, TotalNbFloatForOneVertice * sizeof(float), (void*)(Elements[i].OffsetFloats * sizeof(float)));
+	}
+
 	YEngine::Instance->TimerGPURender.startAccumPeriod();
 	glDrawArrays(GL_TRIANGLES, 0, NbVertices);
 	YEngine::Instance->TimerGPURender.endAccumPeriod();

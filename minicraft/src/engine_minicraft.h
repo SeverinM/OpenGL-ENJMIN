@@ -2,6 +2,7 @@
 #define __YOCTO__ENGINE_TEST__
 
 #include "engine/engine.h"
+#include "engine/render/ObjImporter.h"
 
 #include "avatar.h"
 #include "world.h"
@@ -24,6 +25,7 @@ public :
 	bool RightHold;
 	bool CtrlHold;
 	bool wheelHold;
+	ObjImporter * obj;
 
 	YColor * Day;
 	YColor * Night;
@@ -61,6 +63,9 @@ public :
 
 	void init() 
 	{
+		obj = new ObjImporter("Handgun_obj.obj");
+		obj->Initialize();
+
 		yMouse = -1;
 		xMouse = -1;
 		Day = new YColor(1, 1, 0.4f, 1);

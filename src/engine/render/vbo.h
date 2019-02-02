@@ -36,17 +36,19 @@ private:
 	int TotalNbFloatForOneVertice; ///< Taille totale d'un vertice (avec tous ces elements) en floats
 	GLuint VBO; ///< L'identifiant du VBO pour opengl
 	GLuint VAO; ///< L'identifiant du VAO (description des datas) pour opengl
-	DATA_STORAGE_METHOD StorageMethod = PACK_BY_ELEMENT_TYPE; ///< Commen on range les datas dans le VBO
+	DATA_STORAGE_METHOD StorageMethod = PACK_BY_ELEMENT_TYPE; ///< Comment on range les datas dans le VBO
+	bool isArrayIndex;
 
 public:		
 		
 	//On crée un VBO en lui passant les éléments qu'il contient
-	YVbo(int nbElements, int nbVertices, DATA_STORAGE_METHOD storageMethod)
+	YVbo(int nbElements, int nbVertices, DATA_STORAGE_METHOD storageMethod, bool index = false)
 	{
 		this->Elements = new Element[nbElements];
 		NbElements = nbElements;
 		NbVertices = nbVertices;
 		StorageMethod = storageMethod;
+		isArrayIndex = index;
 	}
 
 	~YVbo()
@@ -65,6 +67,16 @@ public:
 
 	int getNbVertices() {
 		return NbVertices;
+	}
+
+	bool isArrayIndexType()
+	{
+		return isArrayIndex;
+	}
+
+	unsigned int getIndexVBO()
+	{
+		return VBO;
 	}
 
 	//On set les types d'elements que contient le VBO. On a set le nombre d'elements a la création
@@ -154,6 +166,6 @@ public:
 	//Creation et copie du VBO dans la mémoire du GPU
 	void createVboGpu();
 	void render();
-
+	void renderWithIndex(YVbo &indexArray);
 	
 };

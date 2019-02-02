@@ -94,7 +94,8 @@ inline void splitString (std::vector<string> & elements, string & toSplit, char 
 	std::stringstream ss(toSplit);
 	std::string item;
 	while (std::getline(ss, item, delim)) {
-		elements.push_back(item);
+		if (item != "")
+			elements.push_back(item);
 	}
 }
 
@@ -108,6 +109,5 @@ inline unsigned int DiffTimeMs(SYSTEMTIME &first, SYSTEMTIME &second)
 
 	return output;
 }
-
 
 #endif

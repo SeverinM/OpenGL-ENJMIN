@@ -59,6 +59,9 @@
     <ClCompile Include="..\src\engine\render\vbo.cpp">
       <Filter>Fichiers sources\engine\render</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\engine\render\ObjImporter.cpp">
+      <Filter>Fichiers sources\engine\render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\engine\render\renderer.h">
@@ -152,6 +155,9 @@
       <Filter>Fichiers d%27en-tête\engine</Filter>
     </ClInclude>
     <ClInclude Include="ClassDiagram.cd" />
+    <ClInclude Include="..\src\engine\render\ObjImporter.h">
+      <Filter>Fichiers d%27en-tête\engine\render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="run\shaders\postprocess\fs.glsl">

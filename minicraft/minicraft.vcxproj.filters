@@ -65,6 +65,9 @@
     <ClInclude Include="..\src\engine\render\camera.h">
       <Filter>Fichiers d%27en-tête\engine\render</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\engine\render\ObjImporter.h">
+      <Filter>Fichiers d%27en-tête\engine\render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -74,6 +77,9 @@
       <Filter>Fichiers sources\render</Filter>
     </ClCompile>
     <ClCompile Include="..\src\engine\render\vbo.cpp">
+      <Filter>Fichiers sources\render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\render\ObjImporter.cpp">
       <Filter>Fichiers sources\render</Filter>
     </ClCompile>
   </ItemGroup>
