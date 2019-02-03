@@ -9,6 +9,7 @@ ObjImporter::ObjImporter(string fileName)
 	countIndex = 0;
 	countNormal = 0;
 	nbVertices = 0;
+	nbIndex = 0;
 }
 
 bool ObjImporter::Initialize()
@@ -27,36 +28,42 @@ bool ObjImporter::Initialize()
 			{
 				nbVertices++;
 			}
+
+			if (pref == "f ")
+			{
+				std::vector<string> values;
+				splitString(values, line, ' ');
+				nbIndex += values.size() - 1;
+			}
 		}
 
 		file.clear();
 		file.seekg(0);
-		vbo = new YVbo(2, nbVertices, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
-		vboIndex = new YVbo(2, nbVertices * 3, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE,true);
+		vbo = new YVbo(1, nbVertices + 1, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
+		vboIndex = new YVbo(1, nbIndex + 1, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE,true);
 		vbo->setElementDescription(0, YVbo::Element(3)); //Positions
-		vbo->setElementDescription(1, YVbo::Element(3)); //Normales
 		vboIndex->setElementDescription(0, YVbo::Element(1)); //Index Position
-		vboIndex->setElementDescription(1, YVbo::Element(1)); //Index normale
 		vbo->createVboCpu();
 		vboIndex->createVboCpu();
 
+		//On lit une deuxieme fois pour interpreter les données
 		while (std::getline(file, line))
 		{
 			string pref = line.substr(0, 2);
-			if (pref == "v " || pref == "vn" || pref == "f ")
+			if (pref == "v " || pref == "f ")
 			{
 				Interpret(line);
 			}
 		}
-
-		vbo->createVboGpu();
+		file.close();
 		vboIndex->createVboGpu();
-
 		vboIndex->deleteVboCpu();
-		vbo->deleteVboCpu();
 	}
-	file.close();
-	return false;
+
+	vbo->createVboGpu();
+	vbo->deleteVboCpu();
+
+	return true;
 }
 
 void ObjImporter::Interpret(string &value)
@@ -72,15 +79,6 @@ void ObjImporter::Interpret(string &value)
 		float value3 = std::stod(values[3]);
 		vbo->setElementValue(0, countVertices, value1, value2, value3);
 		countVertices++;
-	}
-
-	if (values[0] == "vn")
-	{
-		float value1 = std::stod(values[1]);
-		float value2 = std::stod(values[2]);
-		float value3 = std::stod(values[3]);
-		vbo->setElementValue(1, countNormal, value1, value2, value3);
-		countNormal++;
 	}
 
 	if (values[0] == "f")

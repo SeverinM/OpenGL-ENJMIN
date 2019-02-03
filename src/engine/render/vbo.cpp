@@ -18,12 +18,12 @@ void YVbo::createVboGpu() {
 
 	YLog::log(YLog::ENGINE_INFO, (string("Creation VBO ") + toString(VBO)).c_str());
 
-
 	//On alloue et copie les datas
 	glBufferData(isArrayIndex ? GL_ELEMENT_ARRAY_BUFFER : GL_ARRAY_BUFFER,
 		TotalSizeFloats * sizeof(float),
 		ElementsValues,
 		GL_STATIC_DRAW);
+
 	YRenderer::checkGlError("glBufferData");
 
 	//On debind
@@ -63,7 +63,6 @@ void YVbo::renderWithIndex(YVbo &arrayIndex)
 	if (!arrayIndex.isArrayIndexType())
 	{
 		YLog::log(YLog::MSG_TYPE::USER_ERROR, "VBO passed hasn't index elements");
-
 	}
 
 	//La stat globales

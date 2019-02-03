@@ -63,7 +63,7 @@ public :
 
 	void init() 
 	{
-		obj = new ObjImporter("Handgun_obj.obj");
+		obj = new ObjImporter("tower.obj");
 		obj->Initialize();
 
 		yMouse = -1;

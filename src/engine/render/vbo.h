@@ -69,6 +69,11 @@ public:
 		return NbVertices;
 	}
 
+	float& getElement(unsigned int index)
+	{
+		return ElementsValues[index];
+	}
+
 	bool isArrayIndexType()
 	{
 		return isArrayIndex;

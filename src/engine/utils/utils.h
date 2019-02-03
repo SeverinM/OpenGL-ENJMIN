@@ -91,12 +91,13 @@ T stringTo( const std::string& s )
 
 inline void splitString (std::vector<string> & elements, string & toSplit, char delim)
 {
-	std::stringstream ss(toSplit);
 	std::string item;
+	std::stringstream ss(toSplit);
 	while (std::getline(ss, item, delim)) {
 		if (item != "")
 			elements.push_back(item);
 	}
+	ss.clear();
 }
 
 inline unsigned int DiffTimeMs(SYSTEMTIME &first, SYSTEMTIME &second)

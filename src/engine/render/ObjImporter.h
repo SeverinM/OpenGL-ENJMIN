@@ -15,6 +15,7 @@ class ObjImporter
 		int countIndex;
 		int countNormal;
 		int nbVertices;
+		int nbIndex;
 
 	public:
 		ObjImporter(string fileName);
