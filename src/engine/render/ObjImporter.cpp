@@ -56,12 +56,11 @@ bool ObjImporter::Initialize()
 			}
 		}
 		file.close();
-		vboIndex->createVboGpu();
-		vboIndex->deleteVboCpu();
 	}
 
-	vbo->createVboGpu();
+	vbo->createVboGpu(vboIndex);
 	vbo->deleteVboCpu();
+	vboIndex->deleteVboCpu();
 
 	return true;
 }
@@ -91,9 +90,7 @@ void ObjImporter::Interpret(string &value)
 			countIndex++;
 			splitString(splittedSlash, (*it), '/');
 			value1 = std::stod(splittedSlash[0]);
-			value2 = std::stod(splittedSlash[1]);
 			vboIndex->setElementValue(0, countIndex, value1);
-			vboIndex->setElementValue(1, countIndex, value2);
 			splittedSlash.clear();
 		}
 	}

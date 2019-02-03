@@ -69,9 +69,9 @@ public:
 		return NbVertices;
 	}
 
-	float& getElement(unsigned int index)
+	float * getElement(unsigned int index)
 	{
-		return ElementsValues[index];
+		return &ElementsValues[index];
 	}
 
 	bool isArrayIndexType()
@@ -79,9 +79,9 @@ public:
 		return isArrayIndex;
 	}
 
-	unsigned int getIndexVBO()
+	unsigned int * getIndexVBO()
 	{
-		return VBO;
+		return &VBO;
 	}
 
 	//On set les types d'elements que contient le VBO. On a set le nombre d'elements a la création
@@ -169,8 +169,6 @@ public:
 	}
 
 	//Creation et copie du VBO dans la mémoire du GPU
-	void createVboGpu();
+	void createVboGpu(YVbo * index = NULL);
 	void render();
-	void renderWithIndex(YVbo &indexArray);
-	
 };
