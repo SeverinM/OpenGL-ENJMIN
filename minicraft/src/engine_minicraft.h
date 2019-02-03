@@ -63,7 +63,7 @@ public :
 
 	void init() 
 	{
-		obj = new ObjImporter("tower.obj");
+		obj = new ObjImporter("Handgun_obj.obj");
 		obj->Initialize();
 
 		yMouse = -1;
@@ -217,6 +217,13 @@ public :
 		Renderer->updateMatricesFromOgl();
 		Renderer->sendMatricesToShader(prog);
 		vbo->render();
+
+		glPopMatrix();
+		glPushMatrix();
+
+		Renderer->updateMatricesFromOgl();
+		Renderer->sendMatricesToShader(prog);
+		obj->render();
 
 		glPopMatrix();
 	}

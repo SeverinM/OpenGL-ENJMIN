@@ -20,6 +20,10 @@ class ObjImporter
 	public:
 		ObjImporter(string fileName);
 		bool Initialize();
+		inline void render()
+		{
+			vbo->render();
+		}
 };
 
 #endif OBJ_IMPORTER_H
