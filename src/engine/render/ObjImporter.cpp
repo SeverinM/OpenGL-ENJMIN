@@ -39,9 +39,11 @@ bool ObjImporter::Initialize()
 
 		file.clear();
 		file.seekg(0);
-		vbo = new YVbo(1, nbVertices + 1, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
-		vboIndex = new YVbo(1, nbIndex + 1, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE,true);
+		vbo = new YVbo(2, nbVertices + 1, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
+		vboIndex = new YVbo(2, nbIndex + 1, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE,true);
 		vbo->setElementDescription(0, YVbo::Element(3)); //Positions
+		vbo->setElementDescription(1, YVbo::Element(3)); //Normales
+		vboIndex->setElementDescription(1, YVbo::Element(1)); //Index Normales
 		vboIndex->setElementDescription(0, YVbo::Element(1)); //Index Position
 		vbo->createVboCpu();
 		vboIndex->createVboCpu();
@@ -50,7 +52,7 @@ bool ObjImporter::Initialize()
 		while (std::getline(file, line))
 		{
 			string pref = line.substr(0, 2);
-			if (pref == "v " || pref == "f ")
+			if (pref == "v " || pref == "f " || pref == "vn")
 			{
 				Interpret(line);
 			}
@@ -80,6 +82,15 @@ void ObjImporter::Interpret(string &value)
 		countVertices++;
 	}
 
+	if (values[0] == "vn")
+	{
+		float value1 = std::stod(values[1]);
+		float value2 = std::stod(values[2]);
+		float value3 = std::stod(values[3]);
+		vbo->setElementValue(1, countNormal, value1, value2, value3);
+		countNormal++;
+	}
+
 	if (values[0] == "f")
 	{
 		std::vector<string> splittedSlash;
@@ -90,7 +101,9 @@ void ObjImporter::Interpret(string &value)
 			countIndex++;
 			splitString(splittedSlash, (*it), '/');
 			value1 = std::stod(splittedSlash[0]);
+			value2 = std::stod(splittedSlash[1]);
 			vboIndex->setElementValue(0, countIndex, value1);
+			vboIndex->setElementValue(0, countIndex, value2);
 			splittedSlash.clear();
 		}
 	}

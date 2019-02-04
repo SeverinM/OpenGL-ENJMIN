@@ -47,8 +47,13 @@ public :
 
 	void init() 
 	{
+<<<<<<< Updated upstream
 		wrld = new MWorld();
 		wrld->init_world(0);
+=======
+		obj = new ObjImporter("tower.obj");
+		obj->Initialize();
+>>>>>>> Stashed changes
 
 		yMouse = -1;
 		xMouse = -1;
