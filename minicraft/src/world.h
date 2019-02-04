@@ -6,10 +6,12 @@
 #include "engine/utils/types_3d.h"
 #include "cube.h"
 #include "chunk.h"
+#include "engine\noise\perlin.h"
 
 class MWorld
 {
 public :
+	YPerlin perl;
 	typedef uint8 MAxis;
 	static const int AXIS_X = 0b00000001;
 	static const int AXIS_Y = 0b00000010;
@@ -117,6 +119,38 @@ public :
 
 		//Générer ici le monde en modifiant les cubes
 		//Utiliser getCubes() 
+		perl.setFreq(0.06f);
+		float seuil1(0.0f);
+		float seuilf2(0.5f);
+
+		for (int x = 0; x <= MAT_SIZE_CUBES; x++)
+		{
+			for (int y = 0; y <= MAT_SIZE_CUBES; y++)
+			{
+				for (int z = 0; z <= MAT_SIZE_CUBES; z++)
+				{
+					float value = perl.sample((float)x, (float)y, (float)z);
+					value = (value * 10);
+
+					if (value + (z * 0.1f) >= 5.1f && z > 0)
+					{
+						getCube(x, y, z)->setType(MCube::MCubeType::CUBE_AIR);
+					}
+
+					else
+					{
+						if (value < 5.0f)
+						{
+							getCube(x, y, z)->setType(MCube::MCubeType::CUBE_TERRE);
+						}
+						else
+						{
+							getCube(x, y, z)->setType(MCube::MCubeType::CUBE_HERBE);
+						}
+					}
+				}
+			}
+		}
 
 		for(int x=0;x<MAT_SIZE;x++)
 			for(int y=0;y<MAT_SIZE;y++)
@@ -338,14 +372,62 @@ public :
 		
 	void render_world_basic(GLuint shader, YVbo * vboCube) 
 	{
-		
+		int prog;
+		glGetIntegerv(GL_CURRENT_PROGRAM, &prog);
+		int uniformLocation = glGetUniformLocation(prog, "cube_color");
+
+		for (int x = 0; x < MAT_SIZE_CUBES; x++)
+		{
+			for (int y = 0; y < MAT_SIZE_CUBES; y++)
+			{
+				for (int z = 0; z < MAT_HEIGHT_CUBES; z++)
+				{
+					MCube * cb = getCube(x, y, z);
+					if (cb->getType() == MCube::CUBE_TERRE || cb->getType() == MCube::CUBE_EAU || cb->getType() == MCube::CUBE_HERBE)
+					{
+						glPushMatrix();
+						glTranslatef(x, y, z);
+						YRenderer::getInstance()->updateMatricesFromOgl();
+						YVec3f color = getColor(cb->getType());
+						glUniform4f(uniformLocation, color.X, color.Y, color.Z, 1);
+						YRenderer::getInstance()->sendMatricesToShader(prog);
+						vboCube->render();
+						glPopMatrix();
+					}				
+				}
+			}
+		}
+	}
+
+	YVec3f getColor(MCube::MCubeType type)
+	{
+		switch (type)
+		{
+			case MCube::CUBE_TERRE:return YVec3f(102.0f / 255.0f, 51.0f / 255.0f, 0.0f);
+			case MCube::CUBE_EAU:return YVec3f(51.0f / 255.0f, 0.0f, 1.0f);
+			case MCube::CUBE_HERBE:return YVec3f(0.0f, 1.0f, 0.0f);
+			default: return YVec3f(0.0f, 0.0f, 0.0f);
+		}
 	}
 
 	void render_world_vbo(bool debug,bool doTransparent)
 	{
 		glDisable(GL_BLEND);
 		//Dessiner les chunks opaques
-				
+		int prog;
+		glGetIntegerv(GL_CURRENT_PROGRAM, &prog);
+		for (int x = 0; x < MAT_SIZE; x++)
+			for (int y = 0; y < MAT_SIZE; y++)
+				for (int z = 0; z < MAT_HEIGHT; z++)
+				{
+					YRenderer::getInstance()->updateMatricesFromOgl();
+					YRenderer::getInstance()->sendMatricesToShader(prog);
+					Chunks[x][y][z]->render(0);
+				}
+					
+
+		if (!doTransparent)
+			return;
 		glEnable(GL_BLEND);
 		//Dessiner les chunks transparents
 	}

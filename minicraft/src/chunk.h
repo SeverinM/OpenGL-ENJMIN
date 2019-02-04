@@ -12,7 +12,7 @@ class MChunk
 {
 	public :
 
-		static const int CHUNK_SIZE = 64; ///< Taille d'un chunk en nombre de cubes (n*n*n)
+		static const int CHUNK_SIZE = 32; ///< Taille d'un chunk en nombre de cubes (n*n*n)
 		MCube _Cubes[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE]; ///< Cubes contenus dans le chunk
 
 		YVbo * VboOpaque = NULL;
@@ -41,11 +41,68 @@ class MChunk
 			SAFEDELETE(VboTransparent);
 
 			//Compter les sommets
+			int countSomm(0);
+			int countSommTrans(0);
+			bool occlusion = false;
+			for (int x = 0; x < CHUNK_SIZE; x++)
+			{
+				for (int y = 0; y < CHUNK_SIZE; y++)
+				{
+					for (int z = 0; z < CHUNK_SIZE; z++)
+					{
+						if (test_hidden(x,y,z))
+						{
+							if (_Cubes[x][y][z].isTransparent())
+							{
+								countSommTrans += 36;
+							}
+							else
+							{
+								countSomm += 36;
+							}
+						}
+					}
+				}
+			}
+
 
 			//Créer les VBO
+			VboOpaque = new YVbo(1, countSomm + 1, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
+			VboOpaque->setElementDescription(0, YVbo::Element(3));//Position
+			VboOpaque->createVboCpu();
+
+			countSommTrans = 0;
+			countSomm = 0;
 
 			//Remplir les VBO
-			
+			for (int x = 0; x < CHUNK_SIZE; x++)
+			{
+				for (int y = 0; y < CHUNK_SIZE; y++)
+				{
+					for (int z = 0; z < CHUNK_SIZE; z++)
+					{
+						if (test_hidden(x,y,z))
+						{
+							if (_Cubes[x][y][z].isTransparent())
+							{
+								countSommTrans += 36;
+							}
+							else
+							{
+								VboOpaque->SetFace(YVec3f(x, y, z), YVec3f(1, 0, 0), YVec3f(0, 1, 0), 1, countSomm, true);
+								VboOpaque->SetFace(YVec3f(x, y, z), YVec3f(1, 0, 0), YVec3f(0, 0, 1), 1, countSomm, true);
+								VboOpaque->SetFace(YVec3f(x, y, z), YVec3f(0, 1, 0), YVec3f(0, 0, 1), 1, countSomm, true);
+
+								VboOpaque->SetFace(YVec3f(x, y, z + 1), YVec3f(1, 0, 0), YVec3f(0, 1, 0), 1, countSomm, true);
+								VboOpaque->SetFace(YVec3f(x + 1,y +1,z + 1), YVec3f(0, 0, -1), YVec3f(-1, 0, 0), 1, countSomm, true);
+								VboOpaque->SetFace(YVec3f(x + 1,y + 1,z + 1), YVec3f(0, 0, -1), YVec3f(0, -1, 0), 1, countSomm, true);
+							}
+						}
+					}
+				}
+			}
+			VboOpaque->createVboGpu();
+			VboOpaque->deleteVboCpu();
 		}
 
 		//Ajoute un quad du cube. Attention CCW
@@ -131,7 +188,9 @@ class MChunk
 		void render(bool transparent)
 		{
 			if (transparent)
+			{
 				VboTransparent->render();
+			}			
 			else
 				VboOpaque->render();
 		}

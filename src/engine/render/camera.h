@@ -161,8 +161,9 @@ public:
 	{
 		angle *= (M_PI / 180.0f);
 		LookAt -= Position;
-		LookAt.rotate(UpVec, angle);
+		LookAt.rotate(UpRef, angle);
 		LookAt += Position;
+		updateVecs();
 	}
 
 	/**
@@ -171,9 +172,20 @@ public:
 	void rotateUp(float angle)
 	{
 		angle *= (M_PI / 180.0f);
+		
+		YVec3f previousPos = Position;
+
 		LookAt -= Position;
 		LookAt.rotate(RightVec, angle);
 		LookAt += Position;
+
+		YVec3f normPos = Position;
+		normPos.normalize();
+		float newAngle = normPos.dot(UpRef);
+		if (newAngle > 0.99 || newAngle < -0.99)
+			Position = previousPos;
+
+		updateVecs();
 	}
 
 	/**
@@ -182,14 +194,19 @@ public:
 	void rotateAround(float angle)
 	{
 		angle *= (M_PI / 180.0f);
-		YVec3f delta(LookAt - Position);
-		YVec3f lookAtOrigin(LookAt);
-		LookAt = YVec3f(0, 0, 0);
-		Position = -delta;
-		Position.rotate(UpVec, angle);
-		delta = LookAt - Position;
-		LookAt = lookAtOrigin;
-		Position = LookAt - delta;
+		
+		Position -= LookAt;
+
+		//On ne monte pas trop haut pour ne pas passer de l'autre coté
+		YVec3f previousPos = Position;
+		Position.rotate(RightVec, angle);
+		YVec3f normPos = Position;
+		normPos.normalize();
+		float newAngle = normPos.dot(UpRef);
+		if (newAngle > 0.99 || newAngle < -0.99)
+			Position = previousPos;
+
+		Position += LookAt;
 		updateVecs();
 	}
 

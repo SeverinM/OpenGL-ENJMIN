@@ -24,9 +24,12 @@ public :
 	bool RightHold;
 	bool CtrlHold;
 	bool wheelHold;
+	int progWorld;
 
 	YColor * Day;
 	YColor * Night;
+
+	MWorld * wrld;
 
 	//Gestion singleton
 	static YEngine * getInstance()
@@ -39,28 +42,14 @@ public :
 	/*HANDLERS GENERAUX*/
 	void loadShaders() {
 		prog = Renderer->createProgram("shaders/sun");
-	}
-
-	void SetFace(YVbo * vbo, YVec3f origin, YVec3f directionFirst, YVec3f directionSecond, float size, int startingIndex, bool drawQuad = false , int nbList = 0)
-	{
-		YVec3f destination1 = (origin + (directionFirst.normalize() * size));
-		YVec3f destination2 = (origin + (directionSecond.normalize() * size));
-
-		vbo->setElementValue(nbList, startingIndex, origin.X, origin.Y, origin.Z);
-		vbo->setElementValue(nbList, startingIndex + 1, destination1.X, destination1.Y, destination1.Z);
-		vbo->setElementValue(nbList, startingIndex + 2, destination2.X, destination2.Y, destination2.Z);
-
-		if (drawQuad)
-		{
-			YVec3f destination3 = origin + (directionFirst.normalize() * size) + (directionSecond.normalize() * size);
-			vbo->setElementValue(nbList, startingIndex + 3, destination3.X, destination3.Y, destination3.Z);
-			vbo->setElementValue(nbList, startingIndex + 4, destination2.X, destination2.Y, destination2.Z);
-			vbo->setElementValue(nbList, startingIndex + 5, destination1.X, destination1.Y, destination1.Z);
-		}
+		progWorld = Renderer->createProgram("shaders/cube");
 	}
 
 	void init() 
 	{
+		wrld = new MWorld();
+		wrld->init_world(0);
+
 		yMouse = -1;
 		xMouse = -1;
 		Day = new YColor(1, 1, 0.4f, 1);
@@ -89,14 +78,15 @@ public :
 		vbo->createVboCpu();
 		
 		float size(1);
+		int count(0);
 
-		SetFace(vbo, YVec3f(0, 0, 0), YVec3f(1, 0, 0), YVec3f(0, 1, 0), size, 0, true);
-		SetFace(vbo, YVec3f(0, 0, 0), YVec3f(1, 0, 0), YVec3f(0, 0, 1), size, 6, true);
-		SetFace(vbo, YVec3f(0, 0, 0), YVec3f(0, 1, 0), YVec3f(0, 0, 1), size, 12, true);
+		vbo->SetFace(YVec3f(0, 0, 0), YVec3f(1, 0, 0), YVec3f(0, 1, 0), size, count, true);
+		vbo->SetFace(YVec3f(0, 0, 0), YVec3f(1, 0, 0), YVec3f(0, 0, 1), size, count, true);
+		vbo->SetFace(YVec3f(0, 0, 0), YVec3f(0, 1, 0), YVec3f(0, 0, 1), size, count, true);
 
-		SetFace(vbo, YVec3f(0, 0, size), YVec3f(1, 0, 0), YVec3f(0, 1, 0), size, 18, true);
-		SetFace(vbo, YVec3f(size, size, size), YVec3f(0, 0, -1), YVec3f(-1, 0, 0), size, 24, true);
-		SetFace(vbo, YVec3f(size, size, size), YVec3f(0, 0, -1), YVec3f(0, -1, 0), size, 30, true);
+		vbo->SetFace(YVec3f(0, 0, size), YVec3f(1, 0, 0), YVec3f(0, 1, 0), size, count, true);
+		vbo->SetFace(YVec3f(size, size, size), YVec3f(0, 0, -1), YVec3f(-1, 0, 0), size, count, true);
+		vbo->SetFace(YVec3f(size, size, size), YVec3f(0, 0, -1), YVec3f(0, -1, 0), size, count, true);
 
 
 		for (int i = 0; i < 36; i++)
@@ -107,6 +97,8 @@ public :
 		vbo->createVboGpu();
 		vbo->deleteVboCpu();
 
+		count = 0;
+
 		//vbo2
 		vbo2 = new YVbo(3, 36, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
 
@@ -116,13 +108,13 @@ public :
 
 		vbo2->createVboCpu();
 
-		SetFace(vbo2, YVec3f(0, 0, 0), YVec3f(1, 0, 0), YVec3f(0, 1, 0), size, 0, true);
-		SetFace(vbo2, YVec3f(0, 0, 0), YVec3f(1, 0, 0), YVec3f(0, 0, 1), size, 6, true);
-		SetFace(vbo2, YVec3f(0, 0, 0), YVec3f(0, 1, 0), YVec3f(0, 0, 1), size, 12, true);
+		vbo2->SetFace(YVec3f(0, 0, 0), YVec3f(1, 0, 0), YVec3f(0, 1, 0), size, count, true);
+		vbo2->SetFace(YVec3f(0, 0, 0), YVec3f(1, 0, 0), YVec3f(0, 0, 1), size, count, true);
+		vbo2->SetFace(YVec3f(0, 0, 0), YVec3f(0, 1, 0), YVec3f(0, 0, 1), size, count, true);
 
-		SetFace(vbo2, YVec3f(0, 0, size), YVec3f(1, 0, 0), YVec3f(0, 1, 0), size, 18, true);
-		SetFace(vbo2, YVec3f(size, size, size), YVec3f(0, 0, -1), YVec3f(-1, 0, 0), size, 24, true);
-		SetFace(vbo2, YVec3f(size, size, size), YVec3f(0, 0, -1), YVec3f(0, -1, 0), size, 30, true);
+		vbo2->SetFace(YVec3f(0, 0, size), YVec3f(1, 0, 0), YVec3f(0, 1, 0), size, count, true);
+		vbo2->SetFace(YVec3f(size, size, size), YVec3f(0, 0, -1), YVec3f(-1, 0, 0), size, count, true);
+		vbo2->SetFace(YVec3f(size, size, size), YVec3f(0, 0, -1), YVec3f(0, -1, 0), size, count, true);
 
 
 		for (int i = 0; i < 36; i++)
@@ -178,45 +170,20 @@ public :
 		colors[1] /= 60.0f;
 		colors[0] /= 24.0f;
 
-		//Secondes
-		glUniform3f(locationUniform, 1, 1, abs(colors[2] - 0.5f) * 2);
-		glPushMatrix();
-		glRotatef((-360 * colors[2]) - 90, 0, 1, 0);
-		glTranslatef(5,0,0);
-
-		Renderer->updateMatricesFromOgl();
-		Renderer->sendMatricesToShader(prog);
-		vbo->render();
-
-		glPopMatrix();
-
 		//Minutes
 		glUniform3f(locationUniform, 1, abs(colors[1] - 0.5f) * 2,1);
 
 		glPushMatrix();
 		glRotatef((-360 * colors[1]) - 90, 0, 1, 0);
-		glTranslatef(3, 0, 0);
-
-		Renderer->updateMatricesFromOgl();
-		Renderer->sendMatricesToShader(prog);
+		glTranslatef(100, 0, 0);
+		YRenderer::getInstance()->updateMatricesFromOgl();
+		YRenderer::getInstance()->sendMatricesToShader(YRenderer::CURRENT_SHADER);
 		vbo->render();
-
 		glPopMatrix();
 
-		//Heures
-		glUniform3f(locationUniform, abs(colors[0] - 0.5f) * 2, 1, 1);
-		glPushMatrix();
-		glRotatef((-360 * colors[0]) - 90, 0, 1, 0);
-		glTranslatef(1, 0, 0);
-
-		Renderer->updateMatricesFromOgl();
-		Renderer->sendMatricesToShader(prog);
-		vbo->render();
-
-		glPopMatrix();
-		glPushMatrix();
-
-		glPopMatrix();
+		glUseProgram(progWorld);
+		/*wrld->render_world_basic(prog, vbo);*/
+		wrld->render_world_vbo(true, false);
 	}
 
 	void resize(int width, int height) {

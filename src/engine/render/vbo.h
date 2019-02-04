@@ -2,7 +2,8 @@
 
 #include "external/gl/glew.h"
 #include "external/gl/freeglut.h" 
-#include "engine/utils/utils.h" 
+#include "engine/utils/utils.h"
+#include "engine\utils\types_3d.h"
 
 class YVbo
 {
@@ -166,6 +167,25 @@ public:
 			ElementsValues[Elements[iElement].OffsetFloats + TotalNbFloatForOneVertice * iValue + 2] = f3;
 			ElementsValues[Elements[iElement].OffsetFloats + TotalNbFloatForOneVertice * iValue + 3] = f4;
 		}
+	}
+
+	void SetFace(YVec3f origin, YVec3f directionFirst, YVec3f directionSecond, float size, int &startingIndex, bool drawQuad = false, int nbList = 0)
+	{
+		YVec3f destination1 = (origin + (directionFirst.normalize() * size));
+		YVec3f destination2 = (origin + (directionSecond.normalize() * size));
+
+		setElementValue(nbList, startingIndex, origin.X, origin.Y, origin.Z);
+		setElementValue(nbList, startingIndex + 1, destination1.X, destination1.Y, destination1.Z);
+		setElementValue(nbList, startingIndex + 2, destination2.X, destination2.Y, destination2.Z);
+
+		if (drawQuad)
+		{
+			YVec3f destination3 = origin + (directionFirst.normalize() * size) + (directionSecond.normalize() * size);
+			setElementValue(nbList, startingIndex + 3, destination3.X, destination3.Y, destination3.Z);
+			setElementValue(nbList, startingIndex + 4, destination2.X, destination2.Y, destination2.Z);
+			setElementValue(nbList, startingIndex + 5, destination1.X, destination1.Y, destination1.Z);
+		}
+		startingIndex += 6;
 	}
 
 	//Creation et copie du VBO dans la mémoire du GPU
