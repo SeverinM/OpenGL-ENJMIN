@@ -1,6 +1,19 @@
-﻿  main.cpp
-c:\users\séverin\desktop\opengl-enjmin\src\engine\render\camera.h(162): warning C4305: '*=' : troncation de 'double' à 'float'
-c:\users\séverin\desktop\opengl-enjmin\src\engine\render\camera.h(173): warning C4305: '*=' : troncation de 'double' à 'float'
-c:\users\séverin\desktop\opengl-enjmin\src\engine\render\camera.h(184): warning C4305: '*=' : troncation de 'double' à 'float'
-c:\users\séverin\desktop\opengl-enjmin\src\engine\render\camera.h(201): warning C4305: '*=' : troncation de 'double' à 'float'
-  minicraft.vcxproj -> C:\Users\Séverin\Desktop\OpenGL-ENJMIN\Debug\minicraft.exe
+﻿  fbo.cpp
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\camera.h(162): warning C4305: '*=' : troncation de 'double' à 'float'
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\camera.h(173): warning C4305: '*=' : troncation de 'double' à 'float'
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\camera.h(184): warning C4305: '*=' : troncation de 'double' à 'float'
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\camera.h(201): warning C4305: '*=' : troncation de 'double' à 'float'
+  ObjImporter.cpp
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\objimporter.cpp(86): warning C4101: 'value2' : variable locale non référencée
+  vbo.cpp
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\camera.h(162): warning C4305: '*=' : troncation de 'double' à 'float'
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\camera.h(173): warning C4305: '*=' : troncation de 'double' à 'float'
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\camera.h(184): warning C4305: '*=' : troncation de 'double' à 'float'
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\camera.h(201): warning C4305: '*=' : troncation de 'double' à 'float'
+  main.cpp
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\camera.h(162): warning C4305: '*=' : troncation de 'double' à 'float'
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\camera.h(173): warning C4305: '*=' : troncation de 'double' à 'float'
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\camera.h(184): warning C4305: '*=' : troncation de 'double' à 'float'
+c:\users\severin.michaut\downloads\yocto_exercice_2\yocto_exercice\src\engine\render\camera.h(201): warning C4305: '*=' : troncation de 'double' à 'float'
+  Génération de code en cours...
+  minicraft.vcxproj -> C:\Users\severin.michaut\Downloads\yocto_exercice_2\yocto_exercice\Debug\minicraft.exe
