@@ -44,15 +44,15 @@ class MChunk
 		{
 			float scale(0.2f);
 			float values(rand() % 10);
-			_ScaleMountain += _ScaleMountain * ((values / 10.0f) - 0.5f) * scale;
+			_ScaleMountain += _ScaleMountain * ((values / 10.0f) - 0.5f) * 0.1f;
 			values = rand() % 10;
-			_MountainRadius += _MountainRadius * ((values / 10.0f) - 0.5f) * scale;
+			_MountainRadius += _MountainRadius * ((values / 10.0f) - 0.5f) * 0.1f;
 			values = rand() % 10;
-			_GrassDensity += _GrassDensity * ((values / 10.0f) - 0.5f) * scale;
+			_GrassDensity += _GrassDensity * ((values / 10.0f) - 0.5f) * 0.1f;
 			values = rand() % 10;
-			_WaterDensity += _WaterDensity * ((values / 10.0f) - 0.5f) * scale;
+			_WaterDensity += _WaterDensity * ((values / 10.0f) - 0.5f) * 0.1f;
 			values = rand() % 10;
-			_BaseChanceWater += _BaseChanceWater * ((values / 10.0f) - 0.5f) * scale;
+			_BaseChanceWater += _BaseChanceWater * ((values / 10.0f) - 0.5f) * 0.1f;
 		}
 
 		/*
@@ -79,7 +79,7 @@ class MChunk
 						{
 							if (_Cubes[x][y][z].isTransparent())
 							{
-								countSommTrans += 36;
+								countSommTrans += 12;
 							}
 							else
 							{
@@ -129,34 +129,18 @@ class MChunk
 							if (_Cubes[x][y][z].isTransparent() && _Cubes[x][y][z].getType() != MCube::MCubeType::CUBE_AIR)
 							{
 								int type(_Cubes[x][y][z].getType());
-								for (int i = 0; i < 36; i++)
+								for (int i = 0; i < 12; i++)
 								{
 									VboTransparent->setElementValue(3, i + countTypeTransparent, type);
 								}
-								countTypeTransparent += 36;
+								countTypeTransparent += 12;
 
 								VboTransparent->SetFace(YVec3f(x, y, z), YVec3f(1, 0, 0), YVec3f(0, 1, 0), 1, countSommTrans, true);
 								VboTransparent->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNormTransparent, 1);
 								VboTransparent->SetTexture(countTextureTransparent, 2);
 
-								VboTransparent->SetFace(YVec3f(x, y, z), YVec3f(1, 0, 0), YVec3f(0, 0, 1), 1, countSommTrans, true);
-								VboTransparent->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 0, 1), countNormTransparent, 1);
-								VboTransparent->SetTexture(countTextureTransparent, 2);
-
-								VboTransparent->SetFace(YVec3f(x, y, z), YVec3f(0, 1, 0), YVec3f(0, 0, 1), 1, countSommTrans, true);
-								VboTransparent->SetNormale(YVec3f(0, 1, 0), YVec3f(0, 0, 1), countNormTransparent, 1);
-								VboTransparent->SetTexture(countTextureTransparent, 2);
-
 								VboTransparent->SetFace(YVec3f(x, y, z + 1), YVec3f(1, 0, 0), YVec3f(0, 1, 0), 1, countSommTrans, true);
 								VboTransparent->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNormTransparent, 1);
-								VboTransparent->SetTexture(countTextureTransparent, 2);
-
-								VboTransparent->SetFace(YVec3f(x + 1, y + 1, z + 1), YVec3f(0, 0, -1), YVec3f(-1, 0, 0), 1, countSommTrans, true);
-								VboTransparent->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNormTransparent, 1);
-								VboTransparent->SetTexture(countTextureTransparent, 2);
-
-								VboTransparent->SetFace(YVec3f(x + 1, y + 1, z + 1), YVec3f(0, 0, -1), YVec3f(0, -1, 0), 1, countSommTrans, true);
-								VboTransparent->SetNormale(YVec3f(0, 0, -1), YVec3f(0, -1, 0), countNormTransparent, 1);
 								VboTransparent->SetTexture(countTextureTransparent, 2);
 							}
 							if (_Cubes[x][y][z].isOpaque())
