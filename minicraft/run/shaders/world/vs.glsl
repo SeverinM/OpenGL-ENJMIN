@@ -38,5 +38,5 @@ void main()
 	if(vs_type_in == CUBE_TERRE)
 		color = vec4(0.2,0.1,0,1);
 	if(vs_type_in == CUBE_EAU)
-		color = vec4(0.0,0.0,1.0,0.5);	
+		color = vec4(0.0,0.0,1.0,abs(normal.z) > 0.001 ? 0.5 : 0);	
 }

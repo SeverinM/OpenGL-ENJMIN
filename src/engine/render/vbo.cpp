@@ -26,6 +26,7 @@ void YVbo::createVboGpu(YVbo * index) {
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 	YLog::log(YLog::ENGINE_INFO, (string("Creation VBO ") + toString(VBO)).c_str());
+	std::cout << TotalSizeFloats << std::endl;
 
 	//On alloue et copie les datas
 	glBufferData(GL_ARRAY_BUFFER,

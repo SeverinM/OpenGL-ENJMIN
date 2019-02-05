@@ -18,7 +18,7 @@ public :
 	static const int AXIS_Z = 0b00000100;
 
 	#ifdef _DEBUG
-	static const int MAT_SIZE = 1; //en nombre de chunks
+	static const int MAT_SIZE = 5; //en nombre de chunks
 	#else
 	static const int MAT_SIZE = 3; //en nombre de chunks
 	#endif // DEBUG
@@ -65,9 +65,7 @@ public :
 						czNext = Chunks[x][y][z+1];
 
 					Chunks[x][y][z]->setVoisins(cxPrev,cxNext,cyPrev,cyNext,czPrev,czNext);
-				}
-
-					
+				}					
 	}
 
 	inline MCube * getCube(int x, int y, int z)
@@ -114,24 +112,38 @@ public :
 		//Reset du monde
 		for(int x=0;x<MAT_SIZE;x++)
 			for(int y=0;y<MAT_SIZE;y++)
-				for(int z=0;z<MAT_HEIGHT;z++)
+				for (int z = 0; z < MAT_HEIGHT; z++)
+				{
 					Chunks[x][y][z]->reset();
+					Chunks[x][y][z]->SetValues(seed);
+				}
 
 		//Générer ici le monde en modifiant les cubes
 		//Utiliser getCubes() 
 		float value(rand());
 		perl.setOffset(value / 1000.3f);
+
+		MChunk * actualChunk;
+
 		for (int z = 0; z <= MAT_SIZE_CUBES; z++)
 		{
 			for (int y = 0; y <= MAT_SIZE_CUBES; y++)
 			{
 				for (int x = 0; x <= MAT_SIZE_CUBES; x++)
 				{
+					int xValue(floor(x / MChunk::CHUNK_SIZE));
+					int yValue(floor(y / MChunk::CHUNK_SIZE));
+					int zValue(0);
+					if (xValue * MChunk::CHUNK_SIZE == MAT_SIZE_CUBES) xValue--;
+					if (yValue * MChunk::CHUNK_SIZE == MAT_SIZE_CUBES) yValue--;
+					if (zValue * MChunk::CHUNK_SIZE == MAT_SIZE_CUBES) zValue--;
+
+					actualChunk = Chunks[xValue][yValue][zValue];
 					perl.setFreq(0.04f);
 					float value = perl.sample((float)x, (float)y, (float)z);
 					value = (value * 10);
 
-					if (value + (z * 0.1f) >= 5.1f && z > 0)
+					if (value + (z * actualChunk->_ScaleMountain) >= actualChunk->_MountainRadius && z > 0)
 					{
 						getCube(x, y, z)->setType(MCube::MCubeType::CUBE_AIR);
 					}
@@ -139,8 +151,8 @@ public :
 					else
 					{
 						perl.setFreq(0.4f);
-						value = perl.sample((float)x, (float)y, 0);
-						if (abs(value - 5.0f) > (0.9f * z))
+						value = perl.sample((float)x, (float)y, 0) * 10;
+						if (abs(value - 5.0f) > (actualChunk->_GrassDensity * z))
 						{
 							getCube(x, y, z)->setType(MCube::MCubeType::CUBE_HERBE);
 
@@ -172,7 +184,7 @@ public :
 						getCube(x + 1, y, z)->isSolid() && getCube(x - 1, y, z)->isSolid())
 					{
 						value = perl.sample((float)x, (float)y, (float)z) * 10.0f;
-						if (value + (z * 0.4f) <= 5.5f)
+						if (value + (z * actualChunk->_WaterDensity) <= actualChunk->_BaseChanceWater)
 							getCube(x, y, z)->setType(MCube::MCubeType::CUBE_EAU);
 					}
 				}

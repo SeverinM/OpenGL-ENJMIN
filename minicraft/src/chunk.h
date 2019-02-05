@@ -12,15 +12,20 @@ class MChunk
 {
 	public :
 
-		static const int CHUNK_SIZE = 64; ///< Taille d'un chunk en nombre de cubes (n*n*n)
+		static const int CHUNK_SIZE = 32; ///< Taille d'un chunk en nombre de cubes (n*n*n)
 		MCube _Cubes[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE]; ///< Cubes contenus dans le chunk
 
 		YVbo * VboOpaque = NULL;
 		YVbo * VboTransparent = NULL;
-
 		MChunk * Voisins[6];
 
 		int _XPos, _YPos, _ZPos; ///< Position du chunk dans le monde
+
+		float _ScaleMountain; //Plus ce nombre est grand et moins les montagnes serons grandes
+		float _MountainRadius; //Plus ce nombre est grand et plus les montagnes auront une petite taille
+		float _GrassDensity; //Plus ce nombre est grand et plus l'herbe disparaitra rapidement
+		float _WaterDensity; //Plus ce nombre est grand et moins il y a de chance de voir de l'eau en hauteur
+		float _BaseChanceWater; //Proba d'avoir de l'eau dés la premiere couche, plus ce nombre est haut et plus la proba est elevé
 
 		MChunk(int x, int y, int z)
 		{
@@ -28,6 +33,26 @@ class MChunk
 			_XPos = x;
 			_YPos = y;
 			_ZPos = z;
+			_ScaleMountain = 0.15f;
+			_MountainRadius = 5.5f;
+			_GrassDensity = 0.9f;
+			_WaterDensity = 0.4f;
+			_BaseChanceWater = 5.5f;
+		}
+
+		void SetValues(int seed)
+		{
+			float scale(0.2f);
+			float values(rand() % 10);
+			_ScaleMountain += _ScaleMountain * ((values / 10.0f) - 0.5f) * scale;
+			values = rand() % 10;
+			_MountainRadius += _MountainRadius * ((values / 10.0f) - 0.5f) * scale;
+			values = rand() % 10;
+			_GrassDensity += _GrassDensity * ((values / 10.0f) - 0.5f) * scale;
+			values = rand() % 10;
+			_WaterDensity += _WaterDensity * ((values / 10.0f) - 0.5f) * scale;
+			values = rand() % 10;
+			_BaseChanceWater += _BaseChanceWater * ((values / 10.0f) - 0.5f) * scale;
 		}
 
 		/*
@@ -265,6 +290,8 @@ class MChunk
 				glEnable(GL_BLEND);
 				glPushMatrix();
 				glTranslatef(_XPos * CHUNK_SIZE, _YPos * CHUNK_SIZE, _ZPos * CHUNK_SIZE);
+				YRenderer::getInstance()->updateMatricesFromOgl();
+				YRenderer::getInstance()->sendMatricesToShader(YRenderer::CURRENT_SHADER);
 				VboTransparent->render();
 				glPopMatrix();
 			}	
@@ -273,6 +300,8 @@ class MChunk
 				glDisable(GL_BLEND);
 				glPushMatrix();
 				glTranslatef(_XPos * CHUNK_SIZE, _YPos * CHUNK_SIZE, _ZPos * CHUNK_SIZE);
+				YRenderer::getInstance()->updateMatricesFromOgl();
+				YRenderer::getInstance()->sendMatricesToShader(YRenderer::CURRENT_SHADER);
 				VboOpaque->render();
 				glPopMatrix();
 			}

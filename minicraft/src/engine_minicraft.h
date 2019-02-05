@@ -180,7 +180,6 @@ public :
 		glPopMatrix();
 
 		glUseProgram(progWorld);
-		/*wrld->render_world_basic(prog, vbo);*/
 		wrld->render_world_vbo(true, false);
 	}
 
