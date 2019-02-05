@@ -3,6 +3,7 @@
 uniform float elapsed;
 uniform mat4 mvp;
 uniform mat4 nmat;
+uniform mat4 m;
 
 layout(location=0) in vec3 vs_position_in;
 layout(location=1) in vec3 vs_normal_in;
@@ -22,8 +23,9 @@ void main()
 {
 	vec4 vecIn = vec4(vs_position_in,1.0);
 	gl_Position = mvp * vecIn;
-		
+	
 	normal = (nmat * vec4(vs_normal_in,1.0)).xyz; 
+	normal = normalize(normal);
 
 	uv = vs_uv_in;
 
@@ -36,5 +38,5 @@ void main()
 	if(vs_type_in == CUBE_TERRE)
 		color = vec4(0.2,0.1,0,1);
 	if(vs_type_in == CUBE_EAU)
-		color = vec4(0.0,0.0,1.0,0.7);	
+		color = vec4(0.0,0.0,1.0,0.5);	
 }

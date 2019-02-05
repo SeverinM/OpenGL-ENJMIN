@@ -9,6 +9,7 @@ public:
 	int Width;
 	int Size;
 	float Freq;
+	float Offset;
 
 	YPerlin()
 	{
@@ -17,6 +18,7 @@ public:
 		Gradients = new YVec3f[Size];
 		updateVecs();
 		Freq = 1;
+		Offset = 0;
 	}
 
 	void updateVecs() {
@@ -39,11 +41,16 @@ public:
 		Freq = freq;
 	}
 
+	void setOffset(float value)
+	{
+		Offset = value;
+	}
+
 	virtual float sample(float xBase, float yBase, float zBase)
 	{
-		float x = xBase * Freq;
-		float y = yBase * Freq;
-		float z = zBase * Freq;
+		float x = (xBase * Freq) + Offset;
+		float y = (yBase * Freq) + Offset;
+		float z = (zBase * Freq) + Offset;
 
 		while (x >= Width - 1)
 			x -= Width - 1;

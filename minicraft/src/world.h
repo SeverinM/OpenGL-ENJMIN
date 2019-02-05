@@ -119,16 +119,15 @@ public :
 
 		//Générer ici le monde en modifiant les cubes
 		//Utiliser getCubes() 
-		perl.setFreq(0.06f);
-		float seuil1(0.0f);
-		float seuilf2(0.5f);
-
-		for (int x = 0; x <= MAT_SIZE_CUBES; x++)
+		float value(rand());
+		perl.setOffset(value / 1000.3f);
+		for (int z = 0; z <= MAT_SIZE_CUBES; z++)
 		{
 			for (int y = 0; y <= MAT_SIZE_CUBES; y++)
 			{
-				for (int z = 0; z <= MAT_SIZE_CUBES; z++)
+				for (int x = 0; x <= MAT_SIZE_CUBES; x++)
 				{
+					perl.setFreq(0.04f);
 					float value = perl.sample((float)x, (float)y, (float)z);
 					value = (value * 10);
 
@@ -139,23 +138,46 @@ public :
 
 					else
 					{
-						if (value < 5.0f)
+						perl.setFreq(0.4f);
+						value = perl.sample((float)x, (float)y, 0);
+						if (abs(value - 5.0f) > (0.9f * z))
 						{
-							getCube(x, y, z)->setType(MCube::MCubeType::CUBE_TERRE);
+							getCube(x, y, z)->setType(MCube::MCubeType::CUBE_HERBE);
+
 						}
 						else
 						{
-							getCube(x, y, z)->setType(MCube::MCubeType::CUBE_HERBE);
+							getCube(x, y, z)->setType(MCube::MCubeType::CUBE_TERRE);
+						}
+
+						//Evite les cubes flottants
+						if (z > 0 && !getCube(x, y, z - 1)->isSolid())
+						{
+							getCube(x, y, z)->setType(MCube::MCubeType::CUBE_AIR);
 						}
 					}
 				}
 			}
 		}
 
-		for(int x=0;x<MAT_SIZE;x++)
-			for(int y=0;y<MAT_SIZE;y++)
-				for(int z=0;z<MAT_HEIGHT;z++)
-					Chunks[x][y][z]->disableHiddenCubes();
+		for (int z = 0; z <= MAT_SIZE_CUBES; z++)
+		{
+			for (int y = 0; y <= MAT_SIZE_CUBES; y++)
+			{
+				for (int x = 0; x <= MAT_SIZE_CUBES; x++)
+				{
+					//Permet de creer des plans d'eaux
+					if (getCube(x, y, z)->isSolid() && !getCube(x, y, z + 1)->isSolid() && !getCube(x + 1, y, z + 1)->isSolid() && !getCube(x - 1, y, z + 1)->isSolid() &&
+						!getCube(x, y + 1, z + 1)->isSolid() && !getCube(x, y - 1, z + 1)->isSolid() && getCube(x, y - 1, z)->isSolid() && getCube(x, y + 1, z)->isSolid() &&
+						getCube(x + 1, y, z)->isSolid() && getCube(x - 1, y, z)->isSolid())
+					{
+						value = perl.sample((float)x, (float)y, (float)z) * 10.0f;
+						if (value + (z * 0.4f) <= 5.5f)
+							getCube(x, y, z)->setType(MCube::MCubeType::CUBE_EAU);
+					}
+				}
+			}
+		}
 
 		add_world_to_vbo();
 	}
@@ -423,6 +445,7 @@ public :
 					YRenderer::getInstance()->updateMatricesFromOgl();
 					YRenderer::getInstance()->sendMatricesToShader(prog);
 					Chunks[x][y][z]->render(0);
+					Chunks[x][y][z]->render(1);
 				}
 					
 

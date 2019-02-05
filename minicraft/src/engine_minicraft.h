@@ -2,7 +2,6 @@
 #define __YOCTO__ENGINE_TEST__
 
 #include "engine\engine.h"
-
 #include "avatar.h"
 #include "world.h"
 
@@ -13,7 +12,7 @@ public :
 	YVbo  * vbo2;
 	unsigned int prog;
 	float colors[3];
-	SYSTEMTIME time;
+	SYSTEMTIME tm;
 	SYSTEMTIME beginDay;
 	float diff;
 	unsigned int locationUniform;
@@ -42,30 +41,24 @@ public :
 	/*HANDLERS GENERAUX*/
 	void loadShaders() {
 		prog = Renderer->createProgram("shaders/sun");
-		progWorld = Renderer->createProgram("shaders/cube");
+		progWorld = Renderer->createProgram("shaders/world");
 	}
 
 	void init() 
 	{
-<<<<<<< Updated upstream
 		wrld = new MWorld();
-		wrld->init_world(0);
-=======
-		obj = new ObjImporter("tower.obj");
-		obj->Initialize();
->>>>>>> Stashed changes
-
+		wrld->init_world(time(0));
 		yMouse = -1;
 		xMouse = -1;
 		Day = new YColor(1, 1, 0.4f, 1);
 		Night = new YColor(0, 0, 0.3f, 1);
 		YLog::log(YLog::ENGINE_INFO,"Minicraft Started : initialisation");
-		GetLocalTime(&time);
+		GetLocalTime(&tm);
 
 		glTranslatef(0.5f, -0.5f, 0);
 		glPushMatrix();
 
-		beginDay = time;
+		beginDay = tm;
 		beginDay.wHour = 0;
 		beginDay.wMinute = 0;
 		beginDay.wSecond = 0;
@@ -136,17 +129,17 @@ public :
 
 	void update(float elapsed) 
 	{
-		GetLocalTime(&time);
-		time.wHour += hourOffset;
-		time.wHour %= 24;
-		time.wMinute += minOffset;
-		time.wMinute %= 60;
+		GetLocalTime(&tm);
+		tm.wHour += hourOffset;
+		tm.wHour %= 24;
+		tm.wMinute += minOffset;
+		tm.wMinute %= 60;
 	}
 
 	void renderObjects() 
 	{
 
-		diff = (DiffTimeMs(time, beginDay) % 86400) / 86400.0f;
+		diff = (DiffTimeMs(tm, beginDay) % 86400) / 86400.0f;
 		glUseProgram(0);
 		//Rendu des axes
 		glDisable(GL_LIGHTING);
@@ -167,9 +160,9 @@ public :
 		//Vbo
 		glUseProgram(prog);
 		locationUniform = glGetUniformLocation(prog, "sun_color");
-		colors[2] = (time.wSecond + (time.wMilliseconds / 1000.0f));
-		colors[1] = time.wMinute + (colors[2] / 60.0f);
-		colors[0] = time.wHour + (colors[1] / 60.0f);
+		colors[2] = (tm.wSecond + (tm.wMilliseconds / 1000.0f));
+		colors[1] = tm.wMinute + (colors[2] / 60.0f);
+		colors[0] = tm.wHour + (colors[1] / 60.0f);
 
 		colors[2] /= 60.0f;
 		colors[1] /= 60.0f;

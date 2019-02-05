@@ -93,7 +93,7 @@ public :
 		bool isSolid(void)
 		{
 			MCubeType type = getType();
-			return (type != CUBE_AIR && type != CUBE_EAU);
+			return (type != CUBE_AIR);
 		}
 
 		bool isPickable(void)

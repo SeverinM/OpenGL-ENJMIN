@@ -12,7 +12,7 @@ class MChunk
 {
 	public :
 
-		static const int CHUNK_SIZE = 32; ///< Taille d'un chunk en nombre de cubes (n*n*n)
+		static const int CHUNK_SIZE = 64; ///< Taille d'un chunk en nombre de cubes (n*n*n)
 		MCube _Cubes[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE]; ///< Cubes contenus dans le chunk
 
 		YVbo * VboOpaque = NULL;
@@ -50,7 +50,7 @@ class MChunk
 				{
 					for (int z = 0; z < CHUNK_SIZE; z++)
 					{
-						if (test_hidden(x,y,z))
+						if (!test_hidden(x,y,z))
 						{
 							if (_Cubes[x][y][z].isTransparent())
 							{
@@ -67,12 +67,30 @@ class MChunk
 
 
 			//Créer les VBO
-			VboOpaque = new YVbo(1, countSomm + 1, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
+			VboOpaque = new YVbo(4, countSomm + 1, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
 			VboOpaque->setElementDescription(0, YVbo::Element(3));//Position
+			VboOpaque->setElementDescription(1, YVbo::Element(3));//Normale
+			VboOpaque->setElementDescription(2, YVbo::Element(2));//UV
+			VboOpaque->setElementDescription(3, YVbo::Element(1));//Type
 			VboOpaque->createVboCpu();
 
+			VboTransparent = new YVbo(4, countSommTrans + 1, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
+			VboTransparent->setElementDescription(0, YVbo::Element(3));//Position
+			VboTransparent->setElementDescription(1, YVbo::Element(3));//Normale
+			VboTransparent->setElementDescription(2, YVbo::Element(2));//UV
+			VboTransparent->setElementDescription(3, YVbo::Element(1));//Type
+			VboTransparent->createVboCpu();
+			
 			countSommTrans = 0;
 			countSomm = 0;
+
+			int countTexture(0);
+			int countNorm(0);
+			int countType(0);
+
+			int countTypeTransparent(0);
+			int countTextureTransparent(0);
+			int countNormTransparent(0);
 
 			//Remplir les VBO
 			for (int x = 0; x < CHUNK_SIZE; x++)
@@ -81,21 +99,73 @@ class MChunk
 				{
 					for (int z = 0; z < CHUNK_SIZE; z++)
 					{
-						if (test_hidden(x,y,z))
+						if (!test_hidden(x,y,z))
 						{
-							if (_Cubes[x][y][z].isTransparent())
+							if (_Cubes[x][y][z].isTransparent() && _Cubes[x][y][z].getType() != MCube::MCubeType::CUBE_AIR)
 							{
-								countSommTrans += 36;
+								int type(_Cubes[x][y][z].getType());
+								for (int i = 0; i < 36; i++)
+								{
+									VboTransparent->setElementValue(3, i + countTypeTransparent, type);
+								}
+								countTypeTransparent += 36;
+
+								VboTransparent->SetFace(YVec3f(x, y, z), YVec3f(1, 0, 0), YVec3f(0, 1, 0), 1, countSommTrans, true);
+								VboTransparent->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNormTransparent, 1);
+								VboTransparent->SetTexture(countTextureTransparent, 2);
+
+								VboTransparent->SetFace(YVec3f(x, y, z), YVec3f(1, 0, 0), YVec3f(0, 0, 1), 1, countSommTrans, true);
+								VboTransparent->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 0, 1), countNormTransparent, 1);
+								VboTransparent->SetTexture(countTextureTransparent, 2);
+
+								VboTransparent->SetFace(YVec3f(x, y, z), YVec3f(0, 1, 0), YVec3f(0, 0, 1), 1, countSommTrans, true);
+								VboTransparent->SetNormale(YVec3f(0, 1, 0), YVec3f(0, 0, 1), countNormTransparent, 1);
+								VboTransparent->SetTexture(countTextureTransparent, 2);
+
+								VboTransparent->SetFace(YVec3f(x, y, z + 1), YVec3f(1, 0, 0), YVec3f(0, 1, 0), 1, countSommTrans, true);
+								VboTransparent->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNormTransparent, 1);
+								VboTransparent->SetTexture(countTextureTransparent, 2);
+
+								VboTransparent->SetFace(YVec3f(x + 1, y + 1, z + 1), YVec3f(0, 0, -1), YVec3f(-1, 0, 0), 1, countSommTrans, true);
+								VboTransparent->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNormTransparent, 1);
+								VboTransparent->SetTexture(countTextureTransparent, 2);
+
+								VboTransparent->SetFace(YVec3f(x + 1, y + 1, z + 1), YVec3f(0, 0, -1), YVec3f(0, -1, 0), 1, countSommTrans, true);
+								VboTransparent->SetNormale(YVec3f(0, 0, -1), YVec3f(0, -1, 0), countNormTransparent, 1);
+								VboTransparent->SetTexture(countTextureTransparent, 2);
 							}
-							else
+							if (_Cubes[x][y][z].isOpaque())
 							{
+								int type(_Cubes[x][y][z].getType());
+								for (int i = 0; i < 36; i++)
+								{
+									VboOpaque->setElementValue(3, i + countType,type);
+								}
+								countType += 36;
+
 								VboOpaque->SetFace(YVec3f(x, y, z), YVec3f(1, 0, 0), YVec3f(0, 1, 0), 1, countSomm, true);
+								VboOpaque->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNorm, 1);
+								VboOpaque->SetTexture(countTexture, 2);
+
 								VboOpaque->SetFace(YVec3f(x, y, z), YVec3f(1, 0, 0), YVec3f(0, 0, 1), 1, countSomm, true);
+								VboOpaque->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 0, 1), countNorm, 1);
+								VboOpaque->SetTexture(countTexture, 2);
+
 								VboOpaque->SetFace(YVec3f(x, y, z), YVec3f(0, 1, 0), YVec3f(0, 0, 1), 1, countSomm, true);
+								VboOpaque->SetNormale(YVec3f(0, 1, 0), YVec3f(0, 0, 1), countNorm, 1);
+								VboOpaque->SetTexture(countTexture, 2);
 
 								VboOpaque->SetFace(YVec3f(x, y, z + 1), YVec3f(1, 0, 0), YVec3f(0, 1, 0), 1, countSomm, true);
+								VboOpaque->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNorm, 1);
+								VboOpaque->SetTexture(countTexture, 2);
+
 								VboOpaque->SetFace(YVec3f(x + 1,y +1,z + 1), YVec3f(0, 0, -1), YVec3f(-1, 0, 0), 1, countSomm, true);
+								VboOpaque->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNorm, 1);
+								VboOpaque->SetTexture(countTexture, 2);
+
 								VboOpaque->SetFace(YVec3f(x + 1,y + 1,z + 1), YVec3f(0, 0, -1), YVec3f(0, -1, 0), 1, countSomm, true);
+								VboOpaque->SetNormale(YVec3f(0, 0, -1), YVec3f(0, -1, 0), countNorm, 1);
+								VboOpaque->SetTexture(countTexture, 2);
 							}
 						}
 					}
@@ -103,6 +173,9 @@ class MChunk
 			}
 			VboOpaque->createVboGpu();
 			VboOpaque->deleteVboCpu();
+
+			VboTransparent->createVboGpu();
+			VboTransparent->deleteVboCpu();
 		}
 
 		//Ajoute un quad du cube. Attention CCW
@@ -189,10 +262,20 @@ class MChunk
 		{
 			if (transparent)
 			{
+				glEnable(GL_BLEND);
+				glPushMatrix();
+				glTranslatef(_XPos * CHUNK_SIZE, _YPos * CHUNK_SIZE, _ZPos * CHUNK_SIZE);
 				VboTransparent->render();
-			}			
+				glPopMatrix();
+			}	
 			else
+			{
+				glDisable(GL_BLEND);
+				glPushMatrix();
+				glTranslatef(_XPos * CHUNK_SIZE, _YPos * CHUNK_SIZE, _ZPos * CHUNK_SIZE);
 				VboOpaque->render();
+				glPopMatrix();
+			}
 		}
 
 		/**

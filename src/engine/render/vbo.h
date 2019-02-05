@@ -188,6 +188,27 @@ public:
 		startingIndex += 6;
 	}
 
+	void SetNormale(YVec3f directionFirst, YVec3f directionSecond, int &startingIndex, int nbList = 0, bool isQuad = true)
+	{
+		YVec3f normale(directionFirst.cross(directionSecond));
+		for (int i = 0; i < (isQuad ? 6 : 3); i++)
+		{
+			setElementValue(nbList, startingIndex + i, normale.X, normale.Y, normale.Z);
+		}	
+		startingIndex += isQuad ?6 : 3;
+	}
+
+	void SetTexture(int &startingIndex, int nbList = 0)
+	{
+		setElementValue(nbList, startingIndex, 0, 0);
+		setElementValue(nbList, startingIndex + 1, 1, 0);
+		setElementValue(nbList, startingIndex + 2, 0, 1);
+		setElementValue(nbList, startingIndex + 3, 0, 1);
+		setElementValue(nbList, startingIndex + 4, 0, 0);
+		setElementValue(nbList, startingIndex + 5, 1, 1);
+		startingIndex += 6;
+	}
+
 	//Creation et copie du VBO dans la mémoire du GPU
 	void createVboGpu(YVbo * index = NULL);
 	void render();
