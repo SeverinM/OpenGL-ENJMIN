@@ -26,6 +26,10 @@ public:
 	bool Crouch;
 	bool Run;
 
+	float DepthX;
+	float DepthY;
+	float DepthZ;
+
 	YCamera * Cam;
 	MWorld * World;
 
@@ -33,7 +37,7 @@ public:
 
 	MAvatar(YCamera * cam, MWorld * world)
 	{
-		Position = YVec3f((MWorld::MAT_SIZE_METERS) / 2, (MWorld::MAT_SIZE_METERS) / 2, (MWorld::MAT_HEIGHT_METERS));
+		Position = YVec3f(5,5,30);
 		Height = 1.8f;
 		CurrentHeight = Height;
 		Width = 0.3f;
@@ -43,7 +47,7 @@ public:
 		gauche = false;
 		droite = false;
 		Standing = false;
-		Jump = false;
+		Jump = true;
 		World = world;
 		InWater = false;
 		Crouch = false;
@@ -54,6 +58,28 @@ public:
 	{
 		if (elapsed > 1.0f / 60.0f)
 			elapsed = 1.0f / 60.0f;
+
+		Speed += YVec3f(0, 0, -0.1f) * elapsed;	
+		if (!Jump)
+		{
+			Speed = YVec3f(0, 0, 0);
+		}
+		Position += Speed * elapsed;
+		World->getMinCol(Position, YVec3f(1,0,0), Width, Height, DepthX, false);
+		World->getMinCol(Position, YVec3f(0, 1, 0), Width, Height, DepthY, false);
+		World->getMinCol(Position, YVec3f(0, 0, 1), Width, Height, DepthZ, false);
+		if (DepthZ < 0)
+		{
+			Position.Z -= DepthZ * 2;
+			Jump = false;
+		}
+		Cam->moveTo(Position);
+	}
+
+	void JumpAction()
+	{
+		Speed += YVec3f(0, 0, 1);
+		Jump = true;
 	}
 };
 

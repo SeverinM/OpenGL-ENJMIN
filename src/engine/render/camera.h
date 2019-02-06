@@ -135,7 +135,10 @@ public:
 	*/
 	void moveTo(const YVec3<float> & target)
 	{
-		
+		YVec3f delta(LookAt - Position);
+		Position = target;
+		LookAt = Position + delta;
+		updateVecs();
 	}
 
 	/**

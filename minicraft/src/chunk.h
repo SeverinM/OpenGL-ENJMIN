@@ -79,7 +79,7 @@ class MChunk
 						{
 							if (_Cubes[x][y][z].isTransparent())
 							{
-								countSommTrans += 12;
+								countSommTrans += 6;
 							}
 							else
 							{
@@ -157,15 +157,11 @@ class MChunk
 							if (_Cubes[x][y][z].isTransparent() && _Cubes[x][y][z].getType() != MCube::MCubeType::CUBE_AIR)
 							{
 								int type(_Cubes[x][y][z].getType());
-								for (int i = 0; i < 12; i++)
+								for (int i = 0; i < 6; i++)
 								{
 									VboTransparent->setElementValue(3, i + countTypeTransparent, type);
 								}
-								countTypeTransparent += 12;
-
-								VboTransparent->SetFace(YVec3f(x, y, z), YVec3f(1, 0, 0), YVec3f(0, 1, 0), 1, countSommTrans, true);
-								VboTransparent->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNormTransparent, 1);
-								VboTransparent->SetTexture(countTextureTransparent, 2);
+								countTypeTransparent += 6;
 
 								VboTransparent->SetFace(YVec3f(x, y, z + 1), YVec3f(1, 0, 0), YVec3f(0, 1, 0), 1, countSommTrans, true);
 								VboTransparent->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNormTransparent, 1);
@@ -251,6 +247,7 @@ class MChunk
 					}
 				}
 			}
+			std::cout << " : " << countSomm << std::endl;
 			VboOpaque->createVboGpu();
 			VboOpaque->deleteVboCpu();
 

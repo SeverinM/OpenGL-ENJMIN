@@ -26,6 +26,7 @@ public :
 	int progWorld;
 	float X;
 	float Z;
+	MAvatar * av;
 
 	YColor * Day;
 	YColor * Night;
@@ -52,6 +53,7 @@ public :
 		Z = 0;
 		wrld = new MWorld();
 		wrld->init_world(time(0));
+		av = new MAvatar(Renderer->Camera, wrld);
 		yMouse = -1;
 		xMouse = -1;
 		Day = new YColor(1, 1, 0.4f, 1);
@@ -145,6 +147,7 @@ public :
 		posZ = Renderer->Camera->Direction;
 		posZ *= Z;
 		Renderer->Camera->move((pos + posZ).normalize() * 0.1f);
+		av->update(0.015f);
 	}
 
 	void renderObjects() 
@@ -240,6 +243,11 @@ public :
 		if (key == 'd')
 		{
 			X += down ? 1 : -1;
+		}
+
+		if (key == 'o')
+		{
+			av->JumpAction();
 		}
 	}
 
