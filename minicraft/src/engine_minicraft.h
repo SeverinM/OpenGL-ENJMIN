@@ -24,6 +24,8 @@ public :
 	bool CtrlHold;
 	bool wheelHold;
 	int progWorld;
+	float X;
+	float Z;
 
 	YColor * Day;
 	YColor * Night;
@@ -46,6 +48,8 @@ public :
 
 	void init() 
 	{
+		X = 0;
+		Z = 0;
 		wrld = new MWorld();
 		wrld->init_world(time(0));
 		yMouse = -1;
@@ -134,6 +138,13 @@ public :
 		tm.wHour %= 24;
 		tm.wMinute += minOffset;
 		tm.wMinute %= 60;
+		YVec3f pos;
+		pos = Renderer->Camera->RightVec;
+		pos *= X;
+		YVec3f posZ;
+		posZ = Renderer->Camera->Direction;
+		posZ *= Z;
+		Renderer->Camera->move((pos + posZ).normalize() * 0.1f);
 	}
 
 	void renderObjects() 
@@ -210,24 +221,25 @@ public :
 			CtrlHold = false;
 		}
 
+	
 		if (key == 's')
 		{
-			Renderer->Camera->move(-Renderer->Camera->Direction.normalize());
+			Z += down ? -1 : 1;
 		}
 
 		if (key == 'z')
 		{
-			Renderer->Camera->move(Renderer->Camera->Direction.normalize());
+			Z += down ? 1 : -1;
 		}
 
 		if (key == 'q')
 		{
-			Renderer->Camera->move(-Renderer->Camera->RightVec.normalize());
+			X += down ? -1 : 1;
 		}
 		
 		if (key == 'd')
 		{
-			Renderer->Camera->move(Renderer->Camera->RightVec.normalize());
+			X += down ? 1 : -1;
 		}
 	}
 

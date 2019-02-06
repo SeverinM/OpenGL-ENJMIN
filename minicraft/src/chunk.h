@@ -12,7 +12,7 @@ class MChunk
 {
 	public :
 
-		static const int CHUNK_SIZE = 32; ///< Taille d'un chunk en nombre de cubes (n*n*n)
+		static const int CHUNK_SIZE = 64; ///< Taille d'un chunk en nombre de cubes (n*n*n)
 		MCube _Cubes[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE]; ///< Cubes contenus dans le chunk
 
 		YVbo * VboOpaque = NULL;
@@ -83,7 +83,35 @@ class MChunk
 							}
 							else
 							{
-								countSomm += 36;
+								if (x == 0 || !_Cubes[x - 1][y][z].isOpaque())
+								{
+									countSomm += 6;
+								}
+
+								if (x == CHUNK_SIZE -1 || !_Cubes[x + 1][y][z].isOpaque())
+								{
+									countSomm += 6;
+								}
+
+								if (y == 0 || !_Cubes[x ][y - 1][z].isOpaque())
+								{
+									countSomm += 6;
+								}
+
+								if (y == CHUNK_SIZE - 1 || !_Cubes[x][y + 1][z].isOpaque())
+								{
+									countSomm += 6;
+								}
+
+								if (z == 0 || !_Cubes[x][y][z - 1].isOpaque())
+								{
+									countSomm += 6;
+								}
+
+								if (z == CHUNK_SIZE - 1 || !_Cubes[x][y][z + 1].isOpaque())
+								{
+									countSomm += 6;
+								}
 							}
 						}
 					}
@@ -146,35 +174,78 @@ class MChunk
 							if (_Cubes[x][y][z].isOpaque())
 							{
 								int type(_Cubes[x][y][z].getType());
-								for (int i = 0; i < 36; i++)
+
+								if (x == 0 || !_Cubes[x - 1][y][z].isOpaque())
 								{
-									VboOpaque->setElementValue(3, i + countType,type);
+									VboOpaque->SetFace(YVec3f(x, y, z), YVec3f(0, 1, 0), YVec3f(0, 0, 1), 1, countSomm, true);
+									VboOpaque->SetNormale(YVec3f(0, 1, 0), YVec3f(0, 0, 1), countNorm, 1);
+									VboOpaque->SetTexture(countTexture, 2);
+									for (int i = 0; i < 6; i++)
+									{
+										VboOpaque->setElementValue(3, i + countType, type);
+									}
+									countType += 6;
 								}
-								countType += 36;
 
-								VboOpaque->SetFace(YVec3f(x, y, z), YVec3f(1, 0, 0), YVec3f(0, 1, 0), 1, countSomm, true);
-								VboOpaque->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNorm, 1);
-								VboOpaque->SetTexture(countTexture, 2);
+								if (x == CHUNK_SIZE - 1 || !_Cubes[x + 1][y][z].isOpaque())
+								{
+									VboOpaque->SetFace(YVec3f(x + 1, y, z), YVec3f(0, 1, 0), YVec3f(0, 0, 1), 1, countSomm, true);
+									VboOpaque->SetNormale(YVec3f(0, 0, 1), YVec3f(0, 1, 0), countNorm, 1);
+									VboOpaque->SetTexture(countTexture, 2);
+									for (int i = 0; i < 6; i++)
+									{
+										VboOpaque->setElementValue(3, i + countType, type);
+									}
+									countType += 6;
+								}
 
-								VboOpaque->SetFace(YVec3f(x, y, z), YVec3f(1, 0, 0), YVec3f(0, 0, 1), 1, countSomm, true);
-								VboOpaque->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 0, 1), countNorm, 1);
-								VboOpaque->SetTexture(countTexture, 2);
+								if (y == 0 || !_Cubes[x][y - 1][z].isOpaque())
+								{
+									VboOpaque->SetFace(YVec3f(x, y, z), YVec3f(1, 0, 0), YVec3f(0, 0, 1), 1, countSomm, true);
+									VboOpaque->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 0, 1), countNorm, 1);
+									VboOpaque->SetTexture(countTexture, 2);
+									for (int i = 0; i < 6; i++)
+									{
+										VboOpaque->setElementValue(3, i + countType, type);
+									}
+									countType += 6;
+								}
 
-								VboOpaque->SetFace(YVec3f(x, y, z), YVec3f(0, 1, 0), YVec3f(0, 0, 1), 1, countSomm, true);
-								VboOpaque->SetNormale(YVec3f(0, 1, 0), YVec3f(0, 0, 1), countNorm, 1);
-								VboOpaque->SetTexture(countTexture, 2);
+								if (y == CHUNK_SIZE - 1 || !_Cubes[x][y + 1][z].isOpaque())
+								{
+									VboOpaque->SetFace(YVec3f(x, y + 1, z), YVec3f(1, 0, 0), YVec3f(0, 0, 1), 1, countSomm, true);
+									VboOpaque->SetNormale(YVec3f(0, 0, 1), YVec3f(1, 0, 0), countNorm, 1);
+									VboOpaque->SetTexture(countTexture, 2);
+									for (int i = 0; i < 6; i++)
+									{
+										VboOpaque->setElementValue(3, i + countType, type);
+									}
+									countType += 6;
+								}
 
-								VboOpaque->SetFace(YVec3f(x, y, z + 1), YVec3f(1, 0, 0), YVec3f(0, 1, 0), 1, countSomm, true);
-								VboOpaque->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNorm, 1);
-								VboOpaque->SetTexture(countTexture, 2);
+								if (z == 0 || !_Cubes[x][y][z - 1].isOpaque())
+								{
+									VboOpaque->SetFace(YVec3f(x, y, z), YVec3f(1, 0, 0), YVec3f(0, 1, 0), 1, countSomm, true);
+									VboOpaque->SetNormale(YVec3f(0, 1, 0), YVec3f(1, 0, 0), countNorm, 1);
+									VboOpaque->SetTexture(countTexture, 2);
+									for (int i = 0; i < 6; i++)
+									{
+										VboOpaque->setElementValue(3, i + countType, type);
+									}
+									countType += 6;
+								}
 
-								VboOpaque->SetFace(YVec3f(x + 1,y +1,z + 1), YVec3f(0, 0, -1), YVec3f(-1, 0, 0), 1, countSomm, true);
-								VboOpaque->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNorm, 1);
-								VboOpaque->SetTexture(countTexture, 2);
-
-								VboOpaque->SetFace(YVec3f(x + 1,y + 1,z + 1), YVec3f(0, 0, -1), YVec3f(0, -1, 0), 1, countSomm, true);
-								VboOpaque->SetNormale(YVec3f(0, 0, -1), YVec3f(0, -1, 0), countNorm, 1);
-								VboOpaque->SetTexture(countTexture, 2);
+								if (z == CHUNK_SIZE - 1 || !_Cubes[x][y][z + 1].isOpaque())
+								{
+									VboOpaque->SetFace(YVec3f(x, y, z + 1), YVec3f(1, 0, 0), YVec3f(0, 1, 0), 1, countSomm, true);
+									VboOpaque->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNorm, 1);
+									VboOpaque->SetTexture(countTexture, 2);
+									for (int i = 0; i < 6; i++)
+									{
+										VboOpaque->setElementValue(3, i + countType, type);
+									}
+									countType += 6;
+								}
 							}
 						}
 					}
