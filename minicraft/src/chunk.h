@@ -34,7 +34,7 @@ class MChunk
 			_YPos = y;
 			_ZPos = z;
 			_ScaleMountain = 0.15f;
-			_MountainRadius = 5.5f;
+			_MountainRadius = 1.5f;
 			_GrassDensity = 0.9f;
 			_WaterDensity = 0.4f;
 			_BaseChanceWater = 5.5f;

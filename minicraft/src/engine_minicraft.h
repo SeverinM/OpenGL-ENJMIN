@@ -225,7 +225,7 @@ public :
 		}
 
 	
-		if (key == 's')
+		/*if (key == 's')
 		{
 			Z += down ? -1 : 1;
 		}
@@ -243,9 +243,29 @@ public :
 		if (key == 'd')
 		{
 			X += down ? 1 : -1;
+		}*/
+
+		if (key == 's')
+		{
+			av->X += (down ? -1 : 1);
 		}
 
-		if (key == 'o')
+		if (key == 'z')
+		{
+			av->X += (down ? 1 : -1);
+		}
+
+		if (key == 'q')
+		{
+			av->Z += (down ? -1 : 1);
+		}
+
+		if (key == 'd')
+		{
+			av->Z += (down ? 1 : -1);
+		}
+
+		if (key == 32 && down)
 		{
 			av->JumpAction();
 		}

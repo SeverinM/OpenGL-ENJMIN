@@ -30,9 +30,11 @@ public :
 	static const int MAT_HEIGHT_METERS = (MAT_HEIGHT * MChunk::CHUNK_SIZE  * MCube::CUBE_SIZE);
 
 	MChunk * Chunks[MAT_SIZE][MAT_SIZE][MAT_HEIGHT];
+	YVec3f _Gravity;
 	
 	MWorld()
 	{
+		_Gravity = YVec3f(0, 0, -1.5f);
 		//On crée les chunks
 		for(int x=0;x<MAT_SIZE;x++)
 			for(int y=0;y<MAT_SIZE;y++)
@@ -210,7 +212,6 @@ public :
 		int x = (int)(pos.X / MCube::CUBE_SIZE);
 		int y = (int)(pos.Y / MCube::CUBE_SIZE);
 		int z = (int)(pos.Z / MCube::CUBE_SIZE);
-
 		int xNext = (int)((pos.X + width / 2.0f) / MCube::CUBE_SIZE);
 		int yNext = (int)((pos.Y + width / 2.0f) / MCube::CUBE_SIZE);
 		int zNext = (int)((pos.Z + height / 2.0f) / MCube::CUBE_SIZE);
