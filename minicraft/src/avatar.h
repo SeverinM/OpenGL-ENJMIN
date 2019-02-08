@@ -46,7 +46,6 @@ public:
 		Width = 0.3f;
 		Cam = cam;
 		Standing = false;
-		Jump = true;
 		World = world;
 		InWater = false;
 		Crouch = false;
@@ -80,29 +79,24 @@ public:
 		mouvZ *= elapsed * X * MoveSpeed;
 		mouvX *= elapsed * Z * MoveSpeed;
 
-		OnAir = (DepthZ > 0.05f);
 		Position += Speed * elapsed;
+		Position += (mouvZ + mouvX);
 		World->getMinCol(Position, YVec3f(0, 0, 1), Width, Height, DepthZ, false);
-		if (DepthZ < 0)
+		if (DepthZ > 0 && DepthZ != 10000.0f)
 		{
-			Position.Z -= DepthZ + 0.001f;
-			Speed.Z = 0;
-			Jump = false;
+ 			Position.Z += DepthZ + 0.001f;
+			Speed = YVec3f(0, 0, 0);
 			OnAir = false;
 		}
-
-		World->getMinCol(Position + (Speed * elapsed), YVec3f(1, 0, 0), Width, Height, DepthX, false);
-		World->getMinCol(Position + (Speed * elapsed), YVec3f(0, 1, 0), Width, Height, DepthY, false);
-		Position += mouvX + mouvZ;
 		Cam->moveTo(Position);
 	}
 
 	void JumpAction()
 	{
-		if (Jump) return;
+		if (OnAir) return;
 
-		Speed += YVec3f(0, 0, 2);
-		Jump = true;
+		Speed += YVec3f(0, 0, 6);
+		OnAir = true;
 	}
 };
 

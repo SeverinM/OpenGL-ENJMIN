@@ -34,7 +34,7 @@ public :
 	
 	MWorld()
 	{
-		_Gravity = YVec3f(0, 0, -1.5f);
+		_Gravity = YVec3f(0, 0, -7.5f);
 		//On crée les chunks
 		for(int x=0;x<MAT_SIZE;x++)
 			for(int y=0;y<MAT_SIZE;y++)
@@ -182,8 +182,8 @@ public :
 				{
 					//Permet de creer des plans d'eaux
 					if (getCube(x, y, z)->isSolid() && !getCube(x, y, z + 1)->isSolid() && !getCube(x + 1, y, z + 1)->isSolid() && !getCube(x - 1, y, z + 1)->isSolid() &&
-						!getCube(x, y + 1, z + 1)->isSolid() && !getCube(x, y - 1, z + 1)->isSolid() && getCube(x, y - 1, z)->isSolid() && getCube(x, y + 1, z)->isSolid() &&
-						getCube(x + 1, y, z)->isSolid() && getCube(x - 1, y, z)->isSolid())
+						!getCube(x, y + 1, z + 1)->isSolid() && !getCube(x, y - 1, z + 1)->isSolid() && getCube(x, y - 1, z)->isAcceptableForWater() && getCube(x, y + 1, z)->isAcceptableForWater() &&
+						getCube(x + 1, y, z)->isAcceptableForWater() && getCube(x - 1, y, z)->isAcceptableForWater())
 					{
 						value = perl.sample((float)x, (float)y, (float)z) * 10.0f;
 						if (value + (z * actualChunk->_WaterDensity) <= actualChunk->_BaseChanceWater)

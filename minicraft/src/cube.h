@@ -61,7 +61,7 @@ public :
 		
 	public :
 		YVec3f _NavDir;
-		static const int CUBE_SIZE = 2;
+		static const int CUBE_SIZE = 1;
 		
 		MCube()
 		{
@@ -93,7 +93,13 @@ public :
 		bool isSolid(void)
 		{
 			MCubeType type = getType();
-			return (type != CUBE_AIR);
+			return (type != CUBE_AIR && type != CUBE_EAU);
+		}
+
+		bool isAcceptableForWater()
+		{
+			MCubeType type = getType();
+			return (isSolid() || type == CUBE_EAU);
 		}
 
 		bool isPickable(void)
