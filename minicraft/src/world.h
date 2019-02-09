@@ -7,12 +7,14 @@
 #include "cube.h"
 #include "chunk.h"
 #include "engine\noise\perlin.h"
+#include "engine/render/TexHolder.h"
 
 class MWorld
 {
 public :
 	YPerlin perl;
 	typedef uint8 MAxis;
+	unsigned int textIndex;
 	static const int AXIS_X = 0b00000001;
 	static const int AXIS_Y = 0b00000010;
 	static const int AXIS_Z = 0b00000100;
@@ -34,12 +36,14 @@ public :
 	
 	MWorld()
 	{
+		TexHolder::GetInstance()->AddTexture("textures/atlas.jpg");
+		textIndex = TexHolder::GetInstance()->GetTexture("textures/atlas.jpg");
 		_Gravity = YVec3f(0, 0, -7.5f);
 		//On crée les chunks
 		for(int x=0;x<MAT_SIZE;x++)
 			for(int y=0;y<MAT_SIZE;y++)
-				for(int z=0;z<MAT_HEIGHT;z++)
-					Chunks[x][y][z] = new MChunk(x,y,z);
+				for (int z = 0; z < MAT_HEIGHT; z++)
+					Chunks[x][y][z] = new MChunk(x, y, z);				
 
 		for(int x=0;x<MAT_SIZE;x++)
 			for(int y=0;y<MAT_SIZE;y++)
@@ -194,6 +198,14 @@ public :
 		}
 
 		add_world_to_vbo();
+
+		for (int x = 0; x<MAT_SIZE; x++)
+			for (int y = 0; y<MAT_SIZE; y++)
+				for (int z = 0; z < MAT_HEIGHT; z++)
+				{
+					Chunks[x][y][z]->VboOpaque->SetTexture(textIndex);
+					Chunks[x][y][z]->VboTransparent->SetTexture(textIndex);
+				}
 	}
 
 	void add_world_to_vbo(void)

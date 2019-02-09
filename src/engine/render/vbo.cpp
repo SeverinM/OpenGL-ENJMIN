@@ -51,6 +51,7 @@ void YVbo::render() {
 	//La stat globales
 	YRenderer::NbVBOFacesRendered += NbVertices / 3;
 
+	if (textureIndex) glBindTexture(GL_TEXTURE_2D, textureIndex);
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
@@ -71,4 +72,5 @@ void YVbo::render() {
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+	if (textureIndex) glBindTexture(GL_TEXTURE_2D, 0);
 }

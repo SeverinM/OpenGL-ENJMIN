@@ -9,7 +9,7 @@ class YVbo
 {
 public:
 
-	//Définit un élément du VBO
+	//Dï¿½finit un ï¿½lï¿½ment du VBO
 	struct Element {
 		Element(int nbFloats) 
 		{ 
@@ -20,7 +20,7 @@ public:
 			NbFloats = 0;
 		}
 		int NbFloats = 0; ///< Choisi par l'utilsateur
-		int OffsetFloats = 0; ///< Calculé automatiquement
+		int OffsetFloats = 0; ///< Calculï¿½ automatiquement
 	};
 
 	typedef enum {
@@ -29,9 +29,9 @@ public:
 	}DATA_STORAGE_METHOD;
 
 private:
-	Element * Elements = NULL; ///<La description des différents elements du VBO : une coord de sommet, une normale, une  uv, un float...
-	int NbElements; ///< Le nomre d'elements différents qu'on a dans le VBO
-	float * ElementsValues = NULL; ///< Des tableaux qui contiennent les valeurs des éléments
+	Element * Elements = NULL; ///<La description des diffï¿½rents elements du VBO : une coord de sommet, une normale, une  uv, un float...
+	int NbElements; ///< Le nomre d'elements diffï¿½rents qu'on a dans le VBO
+	float * ElementsValues = NULL; ///< Des tableaux qui contiennent les valeurs des ï¿½lï¿½ments
 	int NbVertices; ///< Le nombre de sommets qu'on a dans le VBO
 	int TotalSizeFloats; ///< Taille totale du VBO en floats
 	int TotalNbFloatForOneVertice; ///< Taille totale d'un vertice (avec tous ces elements) en floats
@@ -39,10 +39,11 @@ private:
 	GLuint VAO; ///< L'identifiant du VAO (description des datas) pour opengl
 	DATA_STORAGE_METHOD StorageMethod = PACK_BY_ELEMENT_TYPE; ///< Comment on range les datas dans le VBO
 	bool isArrayIndex;
+	unsigned int textureIndex;
 
 public:		
 		
-	//On crée un VBO en lui passant les éléments qu'il contient
+	//On crï¿½e un VBO en lui passant les ï¿½lï¿½ments qu'il contient
 	YVbo(int nbElements, int nbVertices, DATA_STORAGE_METHOD storageMethod, bool index = false)
 	{
 		this->Elements = new Element[nbElements];
@@ -50,6 +51,7 @@ public:
 		NbVertices = nbVertices;
 		StorageMethod = storageMethod;
 		isArrayIndex = index;
+		textureIndex = 0;
 	}
 
 	~YVbo()
@@ -85,7 +87,7 @@ public:
 		return &VBO;
 	}
 
-	//On set les types d'elements que contient le VBO. On a set le nombre d'elements a la création
+	//On set les types d'elements que contient le VBO. On a set le nombre d'elements a la crï¿½ation
 	void setElementDescription(int iElement, const Element & element) {
 		this->Elements[iElement] = element;
 
@@ -103,7 +105,12 @@ public:
 				
 	}
 
-	//Création des buffers en RAM pour stoquer toutes les valeurs
+	void SetTexture(unsigned int index)
+	{
+		textureIndex = index;
+	}
+
+	//Crï¿½ation des buffers en RAM pour stoquer toutes les valeurs
 	void createVboCpu() {
 		SAFEDELETE_TAB(ElementsValues);
 		ElementsValues = new float[TotalSizeFloats];
@@ -198,18 +205,20 @@ public:
 		startingIndex += isQuad ?6 : 3;
 	}
 
-	void SetTexture(int &startingIndex, int nbList = 0)
+	void SetTextureElt(int &startingIndex, std::vector<std::pair<int,int>> &UVs,float &valX,float &valY, int index = 0, int nbList = 0)
 	{
-		setElementValue(nbList, startingIndex, 0, 0);
-		setElementValue(nbList, startingIndex + 1, 1, 0);
-		setElementValue(nbList, startingIndex + 2, 0, 1);
-		setElementValue(nbList, startingIndex + 3, 0, 1);
-		setElementValue(nbList, startingIndex + 4, 0, 0);
-		setElementValue(nbList, startingIndex + 5, 1, 1);
+		std::pair<int, int> valueUV(UVs[index]);
+
+		setElementValue(nbList, startingIndex, valueUV.first * valX, valueUV.second * valY);
+		setElementValue(nbList, startingIndex + 1, (valueUV.first + 1) * valX, valueUV.second * valY);
+		setElementValue(nbList, startingIndex + 2, valueUV.first * valX, (valueUV.second + 1)* valY);
+		setElementValue(nbList, startingIndex + 3, (valueUV.first + 1) * valX, (valueUV.second + 1) * valY);
+		setElementValue(nbList, startingIndex + 4, valueUV.first * valX, (valueUV.second + 1)* valY);
+		setElementValue(nbList, startingIndex + 5,(valueUV.first + 1) * valX, valueUV.second * valY);
 		startingIndex += 6;
 	}
 
-	//Creation et copie du VBO dans la mémoire du GPU
+	//Creation et copie du VBO dans la mï¿½moire du GPU
 	void createVboGpu(YVbo * index = NULL);
 	void render();
 };

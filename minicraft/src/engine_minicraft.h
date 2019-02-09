@@ -4,6 +4,7 @@
 #include "engine\engine.h"
 #include "avatar.h"
 #include "world.h"
+#include "engine/render/TexHolder.h"
 
 class MEngineMinicraft : public YEngine {
 
@@ -45,6 +46,7 @@ public :
 	void loadShaders() {
 		prog = Renderer->createProgram("shaders/sun");
 		progWorld = Renderer->createProgram("shaders/world");
+
 	}
 
 	void init() 

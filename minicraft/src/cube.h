@@ -255,4 +255,36 @@ public :
 
 			return false;
 		}
+
+		//Renvoit le coin superieur gauche
+		static std::vector<std::pair<int, int>> GetUV(MCubeType type, float &XUnit,float &YUnit)
+		{
+			std::vector<std::pair<int, int>> output;
+			XUnit = (1.0f / 32.0f);
+			YUnit = (1.0f / 16.0f);
+			
+			switch (type)
+			{
+				case CUBE_HERBE:
+					output.push_back(std::pair<int, int>(3, 0));
+					output.push_back(std::pair<int, int>(3, 0));
+					output.push_back(std::pair<int, int>(2, 0));
+					output.push_back(std::pair<int, int>(3, 0));
+					output.push_back(std::pair<int, int>(3, 0));
+					output.push_back(std::pair<int, int>(19, 0));
+					break;
+
+				case CUBE_TERRE:
+					for (int i = 0; i < 6;i++)
+						output.push_back(std::pair<int, int>(19, 0));
+					break;
+
+				case CUBE_EAU:
+					for (int i = 0; i < 6; i++)
+						output.push_back(std::pair<int, int>(0, 14));
+					break;
+			}
+
+			return output;
+		}
 };

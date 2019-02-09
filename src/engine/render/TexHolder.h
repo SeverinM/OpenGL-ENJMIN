@@ -13,10 +13,11 @@ class TexHolder
 {
 private:
 	map<string,unsigned int> allDatas;
-	void Clear();
-	static TexHolder * instance;
+	inline static TexHolder * instance;
+	unsigned int * noText;
 	TexHolder()
 	{
+		noText = new unsigned int(0);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
