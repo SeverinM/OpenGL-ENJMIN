@@ -93,17 +93,14 @@ public:
 				OnAir = false;			
 			}
 
-			if (Jumped && DepthZ == 10000.0f)
-			{
-				Jumped = false;
-			}
+			if (Jumped && DepthZ == 10000.0f) Jumped = false;
 		}
 		else
 		{
-			if (DepthZ == 10000.0f) OnAir = true;
+			if (!Jumped && DepthZ == 10000.0f) OnAir = true;
 		}
 
-		Position += moveDir;
+ 		Position += moveDir;
 		World->getMinCol(Position, YVec3f(0, 0, 1), Width, Height, DepthY, false, MWorld::AXIS_Y);
 
 		if (DepthY != 10000.0f)
