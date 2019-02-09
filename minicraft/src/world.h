@@ -22,7 +22,7 @@ public :
 	#ifdef _DEBUG
 	static const int MAT_SIZE = 2; //en nombre de chunks
 	#else
-	static const int MAT_SIZE = 3; //en nombre de chunks
+	static const int MAT_SIZE = 4; //en nombre de chunks
 	#endif // DEBUG
 
 	static const int MAT_HEIGHT = 1; //en nombre de chunks
@@ -33,11 +33,15 @@ public :
 
 	MChunk * Chunks[MAT_SIZE][MAT_SIZE][MAT_HEIGHT];
 	YVec3f _Gravity;
+	int heightTex;
+	int widthTex;
 	
 	MWorld()
 	{
-		TexHolder::GetInstance()->AddTexture("textures/atlas.jpg");
-		textIndex = TexHolder::GetInstance()->GetTexture("textures/atlas.jpg");
+		string nameTex("textures/atlas.jpg");
+		TexHolder::GetInstance()->AddTexture(nameTex);
+		textIndex = TexHolder::GetInstance()->GetTexture(nameTex);
+
 		_Gravity = YVec3f(0, 0, -7.5f);
 		//On crée les chunks
 		for(int x=0;x<MAT_SIZE;x++)
@@ -122,6 +126,7 @@ public :
 				{
 					Chunks[x][y][z]->reset();
 					Chunks[x][y][z]->SetValues(seed);
+					Chunks[x][y][z]->SetTexture(textIndex);
 				}
 
 		//Générer ici le monde en modifiant les cubes
@@ -198,14 +203,6 @@ public :
 		}
 
 		add_world_to_vbo();
-
-		for (int x = 0; x<MAT_SIZE; x++)
-			for (int y = 0; y<MAT_SIZE; y++)
-				for (int z = 0; z < MAT_HEIGHT; z++)
-				{
-					Chunks[x][y][z]->VboOpaque->SetTexture(textIndex);
-					Chunks[x][y][z]->VboTransparent->SetTexture(textIndex);
-				}
 	}
 
 	void add_world_to_vbo(void)

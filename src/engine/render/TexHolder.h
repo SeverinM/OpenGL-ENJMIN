@@ -13,17 +13,12 @@ class TexHolder
 {
 private:
 	map<string,unsigned int> allDatas;
+	map<string, std::pair<int, int>> sizes;
 	inline static TexHolder * instance;
 	unsigned int * noText;
 	TexHolder()
 	{
 		noText = new unsigned int(0);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	}
 
 public:
@@ -35,6 +30,14 @@ public:
 			return 0;
 	}
 
+	std::pair<int, int> GetSize(string name)
+	{
+		if (sizes.find(name) != sizes.end())
+			return sizes[name];
+		else
+			return std::pair(0, 0);
+	}
+
 	bool AddTexture(string name)
 	{
 		//Recuperation des infos de la texture
@@ -42,14 +45,22 @@ public:
 		int width, height, nrChannels;
 		unsigned char *data = stbi_load(name.c_str(), &width, &height, &nrChannels, 0);
 		if (!data) return false;
+		sizes[name] = std::pair(width, height);
 
 		glGenTextures(1, &texture);
 		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
 		//On peuple les données de la texture
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		allDatas[name] = texture;
 		stbi_image_free(data);
+		glBindTexture(GL_TEXTURE_2D, 0);
 		return true;
 	}
 

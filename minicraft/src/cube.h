@@ -276,7 +276,7 @@ public :
 
 				case CUBE_TERRE:
 					for (int i = 0; i < 6;i++)
-						output.push_back(std::pair<int, int>(19, 0));
+						output.push_back(std::pair<int, int>(18, 1));
 					break;
 
 				case CUBE_EAU:

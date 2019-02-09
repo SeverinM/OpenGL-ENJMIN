@@ -86,15 +86,16 @@ public:
 		World->getMinCol(Position, YVec3f(0, 0, 1), Width, Height, DepthZ, false,MWorld::AXIS_Z);
 		if (OnAir)
 		{
-			if (DepthZ > 0 && DepthZ != 10000.0f)
+			if (!Jumped && DepthZ > 0 && DepthZ != 10000.0f)
 			{
-				if (Jumped) Jumped = false;
-				else
-				{
-					Position.Z += DepthZ + 0.001f;
-					Speed = YVec3f(0, 0, 0);
-					OnAir = false;
-				}				
+				Position.Z += DepthZ + 0.001f;
+				Speed = YVec3f(0, 0, 0);
+				OnAir = false;			
+			}
+
+			if (Jumped && DepthZ == 10000.0f)
+			{
+				Jumped = false;
 			}
 		}
 		else

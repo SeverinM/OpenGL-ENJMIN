@@ -10,6 +10,8 @@
   */
 class MChunk
 {
+	private :
+		unsigned int textureIndex;
 	public :
 
 		static const int CHUNK_SIZE = 32; ///< Taille d'un chunk en nombre de cubes (n*n*n)
@@ -38,6 +40,7 @@ class MChunk
 			_GrassDensity = 0.9f;
 			_WaterDensity = 0.4f;
 			_BaseChanceWater = 5.5f;
+			textureIndex = 0;
 		}
 
 		//On fait varier la generation de terrain entre chunk
@@ -54,6 +57,11 @@ class MChunk
 			_WaterDensity += _WaterDensity * ((values / 10.0f) - 0.5f) * 0.1f;
 			values = rand() % 10;
 			_BaseChanceWater += _BaseChanceWater * ((values / 10.0f) - 0.5f) * 0.1f;
+		}
+
+		void SetTexture(unsigned int index)
+		{
+			textureIndex = index;
 		}
 
 		/*
@@ -127,6 +135,7 @@ class MChunk
 			VboOpaque->setElementDescription(2, YVbo::Element(2));//UV
 			VboOpaque->setElementDescription(3, YVbo::Element(1));//Type
 			VboOpaque->createVboCpu();
+			VboOpaque->SetTexture(textureIndex);
 
 			VboTransparent = new YVbo(4, countSommTrans + 1, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
 			VboTransparent->setElementDescription(0, YVbo::Element(3));//Position
@@ -134,6 +143,7 @@ class MChunk
 			VboTransparent->setElementDescription(2, YVbo::Element(2));//UV
 			VboTransparent->setElementDescription(3, YVbo::Element(1));//Type
 			VboTransparent->createVboCpu();
+			VboTransparent->SetTexture(textureIndex);
 			
 			countSommTrans = 0;
 			countSomm = 0;
@@ -155,6 +165,12 @@ class MChunk
 					{
 						if (!test_hidden(x,y,z))
 						{
+							glBindTexture(GL_TEXTURE_2D, textureIndex);
+							int width, height;
+							glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+							glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+
+
 							if (_Cubes[x][y][z].isTransparent() && _Cubes[x][y][z].getType() != MCube::MCubeType::CUBE_AIR)
 							{
 								int type(_Cubes[x][y][z].getType());
@@ -169,7 +185,7 @@ class MChunk
 
 								VboTransparent->SetFace(YVec3f(x * MCube::CUBE_SIZE, y * MCube::CUBE_SIZE, (z + 1) * MCube::CUBE_SIZE), YVec3f(1, 0, 0), YVec3f(0, 1, 0), MCube::CUBE_SIZE, countSommTrans, true);
 								VboTransparent->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNormTransparent, 1);
-								VboTransparent->SetTextureElt(countTextureTransparent, value, XUnit, YUnit, 2, 2);
+								VboTransparent->SetTextureElt(countTextureTransparent, value, XUnit, YUnit,width, height, 2, 2);
 							}
 							if (_Cubes[x][y][z].isOpaque())
 							{
@@ -182,7 +198,7 @@ class MChunk
 								{
 									VboOpaque->SetFace(YVec3f(x * MCube::CUBE_SIZE, y * MCube::CUBE_SIZE, z * MCube::CUBE_SIZE), YVec3f(0, 1, 0), YVec3f(0, 0, 1), MCube::CUBE_SIZE, countSomm, true);
 									VboOpaque->SetNormale(YVec3f(0, 1, 0), YVec3f(0, 0, 1), countNorm, 1);
-									VboOpaque->SetTextureElt(countTexture, value, XUnit, YUnit, 0, 2);
+									VboOpaque->SetTextureElt(countTexture, value, XUnit, YUnit, width , height, 0, 2);
 									for (int i = 0; i < 6; i++)
 									{
 										VboOpaque->setElementValue(3, i + countType, type);
@@ -194,7 +210,7 @@ class MChunk
 								{
 									VboOpaque->SetFace(YVec3f((x + 1) * MCube::CUBE_SIZE, y * MCube::CUBE_SIZE, z * MCube::CUBE_SIZE), YVec3f(0, 1, 0), YVec3f(0, 0, 1), MCube::CUBE_SIZE, countSomm, true);
 									VboOpaque->SetNormale(YVec3f(0, 0, 1), YVec3f(0, 1, 0), countNorm, 1);
-									VboOpaque->SetTextureElt(countTexture, value, XUnit, YUnit, 3, 2);
+									VboOpaque->SetTextureElt(countTexture, value, XUnit, YUnit, width, height, 0, 2);
 									for (int i = 0; i < 6; i++)
 									{
 										VboOpaque->setElementValue(3, i + countType, type);
@@ -206,7 +222,7 @@ class MChunk
 								{
 									VboOpaque->SetFace(YVec3f(x * MCube::CUBE_SIZE, y * MCube::CUBE_SIZE, z * MCube::CUBE_SIZE), YVec3f(1, 0, 0), YVec3f(0, 0, 1), MCube::CUBE_SIZE, countSomm, true);
 									VboOpaque->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 0, 1), countNorm, 1);
-									VboOpaque->SetTextureElt(countTexture, value, XUnit, YUnit, 1, 2);
+									VboOpaque->SetTextureElt(countTexture, value, XUnit, YUnit, width, height, 1, 2);
 									for (int i = 0; i < 6; i++)
 									{
 										VboOpaque->setElementValue(3, i + countType, type);
@@ -218,7 +234,7 @@ class MChunk
 								{
 									VboOpaque->SetFace(YVec3f(x * MCube::CUBE_SIZE,(y + 1) * MCube::CUBE_SIZE, z * MCube::CUBE_SIZE), YVec3f(1, 0, 0), YVec3f(0, 0, 1), MCube::CUBE_SIZE, countSomm, true);
 									VboOpaque->SetNormale(YVec3f(0, 0, 1), YVec3f(1, 0, 0), countNorm, 1);
-									VboOpaque->SetTextureElt(countTexture, value, XUnit, YUnit, 1, 2);
+									VboOpaque->SetTextureElt(countTexture, value, XUnit, YUnit, width, height, 1, 2);
 									for (int i = 0; i < 6; i++)
 									{
 										VboOpaque->setElementValue(3, i + countType, type);
@@ -230,7 +246,7 @@ class MChunk
 								{
 									VboOpaque->SetFace(YVec3f(x * MCube::CUBE_SIZE, y * MCube::CUBE_SIZE, z * MCube::CUBE_SIZE), YVec3f(1, 0, 0), YVec3f(0, 1, 0), MCube::CUBE_SIZE, countSomm, true);
 									VboOpaque->SetNormale(YVec3f(0, 1, 0), YVec3f(1, 0, 0), countNorm, 1);
-									VboOpaque->SetTextureElt(countTexture, value, XUnit, YUnit, 5, 2);
+									VboOpaque->SetTextureElt(countTexture, value, XUnit, YUnit, width, height, 5, 2);
 									for (int i = 0; i < 6; i++)
 									{
 										VboOpaque->setElementValue(3, i + countType, type);
@@ -242,7 +258,7 @@ class MChunk
 								{
 									VboOpaque->SetFace(YVec3f(x * MCube::CUBE_SIZE, y * MCube::CUBE_SIZE, (z + 1) * MCube::CUBE_SIZE), YVec3f(1, 0, 0), YVec3f(0, 1, 0), MCube::CUBE_SIZE, countSomm, true);
 									VboOpaque->SetNormale(YVec3f(1, 0, 0), YVec3f(0, 1, 0), countNorm, 1);
-									VboOpaque->SetTextureElt(countTexture, value, XUnit, YUnit, 2, 2);
+									VboOpaque->SetTextureElt(countTexture, value, XUnit, YUnit, width, height, 2, 2);
 									for (int i = 0; i < 6; i++)
 									{
 										VboOpaque->setElementValue(3, i + countType, type);
@@ -250,6 +266,8 @@ class MChunk
 									countType += 6;
 								}
 							}
+
+							glBindTexture(GL_TEXTURE_2D, 0);
 						}
 					}
 				}

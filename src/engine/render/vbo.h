@@ -39,6 +39,8 @@ private:
 	GLuint VAO; ///< L'identifiant du VAO (description des datas) pour opengl
 	DATA_STORAGE_METHOD StorageMethod = PACK_BY_ELEMENT_TYPE; ///< Comment on range les datas dans le VBO
 	bool isArrayIndex;
+	int heightTex;
+	int widthTex;
 	unsigned int textureIndex;
 
 public:		
@@ -52,6 +54,8 @@ public:
 		StorageMethod = storageMethod;
 		isArrayIndex = index;
 		textureIndex = 0;
+		widthTex = 0;
+		heightTex = 0;
 	}
 
 	~YVbo()
@@ -66,6 +70,11 @@ public:
 
 	int getVboSizeBytes() {
 		return TotalSizeFloats * sizeof(float);
+	}
+
+	const unsigned int GetTextureIndex()
+	{
+		return textureIndex;
 	}
 
 	int getNbVertices() {
@@ -205,16 +214,18 @@ public:
 		startingIndex += isQuad ?6 : 3;
 	}
 
-	void SetTextureElt(int &startingIndex, std::vector<std::pair<int,int>> &UVs,float &valX,float &valY, int index = 0, int nbList = 0)
+	void SetTextureElt(int &startingIndex, std::vector<std::pair<int,int>> &UVs,float &valX,float &valY,float width, float height, int index = 0, int nbList = 0)
 	{
-		std::pair<int, int> valueUV(UVs[index]);
+		float XUnit(1 / width);
+		float YUnit(1 / height);
 
-		setElementValue(nbList, startingIndex, valueUV.first * valX, valueUV.second * valY);
-		setElementValue(nbList, startingIndex + 1, (valueUV.first + 1) * valX, valueUV.second * valY);
-		setElementValue(nbList, startingIndex + 2, valueUV.first * valX, (valueUV.second + 1)* valY);
-		setElementValue(nbList, startingIndex + 3, (valueUV.first + 1) * valX, (valueUV.second + 1) * valY);
-		setElementValue(nbList, startingIndex + 4, valueUV.first * valX, (valueUV.second + 1)* valY);
-		setElementValue(nbList, startingIndex + 5,(valueUV.first + 1) * valX, valueUV.second * valY);
+		std::pair<int, int> valueUV(UVs[index]);
+		setElementValue(nbList, startingIndex, (valueUV.first * valX) + (XUnit * 3), ((valueUV.second + 1) * valY) - (YUnit * 3));
+		setElementValue(nbList, startingIndex + 1, ((valueUV.first + 1) * valX) - (XUnit * 3), ((valueUV.second + 1) * valY) - (YUnit * 3));
+		setElementValue(nbList, startingIndex + 2, (valueUV.first * valX) + (XUnit * 3), (valueUV.second * valY) + (YUnit * 3));
+		setElementValue(nbList, startingIndex + 3, ((valueUV.first + 1) * valX) - (XUnit * 3), (valueUV.second * valY) + (YUnit * 3));
+		setElementValue(nbList, startingIndex + 4, (valueUV.first * valX) + (XUnit * 3), (valueUV.second * valY) + (YUnit * 3));
+		setElementValue(nbList, startingIndex + 5,((valueUV.first + 1) * valX) - (XUnit * 3), ((valueUV.second + 1)* valY) - (YUnit * 3));
 		startingIndex += 6;
 	}
 
