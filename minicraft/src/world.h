@@ -207,7 +207,7 @@ public :
 	}
 	
 	//Boites de collisions plus petites que deux cubes
-	MAxis getMinCol(YVec3f pos, YVec3f dir, float width, float height, float & valueColMin, bool oneShot)
+	MAxis getMinCol(YVec3f pos, YVec3f dir, float width, float height, float & valueColMin, bool oneShot, MWorld::MAxis mask = 0b00000111)
 	{
 		int x = (int)(pos.X / MCube::CUBE_SIZE);
 		int y = (int)(pos.Y / MCube::CUBE_SIZE);
@@ -253,10 +253,10 @@ public :
 			dir.normalize();
 
 		//On verif tout les 4 angles de gauche
-		if (getCube(xPrev, yPrev, zPrev)->isSolid() ||
+		if ((mask & AXIS_X) && (getCube(xPrev, yPrev, zPrev)->isSolid() ||
 			getCube(xPrev, yPrev, zNext)->isSolid() ||
 			getCube(xPrev, yNext, zPrev)->isSolid() ||
-			getCube(xPrev, yNext, zNext)->isSolid())
+			getCube(xPrev, yNext, zNext)->isSolid()))
 		{
 			//On verif que resoudre cette collision est utile
 			if (!(getCube(xPrev + 1, yPrev, zPrev)->isSolid() ||
@@ -279,10 +279,10 @@ public :
 		//float depassementx2 = (xNext * NYCube::CUBE_SIZE) - (pos.X + width / 2.0f);
 
 		//On verif tout les 4 angles de droite
-		if (getCube(xNext, yPrev, zPrev)->isSolid() ||
+		if ((mask & AXIS_X) && (getCube(xNext, yPrev, zPrev)->isSolid() ||
 			getCube(xNext, yPrev, zNext)->isSolid() ||
 			getCube(xNext, yNext, zPrev)->isSolid() ||
-			getCube(xNext, yNext, zNext)->isSolid())
+			getCube(xNext, yNext, zNext)->isSolid()))
 		{
 			//On verif que resoudre cette collision est utile
 			if (!(getCube(xNext - 1, yPrev, zPrev)->isSolid() ||
@@ -305,10 +305,10 @@ public :
 		//float depassementy1 = (yNext * NYCube::CUBE_SIZE) - (pos.Y + width / 2.0f);
 
 		//On verif tout les 4 angles de devant
-		if (getCube(xPrev, yNext, zPrev)->isSolid() ||
+		if ((mask & AXIS_Y) && (getCube(xPrev, yNext, zPrev)->isSolid() ||
 			getCube(xPrev, yNext, zNext)->isSolid() ||
 			getCube(xNext, yNext, zPrev)->isSolid() ||
-			getCube(xNext, yNext, zNext)->isSolid())
+			getCube(xNext, yNext, zNext)->isSolid()))
 		{
 			//On verif que resoudre cette collision est utile
 			if (!(getCube(xPrev, yNext - 1, zPrev)->isSolid() ||
@@ -331,10 +331,10 @@ public :
 		//float depassementy2 = ((yPrev + 1) * NYCube::CUBE_SIZE) - (pos.Y - width / 2.0f);
 
 		//On verif tout les 4 angles de derriere
-		if (getCube(xPrev, yPrev, zPrev)->isSolid() ||
+		if ((mask & AXIS_Y) && (getCube(xPrev, yPrev, zPrev)->isSolid() ||
 			getCube(xPrev, yPrev, zNext)->isSolid() ||
 			getCube(xNext, yPrev, zPrev)->isSolid() ||
-			getCube(xNext, yPrev, zNext)->isSolid())
+			getCube(xNext, yPrev, zNext)->isSolid()))
 		{
 			//On verif que resoudre cette collision est utile
 			if (!(getCube(xPrev, yPrev + 1, zPrev)->isSolid() ||
@@ -355,10 +355,10 @@ public :
 		}
 
 		//On verif tout les 4 angles du haut
-		if (getCube(xPrev, yPrev, zNext)->isSolid() ||
+		if ((mask & AXIS_Z) && (getCube(xPrev, yPrev, zNext)->isSolid() ||
 			getCube(xPrev, yNext, zNext)->isSolid() ||
 			getCube(xNext, yPrev, zNext)->isSolid() ||
-			getCube(xNext, yNext, zNext)->isSolid())
+			getCube(xNext, yNext, zNext)->isSolid()))
 		{
 			//On verif que resoudre cette collision est utile
 			if (!(getCube(xPrev, yPrev, zNext - 1)->isSolid() ||
@@ -379,10 +379,10 @@ public :
 		}
 
 		//On verif tout les 4 angles du bas
-		if (getCube(xPrev, yPrev, zPrev)->isSolid() ||
+		if ((mask & AXIS_Z) && (getCube(xPrev, yPrev, zPrev)->isSolid() ||
 			getCube(xPrev, yNext, zPrev)->isSolid() ||
 			getCube(xNext, yPrev, zPrev)->isSolid() ||
-			getCube(xNext, yNext, zPrev)->isSolid())
+			getCube(xNext, yNext, zPrev)->isSolid()))
 		{
 			//On verif que resoudre cette collision est utile
 			if (!(getCube(xPrev, yPrev, zPrev + 1)->isSolid() ||

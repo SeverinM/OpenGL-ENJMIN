@@ -61,7 +61,6 @@ public:
 
 	void update(float elapsed)
 	{
-		float previousPos(Position.Z);
 		//Application des forces
 		if (elapsed > 1.0f / 60.0f)
 			elapsed = 1.0f / 60.0f;
@@ -78,16 +77,28 @@ public:
 		mouvX = mouvX.normalize();
 		mouvZ *= elapsed * X * MoveSpeed;
 		mouvX *= elapsed * Z * MoveSpeed;
+		YVec3f moveDir(mouvZ + mouvX);
 
 		Position += Speed * elapsed;
-		Position += (mouvZ + mouvX);
-		World->getMinCol(Position, YVec3f(0, 0, 1), Width, Height, DepthZ, false);
-		if (DepthZ > 0 && DepthZ != 10000.0f)
+
+		World->getMinCol(Position, YVec3f(0, 0, 1), Width, Height, DepthZ, false,MWorld::AXIS_Z);
+		if (DepthZ > 0 && DepthZ != 10000.0f && OnAir)
 		{
  			Position.Z += DepthZ + 0.001f;
 			Speed = YVec3f(0, 0, 0);
 			OnAir = false;
 		}
+
+		Position += moveDir;
+		World->getMinCol(Position, YVec3f(0, 0, 1), Width, Height, DepthY, false, MWorld::AXIS_Y);
+
+		if (DepthY != 10000.0f)
+			Position.Y -= moveDir.Y;
+
+		World->getMinCol(Position, YVec3f(0, 0, 1), Width, Height, DepthX, false, MWorld::AXIS_X);
+		if (DepthX != 10000.0f)
+			Position.X -= moveDir.X;
+
 		Cam->moveTo(Position);
 	}
 

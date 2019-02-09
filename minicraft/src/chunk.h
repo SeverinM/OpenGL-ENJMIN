@@ -34,10 +34,10 @@ class MChunk
 			_YPos = y;
 			_ZPos = z;
 			_ScaleMountain = 0.15f;
-			_MountainRadius = 1.5f;
+			_MountainRadius = 5.5f;
 			_GrassDensity = 0.9f;
 			_WaterDensity = 0.4f;
-			_BaseChanceWater = 4.8f;
+			_BaseChanceWater = 5.5f;
 		}
 
 		//On fait varier la generation de terrain entre chunk
@@ -248,7 +248,7 @@ class MChunk
 					}
 				}
 			}
-			std::cout << " : " << countSomm << std::endl;
+
 			VboOpaque->createVboGpu();
 			VboOpaque->deleteVboCpu();
 
@@ -342,7 +342,7 @@ class MChunk
 			{
 				glEnable(GL_BLEND);
 				glPushMatrix();
-				glTranslatef(_XPos * CHUNK_SIZE, _YPos * CHUNK_SIZE, _ZPos * CHUNK_SIZE);
+				glTranslatef(_XPos * CHUNK_SIZE * MCube::CUBE_SIZE, _YPos * CHUNK_SIZE * MCube::CUBE_SIZE, _ZPos * CHUNK_SIZE * MCube::CUBE_SIZE);
 				YRenderer::getInstance()->updateMatricesFromOgl();
 				YRenderer::getInstance()->sendMatricesToShader(YRenderer::CURRENT_SHADER);
 				VboTransparent->render();
@@ -352,7 +352,7 @@ class MChunk
 			{
 				glDisable(GL_BLEND);
 				glPushMatrix();
-				glTranslatef(_XPos * CHUNK_SIZE, _YPos * CHUNK_SIZE, _ZPos * CHUNK_SIZE);
+				glTranslatef(_XPos * CHUNK_SIZE * MCube::CUBE_SIZE, _YPos * CHUNK_SIZE * MCube::CUBE_SIZE, _ZPos * CHUNK_SIZE * MCube::CUBE_SIZE);
 				YRenderer::getInstance()->updateMatricesFromOgl();
 				YRenderer::getInstance()->sendMatricesToShader(YRenderer::CURRENT_SHADER);
 				VboOpaque->render();
