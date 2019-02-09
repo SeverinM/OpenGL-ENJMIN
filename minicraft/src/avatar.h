@@ -22,6 +22,7 @@ public:
 	bool Crouch;
 	bool Run;
 	bool OnAir;
+	bool Jumped;
 
 	float DepthX;
 	float DepthY;
@@ -51,6 +52,7 @@ public:
 		Crouch = false;
 		Run = false;
 		OnAir = true;
+		Jumped = false;
 	}
 
 	void MovePos(float elapsed, YVec3f direction)
@@ -82,11 +84,22 @@ public:
 		Position += Speed * elapsed;
 
 		World->getMinCol(Position, YVec3f(0, 0, 1), Width, Height, DepthZ, false,MWorld::AXIS_Z);
-		if (DepthZ > 0 && DepthZ != 10000.0f && OnAir)
+		if (OnAir)
 		{
- 			Position.Z += DepthZ + 0.001f;
-			Speed = YVec3f(0, 0, 0);
-			OnAir = false;
+			if (DepthZ > 0 && DepthZ != 10000.0f)
+			{
+				if (Jumped) Jumped = false;
+				else
+				{
+					Position.Z += DepthZ + 0.001f;
+					Speed = YVec3f(0, 0, 0);
+					OnAir = false;
+				}				
+			}
+		}
+		else
+		{
+			if (DepthZ == 10000.0f) OnAir = true;
 		}
 
 		Position += moveDir;
@@ -108,6 +121,7 @@ public:
 
 		Speed += YVec3f(0, 0, 6);
 		OnAir = true;
+		Jumped = true;
 	}
 };
 
