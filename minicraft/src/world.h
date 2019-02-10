@@ -42,7 +42,7 @@ public :
 		TexHolder::GetInstance()->AddTexture(nameTex);
 		textIndex = TexHolder::GetInstance()->GetTexture(nameTex);
 
-		_Gravity = YVec3f(0, 0, -7.5f);
+		_Gravity = YVec3f(0, 0, -8.5f);
 		//On crée les chunks
 		for(int x=0;x<MAT_SIZE;x++)
 			for(int y=0;y<MAT_SIZE;y++)
@@ -441,6 +441,7 @@ public :
 				}
 			}
 		}
+		glClear(GL_DEPTH_BUFFER_BIT);
 	}
 
 	YVec3f getColor(MCube::MCubeType type)

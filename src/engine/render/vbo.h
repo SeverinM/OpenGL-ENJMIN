@@ -3,7 +3,7 @@
 #include "external/gl/glew.h"
 #include "external/gl/freeglut.h" 
 #include "engine/utils/utils.h"
-#include "engine\utils\types_3d.h"
+#include "engine/utils/types_3d.h"
 
 class YVbo
 {

@@ -42,6 +42,9 @@
     <Filter Include="Fichiers d%27en-tête\engine\render">
       <UniqueIdentifier>{75d7c323-8b30-4ce8-97d7-f825373fcbfa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders\Depth">
+      <UniqueIdentifier>{5e03b9eb-04b6-466e-a8d5-7b4c394d1f12}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine_minicraft.h">
@@ -72,6 +75,9 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="..\src\engine\render\TexHolder.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\utils\FboCustom.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
@@ -122,6 +128,12 @@
     </None>
     <None Include="run\shaders\cube_debug\vs.glsl">
       <Filter>shaders\cube_debug</Filter>
+    </None>
+    <None Include="run\shaders\Depth\fs.glsl">
+      <Filter>shaders\Depth</Filter>
+    </None>
+    <None Include="run\shaders\Depth\vs.glsl">
+      <Filter>shaders\Depth</Filter>
     </None>
   </ItemGroup>
 </Project>

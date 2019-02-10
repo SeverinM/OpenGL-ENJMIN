@@ -132,7 +132,8 @@ public :
 		vbo2->deleteVboCpu();
 		
 		glDisable(GL_CULL_FACE);
-		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
 	}
 
 	void update(float elapsed) 

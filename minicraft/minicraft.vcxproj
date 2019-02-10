@@ -24,6 +24,7 @@
     <ClInclude Include="..\src\engine\render\ObjImporter.h" />
     <ClInclude Include="..\src\engine\render\stb_image.h" />
     <ClInclude Include="..\src\engine\render\TexHolder.h" />
+    <ClInclude Include="..\src\engine\utils\FboCustom.h" />
     <ClInclude Include="src\avatar.h" />
     <ClInclude Include="src\chunk.h" />
     <ClInclude Include="src\cube.h" />
@@ -43,6 +44,8 @@
     <None Include="run\shaders\cube\vs.glsl" />
     <None Include="run\shaders\cube_debug\fs.glsl" />
     <None Include="run\shaders\cube_debug\vs.glsl" />
+    <None Include="run\shaders\Depth\fs.glsl" />
+    <None Include="run\shaders\Depth\vs.glsl" />
     <None Include="run\shaders\postprocess\fs.glsl" />
     <None Include="run\shaders\sun\fs.glsl" />
     <None Include="run\shaders\sun\vs.glsl" />
