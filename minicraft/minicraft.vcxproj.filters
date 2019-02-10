@@ -77,7 +77,7 @@
     <ClInclude Include="..\src\engine\render\TexHolder.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\engine\utils\FboCustom.h">
+    <ClInclude Include="..\src\engine\render\FboCustom.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

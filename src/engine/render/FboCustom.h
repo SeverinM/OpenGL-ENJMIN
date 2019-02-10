@@ -1,6 +1,6 @@
 #ifndef FBO_CUSTOM_H
 #define FBO_CUSTOM_H
-#include "engine/engine.h"
+#include "engine/render/vbo.h"
 
 class CustomFBO
 {

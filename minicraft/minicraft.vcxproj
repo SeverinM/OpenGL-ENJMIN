@@ -21,10 +21,10 @@
   <ItemGroup>
     <ClInclude Include="..\src\engine\noise\perlin.h" />
     <ClInclude Include="..\src\engine\render\camera.h" />
+    <ClInclude Include="..\src\engine\render\FboCustom.h" />
     <ClInclude Include="..\src\engine\render\ObjImporter.h" />
     <ClInclude Include="..\src\engine\render\stb_image.h" />
     <ClInclude Include="..\src\engine\render\TexHolder.h" />
-    <ClInclude Include="..\src\engine\utils\FboCustom.h" />
     <ClInclude Include="src\avatar.h" />
     <ClInclude Include="src\chunk.h" />
     <ClInclude Include="src\cube.h" />
