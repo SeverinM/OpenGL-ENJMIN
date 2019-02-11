@@ -156,12 +156,11 @@ public :
 		posZ *= Z;
 		Renderer->Camera->move((pos + posZ).normalize() * 0.1f);
 
-		av->update(1.0f / fps);
+		av->update(YEngine::DeltaTime);
 	}
 
 	void renderObjects() 
 	{
-		clock_t begin = std::clock();
 		diff = (DiffTimeMs(tm, beginDay) % 86400) / 86400.0f;
 		glUseProgram(0);
 		//Rendu des axes
@@ -205,10 +204,6 @@ public :
 		glUseProgram(progWorld);
 		Renderer->sendTimeToShader(YEngine::getInstance()->DeltaTimeCumul, progWorld);
 		wrld->render_world_vbo(true, false);
-		diffTime = std::clock() - begin;
-		if (diffTime > 0)
-			fps = max(60, (int)(CLOCKS_PER_SEC / diffTime));
-
 	}
 
 	void resize(int width, int height) {
