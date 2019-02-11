@@ -39,7 +39,7 @@ class MChunk
 			_MountainRadius = 5.5f;
 			_GrassDensity = 0.9f;
 			_WaterDensity = 0.4f;
-			_BaseChanceWater = 5.5f;
+			_BaseChanceWater = 6.5f;
 			textureIndex = 0;
 		}
 

@@ -4,6 +4,8 @@ uniform float elapsed;
 uniform mat4 mvp;
 uniform mat4 nmat;
 uniform mat4 m;
+uniform mat4 v;
+uniform mat4 p;
 
 layout(location=0) in vec3 vs_position_in;
 layout(location=1) in vec3 vs_normal_in;
@@ -19,10 +21,23 @@ out vec2 uv;
 #define CUBE_TERRE 1.0
 #define CUBE_EAU 4.0
 
+vec4 positionGlobal;
+
 void main()
 {
-	vec4 vecIn = vec4(vs_position_in,1.0);
-	gl_Position = mvp * vecIn;
+	positionGlobal = m * vec4(vs_position_in,1.0);
+
+	if(vs_type_in == CUBE_EAU && vs_position_in.z < 2)
+	{
+		positionGlobal.z -= 1;
+		float value = (sin(elapsed + positionGlobal.x - (positionGlobal.y / 2.0f)) / 2.0f) + 0.5f;
+		positionGlobal.z += value * 0.5f;
+	}
+
+	positionGlobal = v * positionGlobal;
+	positionGlobal.y += pow(length(positionGlobal.xyz)/30,3);
+
+	gl_Position = p * positionGlobal;
 	
 	normal = (nmat * vec4(vs_normal_in,1.0)).xyz; 
 	normal = normalize(normal);

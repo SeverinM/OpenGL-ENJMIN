@@ -203,6 +203,7 @@ public :
 		glPopMatrix();
 
 		glUseProgram(progWorld);
+		Renderer->sendTimeToShader(YEngine::getInstance()->DeltaTimeCumul, progWorld);
 		wrld->render_world_vbo(true, false);
 		diffTime = std::clock() - begin;
 		if (diffTime > 0)
@@ -236,27 +237,6 @@ public :
 		{
 			CtrlHold = false;
 		}
-
-	
-		/*if (key == 's')
-		{
-			Z += down ? -1 : 1;
-		}
-
-		if (key == 'z')
-		{
-			Z += down ? 1 : -1;
-		}
-
-		if (key == 'q')
-		{
-			X += down ? -1 : 1;
-		}
-		
-		if (key == 'd')
-		{
-			X += down ? 1 : -1;
-		}*/
 
 		if (key == 's')
 		{

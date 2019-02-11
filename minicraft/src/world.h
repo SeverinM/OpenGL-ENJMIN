@@ -217,13 +217,88 @@ public :
 	
 	void RemoveCube(YVec3f direction, YVec3f Position)
 	{
-		/*YVec3f target = Position + (direction.normalize() * MCube::CUBE_SIZE);
-		MCube * cb = getCube((int)floor(target.X), (int)floor(target.Y), (int)floor(target.Z));
-		if (cb->isSolid())
+		for (int i = 1; i < 5; i++)
 		{
-			cb->setType(MCube::MCubeType::CUBE_AIR);
-			updateCube((int)floor(target.X),(int)floor(target.Y),(int)floor(target.Z));
-		}*/
+			YVec3f target = Position + (direction.normalize() * MCube::CUBE_SIZE * i);
+			MCube * cb = getCube((int)floor(target.X), (int)floor(target.Y), (int)floor(target.Z));
+			if (cb->isSolid())
+			{
+				cb->setType(MCube::MCubeType::CUBE_AIR);
+				updateCube((int)floor(target.X), (int)floor(target.Y), (int)floor(target.Z));
+				break;
+			}
+		}
+
+		//int RoundedX;
+		//int RoundedY;
+		//int RoundedZ;
+		//int x;
+		//int y;
+		//int z;
+		//YVec3f target;
+		//YVec3f * pos = new YVec3f();
+
+		//for (int i = 1; i < 5; i++)
+		//{
+		//	target = Position + (direction.normalize() * MCube::CUBE_SIZE * i);
+		//	RoundedX = (int)floor(target.X);
+		//	RoundedY = (int)floor(target.Y);
+		//	RoundedZ = (int)floor(target.Z);
+
+		//	//Parcourir les blocs environnants
+		//	for (x = -2; x < 2; x++)
+		//		for (y = -2; y < 2; y++)
+		//			for (z = -2; z < 2; z++)
+		//			{
+		//				if (x >= 0 && x < MAT_SIZE_CUBES && y >= 0 && y < MAT_SIZE_CUBES && z >= 0 && z < MAT_SIZE_CUBES && getCube(x + RoundedX, y + RoundedY, z + RoundedZ)->isSolid())
+		//				{
+		//					YVec3f origin(YVec3f(RoundedX + x, RoundedY + y, RoundedZ + z) * MCube::CUBE_SIZE);
+		//					YVec3f Xp(origin + YVec3f(MCube::CUBE_SIZE, 0, 0));
+		//					YVec3f Yp(origin + YVec3f(0, MCube::CUBE_SIZE, 0));
+		//					YVec3f Zp(origin + YVec3f(0, 0, MCube::CUBE_SIZE));
+		//					YVec3f XpYp(origin + YVec3f(MCube::CUBE_SIZE, MCube::CUBE_SIZE, 0));
+		//					YVec3f XpZp(origin + YVec3f(MCube::CUBE_SIZE, 0, MCube::CUBE_SIZE));
+		//					YVec3f YpZp(origin + YVec3f(0, MCube::CUBE_SIZE, MCube::CUBE_SIZE));
+		//					YVec3f XpYpZp(origin + YVec3f(MCube::CUBE_SIZE, MCube::CUBE_SIZE, MCube::CUBE_SIZE));
+
+		//					//Plan X / Y
+		//					pos = intersecDroitePlan(origin, Xp, Yp, direction, Position);
+		//					if (pos && intersecDroiteCubeFace(*pos, origin, Xp, Yp))
+		//						break;
+
+		//					pos = intersecDroitePlan(Zp, XpZp, YpZp, direction, Position);
+		//					if (pos && intersecDroiteCubeFace(*pos, Zp, XpZp, YpZp))
+		//						break;
+
+		//					//Plan X / Z
+		//					pos = intersecDroitePlan(origin, Xp, XpZp, direction, Position);
+		//					if (pos && intersecDroiteCubeFace(*pos, origin, Xp,XpZp))
+		//						break;
+
+		//					pos = intersecDroitePlan(Yp, XpYp, XpYpZp, direction, Position);
+		//					if (pos && intersecDroiteCubeFace(*pos,Yp, XpYp,XpYpZp))
+		//						break;
+
+		//					//Plan Y / Z
+		//					pos = intersecDroitePlan(origin, Yp, YpZp, direction, Position);
+		//					if (pos && intersecDroiteCubeFace(*pos, origin, Yp, YpZp))
+		//						break;
+
+		//					pos = intersecDroitePlan(Xp, XpYp, XpYpZp, direction, Position);
+		//					if (pos && intersecDroiteCubeFace(*pos, Xp, XpYp, XpYpZp))
+		//						break;
+		//				}
+		//			}
+
+		//	if (pos)
+		//		break;
+		//}
+
+		//if (pos)
+		//{
+		//	getCube(x + RoundedX, y + RoundedY, z + RoundedZ)->setType(MCube::CUBE_AIR);
+		//	updateCube(x + RoundedX, y + RoundedY, z + RoundedZ);
+		//}
 	}
 	
 	//Boites de collisions plus petites que deux cubes
