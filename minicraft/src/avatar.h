@@ -40,8 +40,8 @@ public:
 	{
 		X = 0;
 		Z = 0;
-		MoveSpeed = 5.2f;
-		Position = YVec3f(5,5,20);
+		MoveSpeed = 6.0f;
+		Position = YVec3f(5,5,50);
 		Height = 1.0f;
 		CurrentHeight = Height;
 		Width = 0.3f;
@@ -86,18 +86,20 @@ public:
 		World->getMinCol(Position, YVec3f(0, 0, 1), Width, Height, DepthZ, false,MWorld::AXIS_Z);
 		if (OnAir)
 		{
-			if (!Jumped && DepthZ > 0 && DepthZ != 10000.0f)
+			if (DepthZ > 0 && DepthZ != 10000.0f)
 			{
-				Position.Z += DepthZ + 0.001f;
+				Position.Z += DepthZ + 0.000001f;
 				Speed = YVec3f(0, 0, 0);
-				OnAir = false;			
+				OnAir = false;
+				Jumped = false;
 			}
-
-			if (Jumped && DepthZ == 10000.0f) Jumped = false;
 		}
 		else
 		{
-			if (!Jumped && DepthZ == 10000.0f) OnAir = true;
+			if (DepthZ == 10000.0f)
+			{
+				OnAir = true;
+			}
 		}
 
  		Position += moveDir;
@@ -115,9 +117,9 @@ public:
 
 	void JumpAction()
 	{
-		if (OnAir) return;
+		if (OnAir || Jumped) return;
 
-		Speed += YVec3f(0, 0, 6);
+		Speed += YVec3f(0, 0, 5);
 		OnAir = true;
 		Jumped = true;
 	}

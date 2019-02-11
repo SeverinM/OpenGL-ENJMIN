@@ -20,9 +20,9 @@ public :
 	static const int AXIS_Z = 0b00000100;
 
 	#ifdef _DEBUG
-	static const int MAT_SIZE = 2; //en nombre de chunks
+	static const int MAT_SIZE = 3; //en nombre de chunks
 	#else
-	static const int MAT_SIZE = 4; //en nombre de chunks
+	static const int MAT_SIZE = 3; //en nombre de chunks
 	#endif // DEBUG
 
 	static const int MAT_HEIGHT = 1; //en nombre de chunks
@@ -42,7 +42,7 @@ public :
 		TexHolder::GetInstance()->AddTexture(nameTex);
 		textIndex = TexHolder::GetInstance()->GetTexture(nameTex);
 
-		_Gravity = YVec3f(0, 0, -8.5f);
+		_Gravity = YVec3f(0, 0, -7.5f);
 		//On crée les chunks
 		for(int x=0;x<MAT_SIZE;x++)
 			for(int y=0;y<MAT_SIZE;y++)
@@ -213,6 +213,17 @@ public :
 				{
 					Chunks[x][y][z]->toVbos();
 				}
+	}
+	
+	void RemoveCube(YVec3f direction, YVec3f Position)
+	{
+		/*YVec3f target = Position + (direction.normalize() * MCube::CUBE_SIZE);
+		MCube * cb = getCube((int)floor(target.X), (int)floor(target.Y), (int)floor(target.Z));
+		if (cb->isSolid())
+		{
+			cb->setType(MCube::MCubeType::CUBE_AIR);
+			updateCube((int)floor(target.X),(int)floor(target.Y),(int)floor(target.Z));
+		}*/
 	}
 	
 	//Boites de collisions plus petites que deux cubes
@@ -482,24 +493,45 @@ public :
 	* Attention ce code n'est pas optimal, il est compréhensible. Il existe de nombreuses
 	* versions optimisées de ce calcul.
 	*/
-	inline bool intersecDroitePlan(const YVec3f & debSegment, const  YVec3f & finSegment,
-		const YVec3f & p1Plan, const YVec3f & p2Plan, const YVec3f & p3Plan,
-		YVec3f & inter)
+	YVec3f * intersecDroitePlan(YVec3f plan1 , YVec3f plan2 , YVec3f plan3, YVec3f direction , YVec3f positionDroite)
 	{
-		
-		return true;
+		YVec3f * output = NULL;
+		YVec3f normal = (plan2 - plan1).cross(plan3 - plan1).normalize();
+		direction = direction.normalize();
+
+		float a(normal.X);
+		float b(normal.Y);
+		float c(normal.Z);
+		float d((normal.X * plan1.X) - (normal.Y * plan1.Y) - (normal.Z * plan1.Z));
+
+		float t(0);
+		float x((direction.X * t) + positionDroite.X);
+		float y((direction.Y * t) + positionDroite.Y);
+		float z((direction.Z * t) + positionDroite.Z);
+		float denom((a* direction.X) + (b * direction.Y) + (c * direction.Z));
+		if (denom != 0.0f)
+		{
+			t = -((a * positionDroite.X) + (b * positionDroite.Y) + (c * positionDroite.Z) + d) / denom;
+			output = new YVec3f((direction.X * t) + positionDroite.X, (direction.Y * t) + positionDroite.Y, (direction.Z * t) + positionDroite.Z);
+		}
+		return output;
 	}
 
 	/**
 	* Attention ce code n'est pas optimal, il est compréhensible. Il existe de nombreuses
 	* versions optimisées de ce calcul. Il faut donner les points dans l'ordre (CW ou CCW)
 	*/
-	inline bool intersecDroiteCubeFace(const YVec3f & debSegment, const YVec3f & finSegment,
-		const YVec3f & p1, const YVec3f & p2, const YVec3f & p3, const  YVec3f & p4,
-		YVec3f & inter)
+	inline bool intersecDroiteCubeFace(YVec3f point , YVec3f vertice1 , YVec3f vertice2 , YVec3f vertice3)
 	{
+		YVec3f ANormal((vertice2 - vertice1).cross(point - vertice1));
+		YVec3f BNormal((vertice3 - vertice2).cross(point - vertice2));
+		YVec3f CNormal((vertice1 - vertice3).cross(point - vertice3));
 		
-		return false;
+		float angleA = ANormal.dot(BNormal);
+		float angleB = BNormal.dot(CNormal);
+		float angleC = CNormal.dot(ANormal);
+
+		return (angleA > 0 && angleB > 0 && angleC > 0);
 	}
 
 	bool getRayCollision(const YVec3f & debSegment, const YVec3f & finSegment,

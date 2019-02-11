@@ -35,7 +35,7 @@ public:
 		if (sizes.find(name) != sizes.end())
 			return sizes[name];
 		else
-			return std::pair(0, 0);
+			return std::pair<int,int>(0, 0);
 	}
 
 	bool AddTexture(string name)
@@ -45,7 +45,7 @@ public:
 		int width, height, nrChannels;
 		unsigned char *data = stbi_load(name.c_str(), &width, &height, &nrChannels, 0);
 		if (!data) return false;
-		sizes[name] = std::pair(width, height);
+		sizes[name] = std::pair<int,int>(width, height);
 
 		glGenTextures(1, &texture);
 		glBindTexture(GL_TEXTURE_2D, texture);

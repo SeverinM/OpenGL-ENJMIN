@@ -5,6 +5,7 @@
 #include "avatar.h"
 #include "world.h"
 #include "engine/render/TexHolder.h"
+#include <ctime>
 
 class MEngineMinicraft : public YEngine {
 
@@ -27,7 +28,9 @@ public :
 	int progWorld;
 	float X;
 	float Z;
+	clock_t diffTime;
 	MAvatar * av;
+	int fps;
 
 	YColor * Day;
 	YColor * Night;
@@ -51,6 +54,8 @@ public :
 
 	void init() 
 	{
+		fps = 60;
+		diff = 0.015f;
 		X = 0;
 		Z = 0;
 		wrld = new MWorld();
@@ -150,12 +155,13 @@ public :
 		posZ = Renderer->Camera->Direction;
 		posZ *= Z;
 		Renderer->Camera->move((pos + posZ).normalize() * 0.1f);
-		av->update(0.015f);
+
+		av->update(1.0f / fps);
 	}
 
 	void renderObjects() 
 	{
-
+		clock_t begin = std::clock();
 		diff = (DiffTimeMs(tm, beginDay) % 86400) / 86400.0f;
 		glUseProgram(0);
 		//Rendu des axes
@@ -198,6 +204,10 @@ public :
 
 		glUseProgram(progWorld);
 		wrld->render_world_vbo(true, false);
+		diffTime = std::clock() - begin;
+		if (diffTime > 0)
+			fps = max(60, (int)(CLOCKS_PER_SEC / diffTime));
+
 	}
 
 	void resize(int width, int height) {
@@ -306,6 +316,11 @@ public :
 		if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP)
 		{
 			RightHold = false;
+		}
+
+		if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+		{
+			wrld->RemoveCube(Renderer->Camera->Direction, av->Position);
 		}
 	}
 
