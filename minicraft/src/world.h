@@ -248,16 +248,92 @@ public :
 		RoundedZ = (int)floor(Position.Z);
 
 		//Parcourir les blocs environnants
-		for (x = -4; x < 4; x++)
+		for (x = 0; x >= -4; x--)
 			{	
 				if (found)
 					break;
-			for (y = -4; y < 4; y++)
+			for (y = 0; y >= -4; y--)
 			{
 				if (found)
 					break;
 
-				for (z = -4; z < 4; z++)
+				for (z = 0; z >= -4; z--)
+				{
+					if (found)
+						break;
+
+					if (RoundedX + x >= 0 && RoundedX + x < MAT_SIZE_CUBES && RoundedY + y >= 0 && RoundedY + y < MAT_SIZE_CUBES && RoundedZ + z >= 0 && RoundedZ + z < MAT_SIZE_CUBES && getCube(x + RoundedX, y + RoundedY, z + RoundedZ)->isSolid())
+					{
+						YVec3f origin(YVec3f(RoundedX + x, RoundedY + y, RoundedZ + z) * MCube::CUBE_SIZE);
+						YVec3f Xp(origin + YVec3f(MCube::CUBE_SIZE, 0, 0));
+						YVec3f Yp(origin + YVec3f(0, MCube::CUBE_SIZE, 0));
+						YVec3f Zp(origin + YVec3f(0, 0, MCube::CUBE_SIZE));
+						YVec3f XpYp(origin + YVec3f(MCube::CUBE_SIZE, MCube::CUBE_SIZE, 0));
+						YVec3f XpZp(origin + YVec3f(MCube::CUBE_SIZE, 0, MCube::CUBE_SIZE));
+						YVec3f YpZp(origin + YVec3f(0, MCube::CUBE_SIZE, MCube::CUBE_SIZE));
+						YVec3f XpYpZp(origin + YVec3f(MCube::CUBE_SIZE, MCube::CUBE_SIZE, MCube::CUBE_SIZE));
+
+						//Plan X / Y
+						pos = intersecDroitePlan(origin, Xp, Yp, direction, Position);
+						if (pos && intersecDroiteCubeFace(*pos, origin, Yp, Xp))
+							found = true;
+						if (pos && intersecDroiteCubeFace(*pos, Xp, Yp, XpYp))
+							found = true;
+
+						pos = intersecDroitePlan(Zp, XpZp, YpZp, direction, Position);
+						if (pos && intersecDroiteCubeFace(*pos, Zp, YpZp, XpZp))
+							found = true;
+						if (pos && intersecDroiteCubeFace(*pos, XpYpZp, XpZp, YpZp))
+							found = true;
+
+						//Plan X / Z
+						pos = intersecDroitePlan(origin, Xp, XpZp, direction, Position);
+						if (pos && intersecDroiteCubeFace(*pos, origin, Xp, XpZp))
+							found = true;
+						if (pos && intersecDroiteCubeFace(*pos, origin, XpZp, Zp))
+							found = true;
+
+						pos = intersecDroitePlan(Yp, XpYp, XpYpZp, direction, Position);
+						if (pos && intersecDroiteCubeFace(*pos, Yp, XpYpZp, XpYp))
+							found = true;
+						if (pos && intersecDroiteCubeFace(*pos, Yp, YpZp, XpYpZp))
+							found = true;
+
+						//Plan Y / Z
+						pos = intersecDroitePlan(origin, Yp, YpZp, direction, Position);
+						if (pos && intersecDroiteCubeFace(*pos, origin, Yp, YpZp))
+							found = true;
+						if (pos && intersecDroiteCubeFace(*pos, origin, Zp, YpZp))
+							found = true;
+
+						pos = intersecDroitePlan(Xp, XpYp, XpYpZp, direction, Position);
+						if (pos && intersecDroiteCubeFace(*pos, Xp, XpYp, XpYpZp))
+							found = true;
+						if (pos && intersecDroiteCubeFace(*pos, Xp, XpYpZp, XpZp))
+							found = true;
+
+						if (found)
+						{
+							finalX = x;
+							finalY = y;
+							finalZ = z;
+						}
+					}
+				}
+			}
+		}
+
+		//Parcourir les blocs environnants
+		for (x = 1; x <= 4; x++)
+		{
+			if (found)
+				break;
+			for (y = 1; y <= 4; y++)
+			{
+				if (found)
+					break;
+
+				for (z = 1; z <= 4; z++)
 				{
 					if (found)
 						break;
@@ -326,7 +402,6 @@ public :
 		if (pos)
 		{
 			MCube * cb = getCube(finalX + RoundedX, finalY + RoundedY, finalZ + RoundedZ);
-			std::cout << finalX << " / " << finalY << " / " << finalZ << std::endl;
 			cb->setType(MCube::CUBE_AIR);
 			updateCube(x + RoundedX, y + RoundedY, z + RoundedZ);
 		}
