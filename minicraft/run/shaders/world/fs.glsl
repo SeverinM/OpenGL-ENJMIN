@@ -7,6 +7,7 @@ in vec2 uv;
 in vec3 posWorld;
 in float specModifier;
 in float type;
+in float distanceToCam;
 
 out vec4 color_out;
 
@@ -14,12 +15,12 @@ uniform sampler2D ourTexture;
 uniform float slider_0; //Diffuse
 uniform float slider_1; //Ambiant
 uniform float slider_2; //Spec
+uniform float slider_3; //Fog
 uniform float elapsed;
 
 uniform vec3 skyColor;
 uniform vec3 camPos;
 uniform vec3 sunPos;
-uniform vec2 world_size;
 
 vec4 sunColor;
 
@@ -54,6 +55,13 @@ void main()
     float spec = max(0, dot(normal,halfVector));
     spec = pow(spec, 25 + (slider_2 * 200));
     color += specModifier * spec * sunColor;
+
+	//Fog
+	vec4 colorFog = vec4(167.0 /255.0,167.0/255.0, 167.0 /255.0,1);
+	float min = 0;
+	float max = 10;
+	float lerpValue = clamp(distanceToCam / max,0,1);
+	//color = mix(color,colorFog,lerpValue);
 
 	color_out = color;
 }

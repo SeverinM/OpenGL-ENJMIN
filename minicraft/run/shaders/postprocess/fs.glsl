@@ -42,6 +42,9 @@ void main (void)
 	else
 		color_out = vec4(color.rgb,1.0);
 
+	if (length(vec2(0.5,0.5) - uv) < 0.002)
+		color_out = vec4(1,1,1,1);
+
     //Gamma correction
     //color.r = pow(color.r,1.0/2.2);
     //color.g = pow(color.g,1.0/2.2);

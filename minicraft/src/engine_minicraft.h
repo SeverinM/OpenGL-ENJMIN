@@ -172,16 +172,16 @@ public :
 
 	void renderObjects() 
 	{
-
-
 		fboProcess->setAsOutFBO(true);
 
+		YLog::getInstance()->Update(DeltaTime);
 
 		diff = (DiffTimeMs(tm, beginDay) % 86400) / 86400.0f;
 		glUseProgram(0);
 		//Rendu des axes
 		glDisable(GL_LIGHTING);
 		glBegin(GL_LINES);
+		YLog::getInstance()->Render();
 		glColor3d(1, 0, 0);
 		glVertex3d(0, 0, 0);
 		glVertex3d(10000, 0, 0);
@@ -349,7 +349,8 @@ public :
 
 		if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 		{
-			wrld->RemoveCube(Renderer->Camera->Direction, av->Position);
+			YLog::getInstance()->Add(Renderer->Camera->Position, Renderer->Camera->Direction, 10,5);
+			wrld->RemoveCube(Renderer->Camera->Direction, Renderer->Camera->Position);
 		}
 	}
 

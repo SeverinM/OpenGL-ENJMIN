@@ -20,6 +20,7 @@ out vec2 uv;
 out vec3 posWorld;
 out float specModifier;
 out vec3 type;
+out float distanceToCam;
 
 #define CUBE_HERBE 0.0
 #define CUBE_TERRE 1.0
@@ -40,6 +41,7 @@ void main()
 	}
 
 	positionGlobal = v * positionGlobal;
+	distanceToCam = length(positionGlobal);
 	//positionGlobal.y -= pow(length(positionGlobal.xyz)/30,3);
 
 	gl_Position = p * positionGlobal;
