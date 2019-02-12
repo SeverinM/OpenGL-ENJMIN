@@ -24,15 +24,27 @@ void main (void)
 	float ratio = screen_width / screen_height;
 
 	vec4 color = texture2D( TexColor , uv );
-	float depth = texture2D( TexDepth , uv ).r;	
+	float depth = texture2D( TexDepth , uv ).r;
+
+	float depth2 = texture2D( TexDepth , vec2(uv.x,uv.y + ystep)).r;
+	float depth3 = texture2D( TexDepth , vec2(uv.x,uv.y - ystep)).r;
+	float depth4 = texture2D( TexDepth , vec2(uv.x + xstep,uv.y)).r;
+	float depth5 = texture2D( TexDepth , vec2(uv.x - xstep,uv.y)).r;
 	
 	//Permet de scaler la profondeur
 	depth = LinearizeDepth(depth);
+	depth2 = LinearizeDepth(depth2);
+	depth3 = LinearizeDepth(depth3);
+	depth4 = LinearizeDepth(depth4);
+
+	if (abs(depth - depth2) > 0.2f || abs(depth - depth2) > 0.2f || abs(depth - depth3) > 0.2f || abs(depth - depth4) > 0.2f)
+		color_out = vec4(1,1,1,1);
+	else
+		color_out = vec4(color.rgb,1.0);
 
     //Gamma correction
-    color.r = pow(color.r,1.0/2.2);
-    color.g = pow(color.g,1.0/2.2);
-    color.b = pow(color.b,1.0/2.2);
+    //color.r = pow(color.r,1.0/2.2);
+    //color.g = pow(color.g,1.0/2.2);
+    //color.b = pow(color.b,1.0/2.2);
 
-	color_out = vec4(color.rgb,1.0);
 }

@@ -203,6 +203,11 @@ public :
 		YLog::log(YLog::ENGINE_INFO, "[   Yocto initialized   ]\nPress : \n - f to toggle fullscreen\n - F1 for png screen shot\n - F5 to hot-reload shaders");
 
 	}
+
+	void addToScreenParam(GUIPanel * panel)
+	{
+		ScreenParams->addElement(panel);
+	}
 		
 	static void updateBase(void) {
 		float elapsed = Instance->Timer->getElapsedSeconds(true);

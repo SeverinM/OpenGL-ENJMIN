@@ -111,14 +111,12 @@ public:
 		World->getMinCol(Position, YVec3f(0, 0, 1), Width, Height, DepthX, false, MWorld::AXIS_X);
 		if (DepthX != 10000.0f)
 			Position.X -= moveDir.X;
-
-		Cam->moveTo(Position);
+		
+		Cam->moveTo(Position + YVec3f(0,0,Height / 2));
 	}
 
 	void JumpAction()
 	{
-		if (OnAir || Jumped) return;
-
 		Speed += YVec3f(0, 0, 5);
 		OnAir = true;
 		Jumped = true;

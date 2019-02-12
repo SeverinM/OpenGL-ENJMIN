@@ -1,6 +1,7 @@
 #ifndef __YOCTO__ENGINE_TEST__
 #define __YOCTO__ENGINE_TEST__
 
+#define NB_SLIDER 10
 #include "engine\engine.h"
 #include "avatar.h"
 #include "world.h"
@@ -18,6 +19,7 @@ public :
 	SYSTEMTIME beginDay;
 	float diff;
 	unsigned int locationUniform;
+	unsigned int postPross;
 	int hourOffset;
 	int minOffset;
 	int xMouse;
@@ -31,9 +33,11 @@ public :
 	clock_t diffTime;
 	MAvatar * av;
 	int fps;
+	YFbo * fboProcess;
 
 	YColor * Day;
 	YColor * Night;
+	GUISlider * sliders[NB_SLIDER];
 
 	MWorld * wrld;
 
@@ -49,11 +53,12 @@ public :
 	void loadShaders() {
 		prog = Renderer->createProgram("shaders/sun");
 		progWorld = Renderer->createProgram("shaders/world");
-
+		postPross = Renderer->createProgram("shaders/postprocess");
 	}
 
 	void init() 
 	{
+		fboProcess = new YFbo();
 		fps = 60;
 		diff = 0.015f;
 		X = 0;
@@ -138,7 +143,13 @@ public :
 		
 		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
+
+		for (int i = 0; i < 10; i++)
+		{
+			sliders[i] = new GUISlider();
+			sliders[i]->setPos(20, 30 * i + 50);
+			addToScreenParam(sliders[i]);
+		}
 	}
 
 	void update(float elapsed) 
@@ -161,6 +172,11 @@ public :
 
 	void renderObjects() 
 	{
+
+
+		fboProcess->setAsOutFBO(true);
+
+
 		diff = (DiffTimeMs(tm, beginDay) % 86400) / 86400.0f;
 		glUseProgram(0);
 		//Rendu des axes
@@ -201,13 +217,51 @@ public :
 		vbo->render();
 		glPopMatrix();
 
+		YVec3f fictifPosition(500, 500, 100);
+
 		glUseProgram(progWorld);
 		Renderer->sendTimeToShader(YEngine::getInstance()->DeltaTimeCumul, progWorld);
+		for (int i = 0; i < 10; i++)
+		{
+			string varName = "slider_" + toString(i);
+			unsigned int uniform = glGetUniformLocation(progWorld, varName.c_str());
+			glUniform1f(uniform, sliders[i]->Value);
+		}
+		unsigned int uniform = glGetUniformLocation(progWorld, "camPos");
+		float x(Renderer->Camera->Position.X);
+		float y(Renderer->Camera->Position.Y);
+		float z(Renderer->Camera->Position.Z);
+		glUniform3f(uniform, x, y, z);
+		uniform = glGetUniformLocation(progWorld, "sunPos");
+		glUniform3f(uniform,fictifPosition.X,fictifPosition.Y,fictifPosition.Z);
+		uniform = glGetUniformLocation(progWorld, "skyColor");
+		glUniform3f(uniform, Day->interpolateHSV(*Night, abs(diff - 0.5f) * 2).R, Day->interpolateHSV(*Night, abs(diff - 0.5f) * 2).V, Day->interpolateHSV(*Night, abs(diff - 0.5f) * 2).B);
+		uniform = glGetUniformLocation(progWorld, "world_size");
+		glUniform2f(uniform, MWorld::MAT_SIZE * MWorld::MAT_SIZE_CUBES, MWorld::MAT_SIZE * MWorld::MAT_SIZE_CUBES);
+
+		
+
+		//glEnable(GL_CULL_FACE);
+		glEnable(GL_DEPTH_TEST);
 		wrld->render_world_vbo(true, false);
+		fboProcess->setAsOutFBO(false);
+
+		glUseProgram(postPross);
+
+		glDisable(GL_CULL_FACE);
+		glDisable(GL_DEPTH_TEST);
+
+		fboProcess->setColorAsShaderInput(0, GL_TEXTURE0, "TexColor");
+		fboProcess->setDepthAsShaderInput(GL_TEXTURE1, "TexDepth");
+
+		Renderer->sendNearFarToShader(postPross);
+		Renderer->sendScreenSizeToShader(postPross);
+		Renderer->sendMatricesToShader(postPross);
+		Renderer->drawFullScreenQuad();
 	}
 
 	void resize(int width, int height) {
-	
+		fboProcess->resize(width, height);
 	}
 
 	/*INPUTS*/

@@ -20,7 +20,7 @@ public :
 	static const int AXIS_Z = 0b00000100;
 
 	#ifdef _DEBUG
-	static const int MAT_SIZE = 3; //en nombre de chunks
+	static const int MAT_SIZE = 2; //en nombre de chunks
 	#else
 	static const int MAT_SIZE = 3; //en nombre de chunks
 	#endif // DEBUG
@@ -217,7 +217,7 @@ public :
 	
 	void RemoveCube(YVec3f direction, YVec3f Position)
 	{
-		/*for (int i = 1; i < 5; i++)
+		for (int i = 1; i < 7; i++)
 		{
 			YVec3f target = Position + (direction.normalize() * MCube::CUBE_SIZE * i);
 			MCube * cb = getCube((int)floor(target.X), (int)floor(target.Y), (int)floor(target.Z));
@@ -227,184 +227,184 @@ public :
 				updateCube((int)floor(target.X), (int)floor(target.Y), (int)floor(target.Z));
 				break;
 			}
-		}*/
-
-		int RoundedX;
-		int RoundedY;
-		int RoundedZ;
-		int x;
-		int y;
-		int z;
-
-		int finalZ(0);
-		int finalY(0);
-		int finalX(0);
-
-		bool found(false);
-		YVec3f * pos = NULL;
-
-		RoundedX = (int)floor(Position.X);
-		RoundedY = (int)floor(Position.Y);
-		RoundedZ = (int)floor(Position.Z);
-
-		//Parcourir les blocs environnants
-		for (x = 0; x >= -4; x--)
-			{	
-				if (found)
-					break;
-			for (y = 0; y >= -4; y--)
-			{
-				if (found)
-					break;
-
-				for (z = 0; z >= -4; z--)
-				{
-					if (found)
-						break;
-
-					if (RoundedX + x >= 0 && RoundedX + x < MAT_SIZE_CUBES && RoundedY + y >= 0 && RoundedY + y < MAT_SIZE_CUBES && RoundedZ + z >= 0 && RoundedZ + z < MAT_SIZE_CUBES && getCube(x + RoundedX, y + RoundedY, z + RoundedZ)->isSolid())
-					{
-						YVec3f origin(YVec3f(RoundedX + x, RoundedY + y, RoundedZ + z) * MCube::CUBE_SIZE);
-						YVec3f Xp(origin + YVec3f(MCube::CUBE_SIZE, 0, 0));
-						YVec3f Yp(origin + YVec3f(0, MCube::CUBE_SIZE, 0));
-						YVec3f Zp(origin + YVec3f(0, 0, MCube::CUBE_SIZE));
-						YVec3f XpYp(origin + YVec3f(MCube::CUBE_SIZE, MCube::CUBE_SIZE, 0));
-						YVec3f XpZp(origin + YVec3f(MCube::CUBE_SIZE, 0, MCube::CUBE_SIZE));
-						YVec3f YpZp(origin + YVec3f(0, MCube::CUBE_SIZE, MCube::CUBE_SIZE));
-						YVec3f XpYpZp(origin + YVec3f(MCube::CUBE_SIZE, MCube::CUBE_SIZE, MCube::CUBE_SIZE));
-
-						//Plan X / Y
-						pos = intersecDroitePlan(origin, Xp, Yp, direction, Position);
-						if (pos && intersecDroiteCubeFace(*pos, origin, Yp, Xp))
-							found = true;
-						if (pos && intersecDroiteCubeFace(*pos, Xp, Yp, XpYp))
-							found = true;
-
-						pos = intersecDroitePlan(Zp, XpZp, YpZp, direction, Position);
-						if (pos && intersecDroiteCubeFace(*pos, Zp, YpZp, XpZp))
-							found = true;
-						if (pos && intersecDroiteCubeFace(*pos, XpYpZp, XpZp, YpZp))
-							found = true;
-
-						//Plan X / Z
-						pos = intersecDroitePlan(origin, Xp, XpZp, direction, Position);
-						if (pos && intersecDroiteCubeFace(*pos, origin, Xp, XpZp))
-							found = true;
-						if (pos && intersecDroiteCubeFace(*pos, origin, XpZp, Zp))
-							found = true;
-
-						pos = intersecDroitePlan(Yp, XpYp, XpYpZp, direction, Position);
-						if (pos && intersecDroiteCubeFace(*pos, Yp, XpYpZp, XpYp))
-							found = true;
-						if (pos && intersecDroiteCubeFace(*pos, Yp, YpZp, XpYpZp))
-							found = true;
-
-						//Plan Y / Z
-						pos = intersecDroitePlan(origin, Yp, YpZp, direction, Position);
-						if (pos && intersecDroiteCubeFace(*pos, origin, Yp, YpZp))
-							found = true;
-						if (pos && intersecDroiteCubeFace(*pos, origin, Zp, YpZp))
-							found = true;
-
-						pos = intersecDroitePlan(Xp, XpYp, XpYpZp, direction, Position);
-						if (pos && intersecDroiteCubeFace(*pos, Xp, XpYp, XpYpZp))
-							found = true;
-						if (pos && intersecDroiteCubeFace(*pos, Xp, XpYpZp, XpZp))
-							found = true;
-
-						if (found)
-						{
-							finalX = x;
-							finalY = y;
-							finalZ = z;
-						}
-					}
-				}
-			}
 		}
 
-		//Parcourir les blocs environnants
-		for (x = 1; x <= 4; x++)
-		{
-			if (found)
-				break;
-			for (y = 1; y <= 4; y++)
-			{
-				if (found)
-					break;
+		//int RoundedX;
+		//int RoundedY;
+		//int RoundedZ;
+		//int x;
+		//int y;
+		//int z;
 
-				for (z = 1; z <= 4; z++)
-				{
-					if (found)
-						break;
+		//int finalZ(0);
+		//int finalY(0);
+		//int finalX(0);
 
-					if (RoundedX + x >= 0 && RoundedX + x < MAT_SIZE_CUBES && RoundedY + y >= 0 && RoundedY + y < MAT_SIZE_CUBES && RoundedZ + z >= 0 && RoundedZ + z < MAT_SIZE_CUBES && getCube(x + RoundedX, y + RoundedY, z + RoundedZ)->isSolid())
-					{
-						YVec3f origin(YVec3f(RoundedX + x, RoundedY + y, RoundedZ + z) * MCube::CUBE_SIZE);
-						YVec3f Xp(origin + YVec3f(MCube::CUBE_SIZE, 0, 0));
-						YVec3f Yp(origin + YVec3f(0, MCube::CUBE_SIZE, 0));
-						YVec3f Zp(origin + YVec3f(0, 0, MCube::CUBE_SIZE));
-						YVec3f XpYp(origin + YVec3f(MCube::CUBE_SIZE, MCube::CUBE_SIZE, 0));
-						YVec3f XpZp(origin + YVec3f(MCube::CUBE_SIZE, 0, MCube::CUBE_SIZE));
-						YVec3f YpZp(origin + YVec3f(0, MCube::CUBE_SIZE, MCube::CUBE_SIZE));
-						YVec3f XpYpZp(origin + YVec3f(MCube::CUBE_SIZE, MCube::CUBE_SIZE, MCube::CUBE_SIZE));
+		//bool found(false);
+		//YVec3f * pos = NULL;
 
-						//Plan X / Y
-						pos = intersecDroitePlan(origin, Xp, Yp, direction, Position);
-						if (pos && intersecDroiteCubeFace(*pos, origin, Yp, Xp))
-							found = true;
-						if (pos && intersecDroiteCubeFace(*pos, Xp, Yp, XpYp))
-							found = true;
+		//RoundedX = (int)floor(Position.X);
+		//RoundedY = (int)floor(Position.Y);
+		//RoundedZ = (int)floor(Position.Z);
 
-						pos = intersecDroitePlan(Zp, XpZp, YpZp, direction, Position);
-						if (pos && intersecDroiteCubeFace(*pos, Zp, YpZp, XpZp))
-							found = true;
-						if (pos && intersecDroiteCubeFace(*pos, XpYpZp, XpZp, YpZp))
-							found = true;
+		////Parcourir les blocs environnants
+		//for (x = 0; x >= -4; x--)
+		//	{	
+		//		if (found)
+		//			break;
+		//	for (y = 0; y >= -4; y--)
+		//	{
+		//		if (found)
+		//			break;
 
-						//Plan X / Z
-						pos = intersecDroitePlan(origin, Xp, XpZp, direction, Position);
-						if (pos && intersecDroiteCubeFace(*pos, origin, Xp, XpZp))
-							found = true;
-						if (pos && intersecDroiteCubeFace(*pos, origin, XpZp, Zp))
-							found = true;
+		//		for (z = 0; z >= -4; z--)
+		//		{
+		//			if (found)
+		//				break;
 
-						pos = intersecDroitePlan(Yp, XpYp, XpYpZp, direction, Position);
-						if (pos && intersecDroiteCubeFace(*pos, Yp, XpYpZp, XpYp))
-							found = true;
-						if (pos && intersecDroiteCubeFace(*pos, Yp, YpZp, XpYpZp))
-							found = true;
+		//			if (RoundedX + x >= 0 && RoundedX + x < MAT_SIZE_CUBES && RoundedY + y >= 0 && RoundedY + y < MAT_SIZE_CUBES && RoundedZ + z >= 0 && RoundedZ + z < MAT_SIZE_CUBES && getCube(x + RoundedX, y + RoundedY, z + RoundedZ)->isSolid())
+		//			{
+		//				YVec3f origin(YVec3f(RoundedX + x, RoundedY + y, RoundedZ + z) * MCube::CUBE_SIZE);
+		//				YVec3f Xp(origin + YVec3f(MCube::CUBE_SIZE, 0, 0));
+		//				YVec3f Yp(origin + YVec3f(0, MCube::CUBE_SIZE, 0));
+		//				YVec3f Zp(origin + YVec3f(0, 0, MCube::CUBE_SIZE));
+		//				YVec3f XpYp(origin + YVec3f(MCube::CUBE_SIZE, MCube::CUBE_SIZE, 0));
+		//				YVec3f XpZp(origin + YVec3f(MCube::CUBE_SIZE, 0, MCube::CUBE_SIZE));
+		//				YVec3f YpZp(origin + YVec3f(0, MCube::CUBE_SIZE, MCube::CUBE_SIZE));
+		//				YVec3f XpYpZp(origin + YVec3f(MCube::CUBE_SIZE, MCube::CUBE_SIZE, MCube::CUBE_SIZE));
 
-						//Plan Y / Z
-						pos = intersecDroitePlan(origin, Yp, YpZp, direction, Position);
-						if (pos && intersecDroiteCubeFace(*pos, origin, Yp, YpZp))
-							found = true;
-						if (pos && intersecDroiteCubeFace(*pos, origin, Zp, YpZp))
-							found = true;
+		//				//Plan X / Y
+		//				pos = intersecDroitePlan(origin, Xp, Yp, direction, Position);
+		//				if (pos && intersecDroiteCubeFace(*pos, origin, Yp, Xp))
+		//					found = true;
+		//				if (pos && intersecDroiteCubeFace(*pos, Xp, Yp, XpYp))
+		//					found = true;
 
-						pos = intersecDroitePlan(Xp, XpYp, XpYpZp, direction, Position);
-						if (pos && intersecDroiteCubeFace(*pos, Xp, XpYp, XpYpZp))
-							found = true;
-						if (pos && intersecDroiteCubeFace(*pos, Xp, XpYpZp, XpZp))
-							found = true;
+		//				pos = intersecDroitePlan(Zp, XpZp, YpZp, direction, Position);
+		//				if (pos && intersecDroiteCubeFace(*pos, Zp, YpZp, XpZp))
+		//					found = true;
+		//				if (pos && intersecDroiteCubeFace(*pos, XpYpZp, XpZp, YpZp))
+		//					found = true;
 
-						if (found)
-						{
-							finalX = x;
-							finalY = y;
-							finalZ = z;
-						}
-					}
-				}
-			}
-		}
+		//				//Plan X / Z
+		//				pos = intersecDroitePlan(origin, Xp, XpZp, direction, Position);
+		//				if (pos && intersecDroiteCubeFace(*pos, origin, Xp, XpZp))
+		//					found = true;
+		//				if (pos && intersecDroiteCubeFace(*pos, origin, XpZp, Zp))
+		//					found = true;
 
-		if (pos)
-		{
-			MCube * cb = getCube(finalX + RoundedX, finalY + RoundedY, finalZ + RoundedZ);
-			cb->setType(MCube::CUBE_AIR);
-			updateCube(x + RoundedX, y + RoundedY, z + RoundedZ);
-		}
+		//				pos = intersecDroitePlan(Yp, XpYp, XpYpZp, direction, Position);
+		//				if (pos && intersecDroiteCubeFace(*pos, Yp, XpYpZp, XpYp))
+		//					found = true;
+		//				if (pos && intersecDroiteCubeFace(*pos, Yp, YpZp, XpYpZp))
+		//					found = true;
+
+		//				//Plan Y / Z
+		//				pos = intersecDroitePlan(origin, Yp, YpZp, direction, Position);
+		//				if (pos && intersecDroiteCubeFace(*pos, origin, Yp, YpZp))
+		//					found = true;
+		//				if (pos && intersecDroiteCubeFace(*pos, origin, Zp, YpZp))
+		//					found = true;
+
+		//				pos = intersecDroitePlan(Xp, XpYp, XpYpZp, direction, Position);
+		//				if (pos && intersecDroiteCubeFace(*pos, Xp, XpYp, XpYpZp))
+		//					found = true;
+		//				if (pos && intersecDroiteCubeFace(*pos, Xp, XpYpZp, XpZp))
+		//					found = true;
+
+		//				if (found)
+		//				{
+		//					finalX = x;
+		//					finalY = y;
+		//					finalZ = z;
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
+
+		////Parcourir les blocs environnants
+		//for (x = 1; x <= 4; x++)
+		//{
+		//	if (found)
+		//		break;
+		//	for (y = 1; y <= 4; y++)
+		//	{
+		//		if (found)
+		//			break;
+
+		//		for (z = 1; z <= 4; z++)
+		//		{
+		//			if (found)
+		//				break;
+
+		//			if (RoundedX + x >= 0 && RoundedX + x < MAT_SIZE_CUBES && RoundedY + y >= 0 && RoundedY + y < MAT_SIZE_CUBES && RoundedZ + z >= 0 && RoundedZ + z < MAT_SIZE_CUBES && getCube(x + RoundedX, y + RoundedY, z + RoundedZ)->isSolid())
+		//			{
+		//				YVec3f origin(YVec3f(RoundedX + x, RoundedY + y, RoundedZ + z) * MCube::CUBE_SIZE);
+		//				YVec3f Xp(origin + YVec3f(MCube::CUBE_SIZE, 0, 0));
+		//				YVec3f Yp(origin + YVec3f(0, MCube::CUBE_SIZE, 0));
+		//				YVec3f Zp(origin + YVec3f(0, 0, MCube::CUBE_SIZE));
+		//				YVec3f XpYp(origin + YVec3f(MCube::CUBE_SIZE, MCube::CUBE_SIZE, 0));
+		//				YVec3f XpZp(origin + YVec3f(MCube::CUBE_SIZE, 0, MCube::CUBE_SIZE));
+		//				YVec3f YpZp(origin + YVec3f(0, MCube::CUBE_SIZE, MCube::CUBE_SIZE));
+		//				YVec3f XpYpZp(origin + YVec3f(MCube::CUBE_SIZE, MCube::CUBE_SIZE, MCube::CUBE_SIZE));
+
+		//				//Plan X / Y
+		//				pos = intersecDroitePlan(origin, Xp, Yp, direction, Position);
+		//				if (pos && intersecDroiteCubeFace(*pos, origin, Yp, Xp))
+		//					found = true;
+		//				if (pos && intersecDroiteCubeFace(*pos, Xp, Yp, XpYp))
+		//					found = true;
+
+		//				pos = intersecDroitePlan(Zp, XpZp, YpZp, direction, Position);
+		//				if (pos && intersecDroiteCubeFace(*pos, Zp, YpZp, XpZp))
+		//					found = true;
+		//				if (pos && intersecDroiteCubeFace(*pos, XpYpZp, XpZp, YpZp))
+		//					found = true;
+
+		//				//Plan X / Z
+		//				pos = intersecDroitePlan(origin, Xp, XpZp, direction, Position);
+		//				if (pos && intersecDroiteCubeFace(*pos, origin, Xp, XpZp))
+		//					found = true;
+		//				if (pos && intersecDroiteCubeFace(*pos, origin, XpZp, Zp))
+		//					found = true;
+
+		//				pos = intersecDroitePlan(Yp, XpYp, XpYpZp, direction, Position);
+		//				if (pos && intersecDroiteCubeFace(*pos, Yp, XpYpZp, XpYp))
+		//					found = true;
+		//				if (pos && intersecDroiteCubeFace(*pos, Yp, YpZp, XpYpZp))
+		//					found = true;
+
+		//				//Plan Y / Z
+		//				pos = intersecDroitePlan(origin, Yp, YpZp, direction, Position);
+		//				if (pos && intersecDroiteCubeFace(*pos, origin, Yp, YpZp))
+		//					found = true;
+		//				if (pos && intersecDroiteCubeFace(*pos, origin, Zp, YpZp))
+		//					found = true;
+
+		//				pos = intersecDroitePlan(Xp, XpYp, XpYpZp, direction, Position);
+		//				if (pos && intersecDroiteCubeFace(*pos, Xp, XpYp, XpYpZp))
+		//					found = true;
+		//				if (pos && intersecDroiteCubeFace(*pos, Xp, XpYpZp, XpZp))
+		//					found = true;
+
+		//				if (found)
+		//				{
+		//					finalX = x;
+		//					finalY = y;
+		//					finalZ = z;
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
+
+		//if (pos)
+		//{
+		//	MCube * cb = getCube(finalX + RoundedX, finalY + RoundedY, finalZ + RoundedZ);
+		//	cb->setType(MCube::CUBE_AIR);
+		//	updateCube(x + RoundedX, y + RoundedY, z + RoundedZ);
+		//}
 	}
 	
 	//Boites de collisions plus petites que deux cubes
@@ -653,6 +653,7 @@ public :
 		//Dessiner les chunks opaques
 		int prog;
 		glGetIntegerv(GL_CURRENT_PROGRAM, &prog);
+
 		for (int x = 0; x < MAT_SIZE; x++)
 			for (int y = 0; y < MAT_SIZE; y++)
 				for (int z = 0; z < MAT_HEIGHT; z++)
