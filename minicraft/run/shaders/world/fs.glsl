@@ -7,7 +7,7 @@ in vec2 uv;
 in vec3 posWorld;
 in float specModifier;
 in float type;
-in float distanceToCam;
+in vec3 directionToCam;
 
 out vec4 color_out;
 
@@ -21,6 +21,7 @@ uniform float elapsed;
 uniform vec3 skyColor;
 uniform vec3 camPos;
 uniform vec3 sunPos;
+
 
 vec4 sunColor;
 
@@ -60,7 +61,7 @@ void main()
 	vec4 colorFog = vec4(167.0 /255.0,167.0/255.0, 167.0 /255.0,1);
 	float min = 0;
 	float max = 10;
-	float lerpValue = clamp(distanceToCam / max,0,1);
+	float lerpValue = clamp(length(directionToCam) / max,0,1);
 	//color = mix(color,colorFog,lerpValue);
 
 	color_out = color;

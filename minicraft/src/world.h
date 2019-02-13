@@ -20,7 +20,7 @@ public :
 	static const int AXIS_Z = 0b00000100;
 
 	#ifdef _DEBUG
-	static const int MAT_SIZE = 2; //en nombre de chunks
+	static const int MAT_SIZE = 1; //en nombre de chunks
 	#else
 	static const int MAT_SIZE = 3; //en nombre de chunks
 	#endif // DEBUG
@@ -248,21 +248,21 @@ public :
 		RoundedZ = (int)floor(Position.Z);
 
 		//Parcourir les blocs environnants
-		for (x = -4; x < 4; x++)
+		for (x = 0; x != -4; AlternateIterator(x))
 			{	
 				if (found)
 					break;
-			for (y = -4; y < 4; y++)
+			for (y = 0; y != -4; AlternateIterator(y))
 			{
 				if (found)
 					break;
 
-				for (z = -4; z < 4; z++)
+				for (z = 0; z != -4; AlternateIterator(z))
 				{
 					if (found)
 						break;
 
-					if (RoundedX + x >= 0 && RoundedX + x < MAT_SIZE_CUBES && RoundedY + y >= 0 && RoundedY + y < MAT_SIZE_CUBES && RoundedZ + z >= 0 && RoundedZ + z < MAT_SIZE_CUBES && getCube(x + RoundedX, y + RoundedY, z + RoundedZ)->isSolid())
+					if (getCube(x + RoundedX, y + RoundedY, z + RoundedZ)->isSolid())
 					{
 						YVec3f origin(YVec3f(RoundedX + x, RoundedY + y, RoundedZ + z) * MCube::CUBE_SIZE);
 						YVec3f Xp(origin + YVec3f(MCube::CUBE_SIZE, 0, 0));
@@ -288,22 +288,22 @@ public :
 
 						//Plan X / Z
 						pos = intersecDroitePlan(origin, Xp, XpZp, direction, Position);
-						if (pos && intersecDroiteCubeFace(*pos, origin, Xp, XpZp))
+						if (pos && intersecDroiteCubeFace(*pos, origin, XpZp, Xp))
 							found = true;
 						if (pos && intersecDroiteCubeFace(*pos, origin, XpZp, Zp))
 							found = true;
 
 						pos = intersecDroitePlan(Yp, XpYp, XpYpZp, direction, Position);
-						if (pos && intersecDroiteCubeFace(*pos, Yp, XpYpZp, XpYp))
+						if (pos && intersecDroiteCubeFace(*pos, Yp, XpYp, XpYpZp))
 							found = true;
-						if (pos && intersecDroiteCubeFace(*pos, Yp, YpZp, XpYpZp))
+						if (pos && intersecDroiteCubeFace(*pos, Yp, XpYpZp, YpZp))
 							found = true;
 
 						//Plan Y / Z
 						pos = intersecDroitePlan(origin, Yp, YpZp, direction, Position);
-						if (pos && intersecDroiteCubeFace(*pos, origin, Yp, YpZp))
+						if (pos && intersecDroiteCubeFace(*pos, origin, YpZp, Yp))
 							found = true;
-						if (pos && intersecDroiteCubeFace(*pos, origin, Zp, YpZp))
+						if (pos && intersecDroiteCubeFace(*pos, origin, YpZp, Zp))
 							found = true;
 
 						pos = intersecDroitePlan(Xp, XpYp, XpYpZp, direction, Position);
@@ -329,6 +329,14 @@ public :
 			cb->setType(MCube::CUBE_AIR);
 			updateCube(x + RoundedX, y + RoundedY, z + RoundedZ);
 		}
+	}
+
+	void AlternateIterator(int &value)
+	{
+		if (value <= 0)
+			value--;
+
+		value *= -1;
 	}
 	
 	//Boites de collisions plus petites que deux cubes
@@ -637,7 +645,7 @@ public :
 		float angleB = BNormal.dot(CNormal);
 		float angleC = CNormal.dot(ANormal);
 
-		bool ok(angleA * angleB > 0 && angleB * angleC > 0 && angleA * angleC > 0);
+		bool ok(angleA> 0 && angleB > 0 && angleC > 0);
 
 		return ok;
 	}

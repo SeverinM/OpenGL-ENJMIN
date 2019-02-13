@@ -38,7 +38,7 @@ void main (void)
 	depth4 = LinearizeDepth(depth4);
 
 	if (abs(depth - depth2) > 0.2f || abs(depth - depth2) > 0.2f || abs(depth - depth3) > 0.2f || abs(depth - depth4) > 0.2f)
-		color_out = vec4(1,1,1,1);
+		color_out =  vec4(color.rgb,1.0);
 	else
 		color_out = vec4(color.rgb,1.0);
 
