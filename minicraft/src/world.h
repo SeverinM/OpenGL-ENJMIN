@@ -274,39 +274,39 @@ public :
 						YVec3f XpYpZp(origin + YVec3f(MCube::CUBE_SIZE, MCube::CUBE_SIZE, MCube::CUBE_SIZE));
 
 						//Plan X / Y
-						pos = intersecDroitePlan(origin, Xp, Yp, direction, Position);
+						pos = intersecDroitePlan(YVec3f(0, 0, -1), origin, direction, Position);
 						if (pos && intersecDroiteCubeFace(*pos, origin, Yp, Xp))
 							found = true;
 						if (pos && intersecDroiteCubeFace(*pos, Xp, Yp, XpYp))
 							found = true;
 
-						pos = intersecDroitePlan(Zp, XpZp, YpZp, direction, Position);
+						pos = intersecDroitePlan(YVec3f(0, 0, 1), Zp, direction, Position);
 						if (pos && intersecDroiteCubeFace(*pos, Zp, YpZp, XpZp))
 							found = true;
 						if (pos && intersecDroiteCubeFace(*pos, XpYpZp, XpZp, YpZp))
 							found = true;
 
 						//Plan X / Z
-						pos = intersecDroitePlan(origin, Xp, XpZp, direction, Position);
+						pos = intersecDroitePlan(YVec3f(0, -1, 0), origin, direction, Position);
 						if (pos && intersecDroiteCubeFace(*pos, origin, XpZp, Xp))
 							found = true;
 						if (pos && intersecDroiteCubeFace(*pos, origin, XpZp, Zp))
 							found = true;
 
-						pos = intersecDroitePlan(Yp, XpYp, XpYpZp, direction, Position);
+						pos = intersecDroitePlan(YVec3f(0, 1, 0), Yp, direction, Position);
 						if (pos && intersecDroiteCubeFace(*pos, Yp, XpYp, XpYpZp))
 							found = true;
 						if (pos && intersecDroiteCubeFace(*pos, Yp, XpYpZp, YpZp))
 							found = true;
 
 						//Plan Y / Z
-						pos = intersecDroitePlan(origin, Yp, YpZp, direction, Position);
+						pos = intersecDroitePlan(YVec3f(-1, 0, 0), origin, direction, Position);
 						if (pos && intersecDroiteCubeFace(*pos, origin, YpZp, Yp))
 							found = true;
 						if (pos && intersecDroiteCubeFace(*pos, origin, YpZp, Zp))
 							found = true;
 
-						pos = intersecDroitePlan(Xp, XpYp, XpYpZp, direction, Position);
+						pos = intersecDroitePlan(YVec3f(1, 0, 0), Xp, direction, Position);
 						if (pos && intersecDroiteCubeFace(*pos, Xp, XpYp, XpYpZp))
 							found = true;
 						if (pos && intersecDroiteCubeFace(*pos, Xp, XpYpZp, XpZp))
@@ -628,6 +628,24 @@ public :
 			t = -((a * positionDroite.X) + (b * positionDroite.Y) + (c * positionDroite.Z) + d) / denom;
 			output = new YVec3f((direction.X * t) + positionDroite.X, (direction.Y * t) + positionDroite.Y, (direction.Z * t) + positionDroite.Z);
 		}
+		return output;
+	}
+
+	YVec3f * intersecDroitePlan(YVec3f normalPlane, YVec3f pointPlane, YVec3f direction, YVec3f positionDroite)
+	{
+		YVec3f * output = NULL;
+		YVec3f normalizedDirection = direction.normalize();
+		YVec3f P1(positionDroite);
+		YVec3f P2(positionDroite + normalizedDirection);
+		YVec3f P3(pointPlane);
+
+		float denom = normalPlane.dot(P2 - P1);
+		if (denom != 0.0f)
+		{
+			float t = normalPlane.dot(P3 - P1) / denom;
+			output = new YVec3f(positionDroite + (YVec3f(normalizedDirection.X * t, normalizedDirection.Y * t, normalizedDirection.Z * t)));
+		}
+
 		return output;
 	}
 
