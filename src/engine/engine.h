@@ -29,7 +29,7 @@ public:
 
 	//Rendu
 	float NearPlane = 0.1f;
-	float FarPlane = 800.0f;
+	float FarPlane = 200.0f;
 	float Fov = 45.0f;
 		
 	//Window

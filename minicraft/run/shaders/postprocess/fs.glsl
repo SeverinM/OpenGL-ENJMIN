@@ -25,6 +25,7 @@ void main (void)
 	float ratio = screen_width / screen_height;
 
 	vec4 color = texture2D( TexColor , uv );
+	//vec4 colorNorm = normalize(2 * texture2D( TexNormal, uv)) - 1;
 	vec4 colorNorm = texture2D( TexNormal, uv);
 	float depth = texture2D( TexDepth , uv ).r;
 
@@ -39,11 +40,6 @@ void main (void)
 	depth3 = LinearizeDepth(depth3);
 	depth4 = LinearizeDepth(depth4);
 
-	if (abs(depth - depth2) > 0.2f || abs(depth - depth2) > 0.2f || abs(depth - depth3) > 0.2f || abs(depth - depth4) > 0.2f)
-		color_out =  vec4(color.rgb,1.0);
-	else
-		color_out = vec4(color.rgb,1.0);
-
 	if (length(vec2(0.5,0.5) - uv) < 0.002)
 		color_out = vec4(1,1,1,1);
 
@@ -51,8 +47,6 @@ void main (void)
     //color.r = pow(color.r,1.0/2.2);
     //color.g = pow(color.g,1.0/2.2);
     //color.b = pow(color.b,1.0/2.2);
-
-	//color_out *= max(0,dot(vec3(0,0,1), colorNorm.rgb));
-	color_out -= (1 - dot(vec3(0,0,1),colorNorm.rgb));
+	color_out = color;
 
 }

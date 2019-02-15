@@ -51,6 +51,7 @@
     <None Include="run\shaders\sun\fs.glsl" />
     <None Include="run\shaders\sun\vs.glsl" />
     <None Include="run\shaders\world\fs.glsl" />
+    <None Include="run\shaders\world\gs.glsl" />
     <None Include="run\shaders\world\vs.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

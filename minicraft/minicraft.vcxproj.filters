@@ -138,5 +138,8 @@
     <None Include="run\shaders\Depth\vs.glsl">
       <Filter>shaders\Depth</Filter>
     </None>
+    <None Include="run\shaders\world\gs.glsl">
+      <Filter>shaders\world</Filter>
+    </None>
   </ItemGroup>
 </Project>

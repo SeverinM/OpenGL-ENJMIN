@@ -61,8 +61,8 @@ public :
 	{
 		fboProcess = new YFbo(true, 2);
 
-		TexHolder::GetInstance()->AddTexture("textures/normal.png");
-		textIndex = TexHolder::GetInstance()->GetTexture("textures/normal.png");
+		TexHolder::GetInstance()->AddTexture("textures/normal.jpg");
+		textIndex = TexHolder::GetInstance()->GetTexture("textures/normal.jpg");
 
 		fps = 60;
 		diff = 0.015f;
