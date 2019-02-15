@@ -13,14 +13,18 @@ layout(location=1) in vec3 vs_normal_in;
 layout(location=2) in vec2 vs_uv_in;
 layout(location=3) in float vs_type_in;
 
-//Variables en sortie
-out vec3 normal;
-out vec4 color;
-out vec2 uv;
-out vec3 posWorld;
-out float specModifier;
-out vec3 type;
-out vec3 directionToCam;
+float specModifier;
+
+out VertexAttrib
+{
+	vec3 normal;
+	vec4 color;
+	vec2 uv;
+	vec4 posWorld;
+	float specModifier;
+    float type;
+	vec3 directionToCam;
+} vertex;
 
 #define CUBE_HERBE 0.0
 #define CUBE_TERRE 1.0
@@ -30,8 +34,9 @@ vec4 positionGlobal;
 
 void main()
 {
+	vertex.specModifier = 1;
 	positionGlobal = m * vec4(vs_position_in,1.0);
-	posWorld = positionGlobal.xyz;
+	vertex.posWorld = positionGlobal;
 
 	if(vs_type_in == CUBE_EAU && vs_position_in.z < 2)
 	{
@@ -41,28 +46,28 @@ void main()
 	}
 
 	positionGlobal = v * positionGlobal;
-	directionToCam = positionGlobal.xyz;
+	vertex.directionToCam = positionGlobal.xyz;
 	//positionGlobal.y -= pow(length(positionGlobal.xyz)/30,3);
 
 	gl_Position = p * positionGlobal;
 	
-	normal = (nmat * vec4(vs_normal_in,1.0)).xyz; 
-	normal = normalize(normal);
+	vertex.normal = (nmat * vec4(vs_normal_in,1.0)).xyz; 
+	vertex.normal = normalize(vertex.normal);
 
-	uv = vs_uv_in;
+	vertex.uv = vs_uv_in;
 
 	//Couleur par défaut violet
-	color = vec4(1.0,1.0,0.0,1.0);
+	vertex.color = vec4(1.0,1.0,0.0,1.0);
 
 	specModifier = 1;
 	//Couleur fonction du type
 	if(vs_type_in == CUBE_HERBE)
-		color = vec4(0,1,0,1);
+		vertex.color = vec4(0,1,0,1);
 	if(vs_type_in == CUBE_TERRE)
-		color = vec4(0.2,0.1,0,1);
+		vertex.color = vec4(0.2,0.1,0,1);
 	if(vs_type_in == CUBE_EAU)
 	{
-		color = vec4(0.0,0.0,1.0,0.7);
-		specModifier = 0;
+		vertex.specModifier = 0;
+		vertex.color = vec4(0.0,0.0,1.0,0.7);
 	}
 }

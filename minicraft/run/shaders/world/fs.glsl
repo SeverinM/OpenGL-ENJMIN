@@ -1,13 +1,14 @@
 #version 400
 
 //Variables en entree
-in vec3 normal;
-in vec4 color;
-in vec2 uv;
-in vec3 posWorld;
-in float specModifier;
-in float type;
-in vec3 directionToCam;
+in vec3 normal_gs;
+in vec4 color_gs;
+in vec2 uv_gs;
+in vec4 posWorld_gs;
+in float specModifier_gs;
+in float type_gs;
+in vec3 directionToCam_gs;
+in vec3 bary;
 
 out vec4 color_out;
 
@@ -41,28 +42,35 @@ float rand(vec2 n) {
 
 void main()
 {
-	lightDir = (sunPos - posWorld);
+	lightDir = (sunPos - posWorld_gs.xyz);
 	sunColor = vec4(1,1,1,1);
-	vec4 color = texture(ourTexture,uv);
+	vec4 color = texture(ourTexture,uv_gs);
 
 	//Diffuse 
-	color *= dot(normalize(lightDir),normalize(normal));
+	color *= dot(normalize(lightDir),normalize(normal_gs));
 
 	//Ambiant
 	color += vec4(skyColor * slider_1, 1.0);
 
 	//Specular
-	vec3 halfVector = normalize(normalize(lightDir) + normalize(camPos - posWorld));
-    float spec = max(0, dot(normal,halfVector));
+	vec3 halfVector = normalize(normalize(lightDir) + normalize(camPos - posWorld_gs.xyz));
+    float spec = max(0, dot(normal_gs,halfVector));
     spec = pow(spec, 25 + (slider_2 * 200));
-    color += specModifier * spec * sunColor;
+    color += spec * sunColor * specModifier_gs;
 
 	//Fog
 	vec4 colorFog = vec4(167.0 /255.0,167.0/255.0, 167.0 /255.0,1);
 	float min = 0;
 	float max = 10;
-	float lerpValue = clamp(length(directionToCam) / max,0,1);
+	float lerpValue = clamp(length(directionToCam_gs) / max,0,1);
 	//color = mix(color,colorFog,lerpValue);
 
-	color_out = color;
+	if (bary.x < 0.001 || bary.y < 0.001)
+	{
+		color_out = vec4(0,0,0,1);
+	}
+	else
+	{
+		color_out = color;
+	}
 }

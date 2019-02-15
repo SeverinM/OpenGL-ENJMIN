@@ -360,7 +360,6 @@ public :
 
 		if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 		{
-			YLog::getInstance()->Add(Renderer->Camera->Position, Renderer->Camera->Direction, 10,5);
 			wrld->RemoveCube(Renderer->Camera->Direction, Renderer->Camera->Position);
 		}
 	}
