@@ -35,11 +35,11 @@ class MChunk
 			_XPos = x;
 			_YPos = y;
 			_ZPos = z;
-			_ScaleMountain = 0.15f;
-			_MountainRadius = 5.5f;
-			_GrassDensity = 0.9f;
+			_ScaleMountain = 0.30f;
+			_MountainRadius = 3.5f;
+			_GrassDensity = 0.1f;
 			_WaterDensity = 0.4f;
-			_BaseChanceWater = 6.5f;
+			_BaseChanceWater = 2.5f;
 			textureIndex = 0;
 		}
 

@@ -24,6 +24,7 @@ out VertexAttrib
 	float specModifier;
     float type;
 	vec3 directionToCam;
+	vec4 colorBorder;
 } vertex;
 
 #define CUBE_HERBE 0.0
@@ -31,6 +32,10 @@ out VertexAttrib
 #define CUBE_EAU 4.0
 
 vec4 positionGlobal;
+
+float rand(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
 
 void main()
 {
@@ -62,12 +67,22 @@ void main()
 	specModifier = 1;
 	//Couleur fonction du type
 	if(vs_type_in == CUBE_HERBE)
-		vertex.color = vec4(0,1,0,1);
+	{
+		vertex.color = vec4(0,0,0,1);
+		vertex.colorBorder = vec4(0,1,1,1);
+	}
+		
 	if(vs_type_in == CUBE_TERRE)
-		vertex.color = vec4(0.2,0.1,0,1);
+	{
+		vertex.color = vec4(0,1,0,1);
+		vertex.colorBorder = vec4(255 / 255, 51 / 255, 204 / 255,1);
+	}
+		
 	if(vs_type_in == CUBE_EAU)
 	{
 		vertex.specModifier = 0;
 		vertex.color = vec4(0.0,0.0,1.0,0.7);
+		vertex.colorBorder = vec4(1,0,0,1);
 	}
 }
+

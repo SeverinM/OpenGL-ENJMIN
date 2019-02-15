@@ -8,6 +8,7 @@ out float type_gs;
 out vec3 directionToCam_gs;
 out float specModifier_gs;
 out vec3 bary;
+out vec4 colorBorder_gs;
 
 in VertexAttrib
 {
@@ -18,6 +19,7 @@ in VertexAttrib
 	float specModifier;
     float type;
 	vec3 directionToCam;
+	vec4 colorBorder;
 } vertex[];
 
 layout (triangles) in;
@@ -35,6 +37,7 @@ void main() {
 		type_gs = vertex[i].type;
 		directionToCam_gs = vertex[i].directionToCam;
 		specModifier_gs = vertex[i].specModifier;
+		colorBorder_gs = vertex[i].colorBorder;
 
 		if (i == 0)
 			bary = vec3(0,0,1);

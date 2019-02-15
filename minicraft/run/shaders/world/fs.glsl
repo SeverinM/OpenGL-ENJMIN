@@ -9,6 +9,7 @@ in float specModifier_gs;
 in float type_gs;
 in vec3 directionToCam_gs;
 in vec3 bary;
+in vec4 colorBorder_gs;
 
 out vec4 color_out;
 
@@ -58,19 +59,27 @@ void main()
     spec = pow(spec, 25 + (slider_2 * 200));
     color += spec * sunColor * specModifier_gs;
 
-	//Fog
-	vec4 colorFog = vec4(167.0 /255.0,167.0/255.0, 167.0 /255.0,1);
-	float min = 0;
-	float max = 10;
-	float lerpValue = clamp(length(directionToCam_gs) / max,0,1);
-	//color = mix(color,colorFog,lerpValue);
-
-	if (bary.x < 0.001 || bary.y < 0.001)
+	color_out = color_gs;
+	bool ok = false;
+	if (abs(bary.x) < 0.05)
 	{
-		color_out = vec4(0,0,0,1);
+		color_out = mix(colorBorder_gs, color_gs ,bary.x * 20);
+		ok = true;
 	}
-	else
+
+	if (abs(bary.y) < 0.05)
 	{
-		color_out = color;
+		color_out = mix(colorBorder_gs, color_gs ,bary.y * 20);
+		ok = true;
+	}
+
+	if (abs(bary.y) < 0.05 && abs(bary.y) < 0.05)
+	{
+		color_out = max(color_out,mix(colorBorder_gs, color_gs ,bary.x * 20));
+	}
+
+	if (!ok)
+	{
+		//color_out += spec * sunColor * specModifier_gs;
 	}
 }
