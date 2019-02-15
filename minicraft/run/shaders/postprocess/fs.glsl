@@ -4,6 +4,7 @@ in vec2 uv;
 
 uniform sampler2D TexColor;
 uniform sampler2D TexDepth;
+uniform sampler2D TexNormal;
 uniform float screen_width;
 uniform float screen_height;
 uniform vec2 near_far;
@@ -24,6 +25,7 @@ void main (void)
 	float ratio = screen_width / screen_height;
 
 	vec4 color = texture2D( TexColor , uv );
+	vec4 colorNorm = texture2D( TexNormal, uv);
 	float depth = texture2D( TexDepth , uv ).r;
 
 	float depth2 = texture2D( TexDepth , vec2(uv.x,uv.y + ystep)).r;
@@ -49,5 +51,7 @@ void main (void)
     //color.r = pow(color.r,1.0/2.2);
     //color.g = pow(color.g,1.0/2.2);
     //color.b = pow(color.b,1.0/2.2);
+
+	color_out = colorNorm;
 
 }

@@ -34,6 +34,7 @@ public :
 	MAvatar * av;
 	int fps;
 	YFbo * fboProcess;
+	GLuint textIndex;
 
 	YColor * Day;
 	YColor * Night;
@@ -58,7 +59,11 @@ public :
 
 	void init() 
 	{
-		fboProcess = new YFbo();
+		fboProcess = new YFbo(true, 2);
+
+		TexHolder::GetInstance()->AddTexture("textures/normal.png");
+		textIndex = TexHolder::GetInstance()->GetTexture("textures/normal.png");
+
 		fps = 60;
 		diff = 0.015f;
 		X = 0;
@@ -253,6 +258,12 @@ public :
 
 		fboProcess->setColorAsShaderInput(0, GL_TEXTURE0, "TexColor");
 		fboProcess->setDepthAsShaderInput(GL_TEXTURE1, "TexDepth");
+
+		glUniform1i(glGetUniformLocation(postPross, "TexNormal"), 2);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, textIndex);
+
+		glActiveTexture(GL_TEXTURE0);
 
 		Renderer->sendNearFarToShader(postPross);
 		Renderer->sendScreenSizeToShader(postPross);
