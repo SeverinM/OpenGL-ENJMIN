@@ -8,6 +8,7 @@
 #include "chunk.h"
 #include "engine\noise\perlin.h"
 #include "engine/render/TexHolder.h"
+#include "engine/render/GBuffer.h"
 
 class MWorld
 {

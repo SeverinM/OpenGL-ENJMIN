@@ -2,6 +2,7 @@
 
 #include "engine/render/renderer.h"
 #include "engine/render/vbo.h"
+#include "engine/render/GBuffer.h"
 #include "cube.h"
 
 /**

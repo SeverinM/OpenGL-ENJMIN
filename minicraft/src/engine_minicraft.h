@@ -6,6 +6,7 @@
 #include "avatar.h"
 #include "world.h"
 #include "engine/render/TexHolder.h"
+#include "engine/render/GBuffer.h"
 #include <ctime>
 
 class MEngineMinicraft : public YEngine {
@@ -33,8 +34,8 @@ public :
 	clock_t diffTime;
 	MAvatar * av;
 	int fps;
-	YFbo * fboProcess;
 	GLuint textIndex;
+	GBuffer * gBuff;
 
 	YColor * Day;
 	YColor * Night;
@@ -59,7 +60,8 @@ public :
 
 	void init() 
 	{
-		fboProcess = new YFbo(true, 2);
+		gBuff = new GBuffer();
+		gBuff->Init(800, 600);
 
 		TexHolder::GetInstance()->AddTexture("textures/normal.jpg");
 		textIndex = TexHolder::GetInstance()->GetTexture("textures/normal.jpg");
@@ -155,6 +157,8 @@ public :
 			sliders[i]->setPos(20, 30 * i + 50);
 			addToScreenParam(sliders[i]);
 		}
+
+		Renderer->setBackgroundColor(Day->interpolateHSV(*Night, abs(diff - 0.5f) * 2));
 	}
 
 	void update(float elapsed) 
@@ -177,7 +181,6 @@ public :
 
 	void renderObjects() 
 	{
-		fboProcess->setAsOutFBO(true);
 
 		YLog::getInstance()->Update(DeltaTime);
 
@@ -198,8 +201,6 @@ public :
 		glVertex3d(0, 0, 10000);
 		glEnd();
 
-		Renderer->setBackgroundColor(Day->interpolateHSV(*Night,abs(diff - 0.5f) * 2));
-
 		//Vbo
 		glUseProgram(prog);
 		locationUniform = glGetUniformLocation(prog, "sun_color");
@@ -219,7 +220,7 @@ public :
 		glTranslatef(100, 0, 0);
 		YRenderer::getInstance()->updateMatricesFromOgl();
 		YRenderer::getInstance()->sendMatricesToShader(YRenderer::CURRENT_SHADER);
-		vbo->render();
+		//vbo->render();
 		glPopMatrix();
 
 		YVec3f fictifPosition(500, 500, 100);
@@ -245,25 +246,17 @@ public :
 		glUniform2f(uniform, MWorld::MAT_SIZE * MWorld::MAT_SIZE_CUBES, MWorld::MAT_SIZE * MWorld::MAT_SIZE_CUBES);
 
 		
-
-		//glEnable(GL_CULL_FACE);
+		glBindFramebuffer(GL_FRAMEBUFFER, gBuff->getGBuffer());
 		glEnable(GL_DEPTH_TEST);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		wrld->render_world_vbo(true, false);
-		fboProcess->setAsOutFBO(false);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		glUseProgram(postPross);
 
-		glDisable(GL_CULL_FACE);
-		glDisable(GL_DEPTH_TEST);
-
-		fboProcess->setColorAsShaderInput(0, GL_TEXTURE0, "TexColor");
-		fboProcess->setDepthAsShaderInput(GL_TEXTURE1, "TexDepth");
-
-		glUniform1i(glGetUniformLocation(postPross, "TexNormal"), 2);
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, textIndex);
-
+		glUniform1i(glGetUniformLocation(postPross, "TexColor"), 0);
 		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, gBuff->getColor());
 
 		Renderer->sendNearFarToShader(postPross);
 		Renderer->sendScreenSizeToShader(postPross);
@@ -272,7 +265,6 @@ public :
 	}
 
 	void resize(int width, int height) {
-		fboProcess->resize(width, height);
 	}
 
 	/*INPUTS*/

@@ -6,6 +6,7 @@
 #include "engine/utils/utils.h"
 #include "engine/utils/types_3d.h"
 #include "engine/render/FboCustom.h"
+#include "engine/render/GBuffer.h"
 
 class YVbo
 {
@@ -233,7 +234,7 @@ public:
 
 	//Creation et copie du VBO dans la m�moire du GPU
 	void createVboGpu(YVbo * index = NULL);
-	void render();
+	void render(GBuffer * inBuffer = NULL);
 };
 
 #endif

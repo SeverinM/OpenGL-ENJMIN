@@ -46,7 +46,7 @@ void YVbo::createVboGpu(YVbo * index) {
 	glBindVertexArray(0);
 }
 
-void YVbo::render() {
+void YVbo::render(GBuffer * inBuffer) {
 
 	//La stat globales
 	YRenderer::NbVBOFacesRendered += NbVertices / 3;
@@ -67,7 +67,10 @@ void YVbo::render() {
 	}
 	
 	YEngine::Instance->TimerGPURender.startAccumPeriod();
-	glDrawArrays(GL_TRIANGLES, 0, NbVertices);
+	if (inBuffer)
+		inBuffer->RenderToTexture();
+	else
+		glDrawArrays(GL_TRIANGLES, 0, NbVertices);
 	YEngine::Instance->TimerGPURender.endAccumPeriod();
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
