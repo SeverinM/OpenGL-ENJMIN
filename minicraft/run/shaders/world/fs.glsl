@@ -84,6 +84,7 @@ void main()
 	if (!ok)
 	{
 		//color_out += spec * sunColor * specModifier_gs;
+		color_out = vec4(normal_gs.xyz,1);
 	}
 
 	gColor = color_out;

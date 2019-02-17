@@ -61,7 +61,7 @@ public :
 	void init() 
 	{
 		gBuff = new GBuffer();
-		gBuff->Init(800, 600);
+		gBuff->Init(Renderer->ScreenWidth, Renderer->ScreenHeight);
 
 		TexHolder::GetInstance()->AddTexture("textures/normal.jpg");
 		textIndex = TexHolder::GetInstance()->GetTexture("textures/normal.jpg");
@@ -181,7 +181,7 @@ public :
 
 	void renderObjects() 
 	{
-
+		glBindFramebuffer(GL_FRAMEBUFFER, gBuff->getGBuffer());
 		YLog::getInstance()->Update(DeltaTime);
 
 		diff = (DiffTimeMs(tm, beginDay) % 86400) / 86400.0f;
@@ -245,11 +245,14 @@ public :
 		uniform = glGetUniformLocation(progWorld, "world_size");
 		glUniform2f(uniform, MWorld::MAT_SIZE * MWorld::MAT_SIZE_CUBES, MWorld::MAT_SIZE * MWorld::MAT_SIZE_CUBES);
 
-		
-		glBindFramebuffer(GL_FRAMEBUFFER, gBuff->getGBuffer());
-		glEnable(GL_DEPTH_TEST);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		YRenderer::getInstance()->updateMatricesFromOgl();
+		YRenderer::getInstance()->sendMatricesToShader(YRenderer::CURRENT_SHADER);
+
+		//Rendu monde
+		glClear(GL_COLOR_BUFFER_BIT);
+
 		wrld->render_world_vbo(true, false);
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		glUseProgram(postPross);
@@ -265,6 +268,7 @@ public :
 	}
 
 	void resize(int width, int height) {
+		gBuff->resize(width, height);
 	}
 
 	/*INPUTS*/

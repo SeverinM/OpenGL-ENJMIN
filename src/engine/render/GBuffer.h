@@ -10,6 +10,9 @@ private:
 	unsigned int gBuffer;
 	unsigned int gLightPass;
 	unsigned int gColor;
+	unsigned int gDepth;
+	int widthText;
+	int heightText;
 
 public:
 
@@ -26,6 +29,11 @@ public:
 		return gLightPass;
 	}
 
+	unsigned int getDepth()
+	{
+		return gDepth;
+	}
+
 	unsigned int getColor()
 	{
 		return gColor;
@@ -36,8 +44,26 @@ public:
 		return gBuffer;
 	}
 
+	void resize(int width, int height)
+	{
+		glBindTexture(GL_TEXTURE_2D, gColor);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+		glBindTexture(GL_TEXTURE_2D, gLightPass);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+		glBindTexture(GL_TEXTURE_2D, gDepth);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+		glBindTexture(GL_TEXTURE_2D, gDepth);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	}
+
 	void Init(int width , int height)
 	{
+		widthText = width;
+		heightText = height;
+
 		glGenFramebuffers(1, &gBuffer);
 		glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
 
@@ -55,10 +81,14 @@ public:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gColor, 0);
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glGenTextures(1, &gDepth);
+		/*glBindTexture(GL_TEXTURE_2D, gDepth);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, gDepth, 0);*/
 
-		glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
-		unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+		unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
 		glDrawBuffers(2, attachments);
 	}
 
