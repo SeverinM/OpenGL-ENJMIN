@@ -250,6 +250,7 @@ public :
 
 		//Rendu monde
 		glClear(GL_COLOR_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
 
 		wrld->render_world_vbo(true, false);
 
@@ -260,6 +261,7 @@ public :
 		glUniform1i(glGetUniformLocation(postPross, "TexColor"), 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, gBuff->getColor());
+		glDisable(GL_DEPTH_TEST);
 
 		Renderer->sendNearFarToShader(postPross);
 		Renderer->sendScreenSizeToShader(postPross);

@@ -53,6 +53,7 @@ public:
 		Run = false;
 		OnAir = true;
 		Jumped = false;
+		cam->setLookAt(YVec3f(0, 0, -1));
 	}
 
 	void MovePos(float elapsed, YVec3f direction)
