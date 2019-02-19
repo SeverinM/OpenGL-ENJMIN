@@ -94,6 +94,7 @@ public:
 
 		unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
 		glDrawBuffers(2, attachments);
+
 	}
 
 	void RenderToTexture()
