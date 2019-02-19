@@ -41,6 +41,7 @@
   <ItemGroup>
     <None Include="run\shaders\birds\fs.glsl" />
     <None Include="run\shaders\birds\vs.glsl" />
+    <None Include="run\shaders\Blur\fs.glsl" />
     <None Include="run\shaders\cube\fs.glsl" />
     <None Include="run\shaders\cube\vs.glsl" />
     <None Include="run\shaders\cube_debug\fs.glsl" />

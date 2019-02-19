@@ -19,8 +19,13 @@ public :
 	SYSTEMTIME tm;
 	SYSTEMTIME beginDay;
 	float diff;
+
+	//Shaders
 	unsigned int locationUniform;
 	unsigned int postPross;
+	unsigned int progWorld;
+	unsigned int progBlur;
+
 	int hourOffset;
 	int minOffset;
 	int xMouse;
@@ -28,14 +33,16 @@ public :
 	bool RightHold;
 	bool CtrlHold;
 	bool wheelHold;
-	int progWorld;
 	float X;
 	float Z;
 	clock_t diffTime;
 	MAvatar * av;
 	int fps;
 	GLuint textIndex;
+
+	//Buffers intermediaires
 	GBuffer * gBuff;
+	GBuffer * buffBlur;
 
 	YColor * Day;
 	YColor * Night;
@@ -56,12 +63,16 @@ public :
 		prog = Renderer->createProgram("shaders/sun");
 		progWorld = Renderer->createProgram("shaders/world");
 		postPross = Renderer->createProgram("shaders/postprocess");
+		progBlur = Renderer->createProgram("shaders/Blur");
 	}
 
 	void init() 
 	{
-		gBuff = new GBuffer();
+		gBuff = new GBuffer(2);
 		gBuff->Init(Renderer->ScreenWidth, Renderer->ScreenHeight);
+
+		buffBlur = new GBuffer(1);
+		buffBlur->Init(Renderer->ScreenWidth, Renderer->ScreenHeight);
 
 		TexHolder::GetInstance()->AddTexture("textures/normal.jpg");
 		textIndex = TexHolder::GetInstance()->GetTexture("textures/normal.jpg");
@@ -158,7 +169,7 @@ public :
 			addToScreenParam(sliders[i]);
 		}
 
-		Renderer->setBackgroundColor(Day->interpolateHSV(*Night, abs(diff - 0.5f) * 2));
+		Renderer->setBackgroundColor(YColor(0, 0, 0, 1));
 	}
 
 	void update(float elapsed) 
@@ -181,7 +192,6 @@ public :
 
 	void renderObjects() 
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, gBuff->getGBuffer());
 		YLog::getInstance()->Update(DeltaTime);
 
 		diff = (DiffTimeMs(tm, beginDay) % 86400) / 86400.0f;
@@ -249,18 +259,25 @@ public :
 		YRenderer::getInstance()->sendMatricesToShader(YRenderer::CURRENT_SHADER);
 
 		//Rendu monde
+		glBindFramebuffer(GL_FRAMEBUFFER, gBuff->getGBuffer());
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
-
 		wrld->render_world_vbo(true, false);
 
+		//Rendu FBO 1 
+		/*glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glUseProgram(progBlur);
+		glUniform1i(glGetUniformLocation(progBlur, "image"), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, gBuff->getColorText(1));
+		glDisable(GL_DEPTH_TEST);*/
+
+		//Rendu FBO 2
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 		glUseProgram(postPross);
-
 		glUniform1i(glGetUniformLocation(postPross, "TexColor"), 0);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, gBuff->getColor());
+		glBindTexture(GL_TEXTURE_2D, gBuff->getColorText(1));
 		glDisable(GL_DEPTH_TEST);
 
 		Renderer->sendNearFarToShader(postPross);

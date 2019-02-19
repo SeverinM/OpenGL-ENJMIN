@@ -2,16 +2,17 @@
 #define GBUFFER_H
 
 #include "vbo.h"
+#include <vector>
 
 class GBuffer
 {
 
 private:
 	unsigned int gBuffer;
-	unsigned int gLightPass;
-	unsigned int gColor;
 	unsigned int gDepth;
 	unsigned int rbo;
+	std::vector<unsigned int *> allColorText;
+
 	int widthText;
 	int heightText;
 
@@ -19,25 +20,26 @@ public:
 
 	inline static GBuffer * _Instance;
 
-	GBuffer()
+	GBuffer(int nbColor)
 	{
 		glGenFramebuffers(1, &gBuffer);
 		_Instance = this;
+
+		for (int i = 0; i < nbColor; i++)
+		{
+			allColorText.push_back(new unsigned int());
+			glGenTextures(1, allColorText[i]);
+		}
 	}
 
-	unsigned int getLightPass()
+	unsigned int getColorText(int nb = 0)
 	{
-		return gLightPass;
+		return *allColorText[nb];
 	}
 
 	unsigned int getDepth()
 	{
 		return gDepth;
-	}
-
-	unsigned int getColor()
-	{
-		return gColor;
 	}
 
 	unsigned int getGBuffer()
@@ -52,11 +54,11 @@ public:
 
 	void resize(int width, int height)
 	{
-		glBindTexture(GL_TEXTURE_2D, gColor);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-
-		glBindTexture(GL_TEXTURE_2D, gLightPass);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+		for (unsigned int * text : allColorText)
+		{
+			glBindTexture(GL_TEXTURE_2D, *text);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+		}
 
 		glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
@@ -76,25 +78,25 @@ public:
 		glGenFramebuffers(1, &gBuffer);
 		glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
 
-		glGenTextures(1, &gColor);
-		glBindTexture(GL_TEXTURE_2D, gColor);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gColor, 0);
-
-		glGenTextures(1, &gLightPass);
-		glBindTexture(GL_TEXTURE_2D, gLightPass);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width ,height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gColor, 0);
-
+		int i(0);
+		for (unsigned int * text : allColorText)
+		{
+			glBindTexture(GL_TEXTURE_2D, *text);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, *text, 0);
+			i++;
+		}
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
-		unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
-		glDrawBuffers(2, attachments);
+		unsigned int * attachments = new unsigned int[i];
+		for (int j = 0; j < i; j++)
+		{
+			attachments[j] = GL_COLOR_ATTACHMENT0 + j;
+		}
 
+		glDrawBuffers(i, attachments);
 	}
 
 	void RenderToTexture()

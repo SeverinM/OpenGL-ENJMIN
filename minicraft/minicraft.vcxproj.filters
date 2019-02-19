@@ -45,6 +45,9 @@
     <Filter Include="shaders\Depth">
       <UniqueIdentifier>{5e03b9eb-04b6-466e-a8d5-7b4c394d1f12}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders\Blur">
+      <UniqueIdentifier>{d21e9b3b-f318-483c-bc6a-3db1cdbecac3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine_minicraft.h">
@@ -140,6 +143,9 @@
     </None>
     <None Include="run\shaders\world\gs.glsl">
       <Filter>shaders\world</Filter>
+    </None>
+    <None Include="run\shaders\Blur\fs.glsl">
+      <Filter>shaders\Blur</Filter>
     </None>
   </ItemGroup>
 </Project>

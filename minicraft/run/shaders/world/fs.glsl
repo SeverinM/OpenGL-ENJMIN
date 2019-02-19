@@ -33,6 +33,7 @@ vec4 sunColor;
 #define CUBE_TERRE 1.0
 #define CUBE_EAU 4.0
 
+float tolerancePass = 0.8;
 
 //Globales
 const float ambientLevel = 0.4;
@@ -48,19 +49,6 @@ void main()
 {
 	lightDir = (sunPos - posWorld_gs.xyz);
 	sunColor = vec4(1,1,1,1);
-	vec4 color = texture(ourTexture,uv_gs);
-
-	//Diffuse 
-	color *= dot(normalize(lightDir),normalize(normal_gs));
-
-	//Ambiant
-	color += vec4(skyColor * slider_1, 1.0);
-
-	//Specular
-	vec3 halfVector = normalize(normalize(lightDir) + normalize(camPos - posWorld_gs.xyz));
-    float spec = max(0, dot(normal_gs,halfVector));
-    spec = pow(spec, 25 + (slider_2 * 200));
-    color += spec * sunColor * specModifier_gs;
 
 	color_out = color_gs;
 	bool ok = false;
@@ -81,11 +69,28 @@ void main()
 		color_out = max(color_out,mix(colorBorder_gs, color_gs ,bary.x * 20));
 	}
 
+	vec4 originColor = color_out;
+
+	//Calcul lumiere
 	if (!ok)
 	{
 		//color_out += spec * sunColor * specModifier_gs;
 	}
 
 	gColor = color_out;
-	gPassLight = color_out;
+
+	float maxColor = 0;
+	maxColor = max(originColor.r, originColor.g);
+	maxColor = max(maxColor, originColor.b);
+
+	
+	if (maxColor > tolerancePass)
+	{
+		gPassLight = originColor;
+	}
+	else
+	{
+		gPassLight = vec4(0, 0, 0, 1);
+	}
+	
 }
