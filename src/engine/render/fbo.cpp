@@ -202,6 +202,20 @@ void YFbo::readFbTex(int numCol, uint8 * buff, uint32 bufSize)
 
 }
 
+void YFbo::saveFbToFile(const char * name, int width, int height)
+{
+	uint32 nbPixels = width * height;
+	uint8 * pixelsRgb = (uint8*)malloc(nbPixels * 3);
+
+	if (!pixelsRgb)
+		return;
+
+	glReadPixels((GLint)0, (GLint)0, (GLint)width, (GLint)height, GL_RGB, GL_UNSIGNED_BYTE, pixelsRgb);
+
+	YTexManager::writeImage(name, width, height, pixelsRgb, "FB Save", true);
+	free(pixelsRgb);
+}
+
 void YFbo::saveTexToFile(const char * name, int numCol)
 {
 	uint32 nbPixels = Width * Height;
