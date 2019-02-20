@@ -68,7 +68,7 @@ void main()
 	//Couleur fonction du type
 	if(vs_type_in == CUBE_HERBE)
 	{
-		vertex.color = vec4(0,0,0,1);
+		vertex.color = vec4(0,0,25.0 / 255.0,1);
 		vertex.colorBorder = vec4(0,1,1,1);
 	}
 		

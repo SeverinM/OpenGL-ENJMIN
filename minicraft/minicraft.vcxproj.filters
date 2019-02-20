@@ -147,5 +147,8 @@
     <None Include="run\shaders\Blur\fs.glsl">
       <Filter>shaders\Blur</Filter>
     </None>
+    <None Include="run\shaders\Blur\vs.glsl">
+      <Filter>shaders\Blur</Filter>
+    </None>
   </ItemGroup>
 </Project>
