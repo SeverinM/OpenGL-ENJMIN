@@ -52,21 +52,16 @@ void main()
 
 	color_out = color_gs;
 	bool ok = false;
-	if (abs(bary.x) < 0.05)
+	if (abs(bary.x) < 0.01)
 	{
-		color_out = mix(colorBorder_gs, color_gs ,bary.x * 20);
+		color_out = colorBorder_gs;
 		ok = true;
 	}
 
-	if (abs(bary.y) < 0.05)
+	if (abs(bary.y) < 0.01)
 	{
-		color_out = mix(colorBorder_gs, color_gs ,bary.y * 20);
+		color_out = colorBorder_gs;
 		ok = true;
-	}
-
-	if (abs(bary.y) < 0.05 && abs(bary.y) < 0.05)
-	{
-		color_out = max(color_out,mix(colorBorder_gs, color_gs ,bary.x * 20));
 	}
 
 	vec4 originColor = color_out;

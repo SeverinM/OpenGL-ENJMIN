@@ -42,7 +42,7 @@ public :
 
 	//Buffers intermediaires
 	GBuffer * gBuff;
-	//GBuffer * buffBlur;
+	GBuffer * buffBlur;
 
 	YColor * Day;
 	YColor * Night;
@@ -71,8 +71,8 @@ public :
 		gBuff = new GBuffer(2);
 		gBuff->Init(Renderer->ScreenWidth, Renderer->ScreenHeight);
 
-		//buffBlur = new GBuffer(1);
-		//buffBlur->Init(Renderer->ScreenWidth, Renderer->ScreenHeight);
+		buffBlur = new GBuffer(1);
+		buffBlur->Init(Renderer->ScreenWidth, Renderer->ScreenHeight);
 
 		TexHolder::GetInstance()->AddTexture("textures/normal.jpg");
 		textIndex = TexHolder::GetInstance()->GetTexture("textures/normal.jpg");
@@ -265,29 +265,38 @@ public :
 		wrld->render_world_vbo(true, false);
 
 		//Rendu FBO 1 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, buffBlur->getGBuffer());
 		glUseProgram(progBlur);
 		glUniform1i(glGetUniformLocation(progBlur, "image"), 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, gBuff->getColorText(1));
 		glDisable(GL_DEPTH_TEST);
 
+		Renderer->sendNearFarToShader(progBlur);
+		Renderer->sendScreenSizeToShader(progBlur);
+		Renderer->sendMatricesToShader(progBlur);
+		Renderer->drawFullScreenQuad();
+
 		//Rendu FBO 2
-		/*glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glUseProgram(postPross);
 		glUniform1i(glGetUniformLocation(postPross, "TexColor"), 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, gBuff->getColorText(0));
-		glDisable(GL_DEPTH_TEST);*/
+		glUniform1i(glGetUniformLocation(postPross, "TexBlurred"), 1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, buffBlur->getColorText(0));
+		glDisable(GL_DEPTH_TEST);
 
-		Renderer->sendNearFarToShader(progBlur);
-		Renderer->sendScreenSizeToShader(progBlur);
-		Renderer->sendMatricesToShader(progBlur);
+		Renderer->sendNearFarToShader(postPross);
+		Renderer->sendScreenSizeToShader(postPross);
+		Renderer->sendMatricesToShader(postPross);
 		Renderer->drawFullScreenQuad();
 	}
 
 	void resize(int width, int height) {
 		gBuff->resize(width, height);
+		buffBlur->resize(width, height);
 	}
 
 	/*INPUTS*/

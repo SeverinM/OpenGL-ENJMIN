@@ -1,34 +1,31 @@
 #version 400
 
 out vec4 BlurredText;
-
 in vec2 uv;
-
 uniform sampler2D image;
-
-bool horizontal;
-float weight[5] = float[](0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);
+uniform float screen_width;
+uniform float screen_height;
 
 
 void main()
 {
-	vec2 tex_offset = 1.0 / textureSize(image, 0); //Size texel
-	vec3 result = texture(image, uv).rgb * weight[0];
-	if (horizontal)
+	float xstep = 1.0 / screen_width;
+	float ystep = 1.0 / screen_height;
+	vec4 sum = texture2D(image, uv);
+	vec2 modifiedUV;
+	int count = 1;
+
+	for (int x = -7; x < 7; x++)
 	{
-		for (int i = 1; i < 5; i++)
+		for (int y = -7; y < 7; y++)
 		{
-			result += texture(image, uv + vec2(tex_offset.x * i, 0.0)).rgb * weight[i];
-			result += texture(image, uv - vec2(tex_offset.x * i, 0.0)).rgb * weight[i];
+			if (x != 0 || y != 0)
+			{
+				modifiedUV = vec2(uv.x + (xstep * x), uv.y + (ystep * y));
+				sum += texture2D(image, modifiedUV);
+				count++;
+			}
 		}
 	}
-	else
-	{
-		for (int i = 1; i < 5; i++)
-		{
-			result += texture(image, uv + vec2(0.0, tex_offset.y * i)).rbg * weight[i];
-			result += texture(image, uv - vec2(0.0, tex_offset.y * i)).rbg * weight[i];
-		}
-	}
-	BlurredText = vec4(result, 1.0);
+	BlurredText = sum / count;
 }

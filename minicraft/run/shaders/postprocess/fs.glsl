@@ -3,6 +3,7 @@
 in vec2 uv;
 
 uniform sampler2D TexColor;
+uniform sampler2D TexBlurred;
 uniform float screen_width;
 uniform float screen_height;
 uniform vec2 near_far;
@@ -22,7 +23,7 @@ void main (void)
 	float ystep = 1.0/screen_height;
 	float ratio = screen_width / screen_height;
 
-	vec4 color = texture2D( TexColor , uv );
+	vec4 color = texture2D(TexBlurred, uv) + texture2D(TexColor, uv);
 	color_out = color;
 
 	if (length(vec2(0.5,0.5) - uv) < 0.002)
