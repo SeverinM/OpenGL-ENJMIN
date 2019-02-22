@@ -218,17 +218,6 @@ public :
 	
 	void RemoveCube(YVec3f direction, YVec3f Position)
 	{
-		/*for (int i = 1; i < 7; i++)
-		{
-			YVec3f target = Position + (direction.normalize() * MCube::CUBE_SIZE * i);
-			MCube * cb = getCube((int)floor(target.X), (int)floor(target.Y), (int)floor(target.Z));
-			if (cb->isSolid())
-			{
-				cb->setType(MCube::MCubeType::CUBE_AIR);
-				updateCube((int)floor(target.X), (int)floor(target.Y), (int)floor(target.Z));
-				break;
-			}
-		}*/
 
 		int RoundedX;
 		int RoundedY;

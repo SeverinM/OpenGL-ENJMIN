@@ -141,6 +141,20 @@ class YRenderer
 			_Render2DFun = fun;
 		}
 
+		void sendTexturesToShader(std::vector<std::pair<GLint, const char *>> textures, GLuint shader)
+		{
+			GLuint uniformLocation;
+			int indexText(0);
+			for (std::pair<GLint, const char *> value : textures)
+			{
+				uniformLocation = glGetUniformLocation(shader, value.second);
+				glUniform1i(uniformLocation, indexText);
+				glActiveTexture(GL_TEXTURE0 + indexText);
+				glBindTexture(GL_TEXTURE_2D, value.first);
+			}
+			glActiveTexture(GL_TEXTURE0);
+		}
+
 		void drawFullScreenQuad() {
 
 			glMatrixMode(GL_PROJECTION); // passe en mode matrice de projection

@@ -13,9 +13,27 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Fichiers sources\render">
+      <UniqueIdentifier>{40114332-c9ed-4e3d-bfe2-e85278196cd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{a9ff7f60-9a9e-46f2-a1c2-035a578577ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders\SynthBase">
+      <UniqueIdentifier>{0541a94a-db00-4464-8e07-04eeea68eeb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\render\fbo.cpp">
+      <Filter>Fichiers sources\render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\render\vbo.cpp">
+      <Filter>Fichiers sources\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine_Synthwave.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -23,5 +41,19 @@
     <ClInclude Include="src\engine_synthwave.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="src\Decor.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="run\shaders\SynthBase\vs.glsl">
+      <Filter>shaders\SynthBase</Filter>
+    </None>
+    <None Include="run\shaders\SynthBase\fs.glsl">
+      <Filter>shaders\SynthBase</Filter>
+    </None>
+    <None Include="run\shaders\SynthBase\gs.glsl">
+      <Filter>shaders\SynthBase</Filter>
+    </None>
   </ItemGroup>
 </Project>

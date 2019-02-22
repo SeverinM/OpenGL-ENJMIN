@@ -124,10 +124,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\engine\render\fbo.cpp" />
+    <ClCompile Include="..\src\engine\render\vbo.cpp" />
+    <ClCompile Include="src\engine_Synthwave.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Decor.h" />
     <ClInclude Include="src\engine_synthwave.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="run\shaders\SynthBase\fs.glsl" />
+    <None Include="run\shaders\SynthBase\gs.glsl" />
+    <None Include="run\shaders\SynthBase\vs.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

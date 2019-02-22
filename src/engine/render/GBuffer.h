@@ -15,6 +15,7 @@ private:
 
 	int widthText;
 	int heightText;
+	int nbText;
 
 public:
 
@@ -24,12 +25,18 @@ public:
 	{
 		glGenFramebuffers(1, &gBuffer);
 		_Instance = this;
+		nbText = nbColor;
 
 		for (int i = 0; i < nbColor; i++)
 		{
 			allColorText.push_back(new unsigned int());
 			glGenTextures(1, allColorText[i]);
 		}
+	}
+
+	int getNbText()
+	{
+		return nbText;
 	}
 
 	unsigned int getColorText(int nb = 0)
