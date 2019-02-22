@@ -37,7 +37,7 @@ class SynthEngine : public YEngine
 		void loadShaders() {
 			shaderWorld = Renderer->createProgram("shaders/SynthBase");
 			shaderBlur = Renderer->createProgram("shaders/Blur");
-			shaderPostPross = Renderer->createProgram("shaders/postpross");
+			shaderPostPross = Renderer->createProgram("shaders/postprocess");
 		}
 
 		void init();
@@ -51,6 +51,18 @@ class SynthEngine : public YEngine
 			YRenderer::getInstance()->sendMatricesToShader(shaderWorld);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			source->render();
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+
+		void renderInScreenQuad(GBuffer * buffer = NULL)
+		{
+			GLint shaderId;
+			glGetIntegerv(GL_CURRENT_PROGRAM, &shaderId);
+			Renderer->sendNearFarToShader(shaderId);
+			Renderer->sendScreenSizeToShader(shaderId);
+			Renderer->sendMatricesToShader(shaderId);
+			glBindFramebuffer(GL_FRAMEBUFFER, buffer ? buffer->getGBuffer() : 0);
+			Renderer->drawFullScreenQuad();
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 

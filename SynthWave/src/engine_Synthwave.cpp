@@ -52,6 +52,7 @@ void SynthEngine::renderObjects()
 	glVertex3d(0, 0, 10000);
 	glEnd();
 
+	//Rendu FBO 1
 	glUseProgram(shaderWorld);
 	glEnable(GL_DEPTH_TEST);
 	glPushMatrix();
@@ -59,22 +60,17 @@ void SynthEngine::renderObjects()
 	renderInTexture(bufferWorld, dec->getGround());
 	glPopMatrix();
 
-	/*glUseProgram(shaderPostPross);
-	glEnable(GL_DEPTH_TEST);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	std::vector<std::pair<GLint, const char *>> texts;
-	texts.push_back(std::pair<GLint, const char *>(bufferWorld->getColorText(0), "TexColor"));
-	texts.push_back(std::pair<GLint, const char *>(bufferWorld->getColorText(1), "TexBlurred"));
-	Renderer->sendTexturesToShader(texts, shaderPostPross);*/
 
-	glUseProgram(shaderPostPross);
-	glUniform1i(glGetUniformLocation(shaderPostPross, "TexColor"), 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, bufferWorld->getColorText(0));
+	//Rendu FBO 2
+	glUseProgram(shaderBlur);
+	Renderer->sendMatricesToShader(shaderBlur);
+	Renderer->sendTextureToShader(shaderPostPross, bufferWorld->getColorText(1), 0, "image");
 	glDisable(GL_DEPTH_TEST);
+	renderInScreenQuad(bufferBlur);
 
-	Renderer->sendNearFarToShader(shaderPostPross);
-	Renderer->sendScreenSizeToShader(shaderPostPross);
-	Renderer->sendMatricesToShader(shaderPostPross);
-	Renderer->drawFullScreenQuad();
+	//Vrai rendu
+	glUseProgram(shaderPostPross);
+	Renderer->sendTextureToShader(shaderPostPross, bufferWorld->getColorText(0), 0, "TexColor");
+	Renderer->sendTextureToShader(shaderPostPross, bufferBlur->getColorText(0), 1, "TexBlurred");
+	renderInScreenQuad();
 }

@@ -1,6 +1,6 @@
 #version 400
 
-out vec4 BlurredText;
+layout (location = 0) out vec4 BlurredText;
 in vec2 uv;
 uniform sampler2D image;
 uniform float screen_width;

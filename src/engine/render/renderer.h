@@ -29,12 +29,12 @@ class YRenderer
 		YTextEngine * TextEngine; ///< Rendu de texte
 		static const int CURRENT_SHADER = 0;
 		inline static int NbVBOFacesRendered; ///< Nombre de faces rendues par les VBO, incrémentées par eux a chaque frames 
+		YVbo * _VBOQuadFS; ///< le vbo pour dessiner un quad full screen
 
 	private : 
 		inline static YRenderer * _Me; ///< Singleton
 
 		HWND _WHnd; ///< Handle de la fenetre principale
-		YVbo * _VBOQuadFS; ///< le vbo pour dessiner un quad full screen
 
 		YTimer * TimerGPU = NULL;
 
@@ -141,17 +141,12 @@ class YRenderer
 			_Render2DFun = fun;
 		}
 
-		void sendTexturesToShader(std::vector<std::pair<GLint, const char *>> &textures, GLuint shader)
+		void sendTextureToShader(GLuint shader, GLuint texture, int index, const char * name)
 		{
-			GLuint uniformLocation;
-			int indexText(0);
-			for (std::pair<GLint, const char *> value : textures)
-			{
-				uniformLocation = glGetUniformLocation(shader, value.second);
-				glUniform1i(uniformLocation, indexText);
-				glActiveTexture(GL_TEXTURE0 + indexText);
-				glBindTexture(GL_TEXTURE_2D, value.first);
-			}
+			GLuint uniformLocation = glGetUniformLocation(shader, name);
+			glUniform1i(uniformLocation, index);
+			glActiveTexture(GL_TEXTURE0 + index);
+			glBindTexture(GL_TEXTURE_2D, texture);
 			glActiveTexture(GL_TEXTURE0);
 		}
 
