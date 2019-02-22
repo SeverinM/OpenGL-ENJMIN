@@ -22,8 +22,11 @@ void main()
 			if (x != 0 || y != 0)
 			{
 				modifiedUV = vec2(uv.x + (xstep * x), uv.y + (ystep * y));
-				sum += texture2D(image, modifiedUV);
-				count++;
+				if (modifiedUV.x >= 0 && modifiedUV.x <= 1 && modifiedUV.y >= 0 && modifiedUV.y <= 1)
+				{
+					sum += texture2D(image, modifiedUV);
+					count++;
+				}				
 			}
 		}
 	}

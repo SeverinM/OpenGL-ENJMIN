@@ -49,7 +49,6 @@ class SynthEngine : public YEngine
 			glBindFramebuffer(GL_FRAMEBUFFER, buffer->getGBuffer());
 			YRenderer::getInstance()->updateMatricesFromOgl();
 			YRenderer::getInstance()->sendMatricesToShader(shaderWorld);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			source->render();
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
