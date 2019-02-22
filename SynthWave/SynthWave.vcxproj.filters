@@ -22,6 +22,12 @@
     <Filter Include="shaders\SynthBase">
       <UniqueIdentifier>{0541a94a-db00-4464-8e07-04eeea68eeb6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders\Blur">
+      <UniqueIdentifier>{4e5c15f9-90cc-4ff6-a819-88a2a2e03074}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders\postprocess">
+      <UniqueIdentifier>{7992344d-8298-42d6-a4c5-461df51f5ae1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -54,6 +60,18 @@
     </None>
     <None Include="run\shaders\SynthBase\gs.glsl">
       <Filter>shaders\SynthBase</Filter>
+    </None>
+    <None Include="run\shaders\Blur\fs.glsl">
+      <Filter>shaders\Blur</Filter>
+    </None>
+    <None Include="run\shaders\Blur\vs.glsl">
+      <Filter>shaders\Blur</Filter>
+    </None>
+    <None Include="run\shaders\postprocess\fs.glsl">
+      <Filter>shaders\postprocess</Filter>
+    </None>
+    <None Include="run\shaders\postprocess\vs.glsl">
+      <Filter>shaders\postprocess</Filter>
     </None>
   </ItemGroup>
 </Project>

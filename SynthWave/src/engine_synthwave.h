@@ -15,8 +15,8 @@ class SynthEngine : public YEngine
 		GLuint shaderWorld;
 
 		//Buffers
+		GBuffer * bufferWorld;
 		GBuffer * bufferBlur;
-		GBuffer * bufferPostProcess;
 
 		//Input Handling
 		int xMouse;
@@ -36,16 +36,19 @@ class SynthEngine : public YEngine
 
 		void loadShaders() {
 			shaderWorld = Renderer->createProgram("shaders/SynthBase");
+			shaderBlur = Renderer->createProgram("shaders/Blur");
+			shaderPostPross = Renderer->createProgram("shaders/postpross");
 		}
 
 		void init();
 		void update(float elapsed);
 		void renderObjects();
 
-		void renderInTexture(GBuffer * buffer, GLuint shaderID, YVbo * source)
+		void renderInTexture(GBuffer * buffer, YVbo * source)
 		{
-			glUseProgram(shaderID);
 			glBindFramebuffer(GL_FRAMEBUFFER, buffer->getGBuffer());
+			YRenderer::getInstance()->updateMatricesFromOgl();
+			YRenderer::getInstance()->sendMatricesToShader(shaderWorld);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			source->render();
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -53,7 +56,8 @@ class SynthEngine : public YEngine
 
 		void resize(int width, int height)
 		{
-
+			bufferWorld->resize(width, height);
+			bufferBlur->resize(width, height);
 		}
 
 		void keyPressed(int key, bool special, bool down, int p1, int p2)

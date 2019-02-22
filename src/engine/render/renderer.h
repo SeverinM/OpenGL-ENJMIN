@@ -141,7 +141,7 @@ class YRenderer
 			_Render2DFun = fun;
 		}
 
-		void sendTexturesToShader(std::vector<std::pair<GLint, const char *>> textures, GLuint shader)
+		void sendTexturesToShader(std::vector<std::pair<GLint, const char *>> &textures, GLuint shader)
 		{
 			GLuint uniformLocation;
 			int indexText(0);

@@ -3,8 +3,11 @@
 void SynthEngine::init()
 {
 	//MRT
-	GBuffer * postProcess;
-	GBuffer * blur;
+	bufferWorld = new GBuffer(2);
+	bufferWorld->Init(800, 600);
+	bufferBlur = new GBuffer(1);
+	bufferBlur->Init(800, 600);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	//Camera
 	Renderer->Camera->setPosition(YVec3f(10, 10, 10));
@@ -31,6 +34,7 @@ void SynthEngine::update(float elapsed)
 
 void SynthEngine::renderObjects()
 {
+	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(0);
 	//Rendu des axes
@@ -52,8 +56,25 @@ void SynthEngine::renderObjects()
 	glEnable(GL_DEPTH_TEST);
 	glPushMatrix();
 	glTranslatef(dec->getOffset().X, dec->getOffset().Y, dec->getOffset().Z);
-	YRenderer::getInstance()->updateMatricesFromOgl();
-	YRenderer::getInstance()->sendMatricesToShader(shaderWorld);
-	dec->getGround()->render();
+	renderInTexture(bufferWorld, dec->getGround());
 	glPopMatrix();
+
+	/*glUseProgram(shaderPostPross);
+	glEnable(GL_DEPTH_TEST);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	std::vector<std::pair<GLint, const char *>> texts;
+	texts.push_back(std::pair<GLint, const char *>(bufferWorld->getColorText(0), "TexColor"));
+	texts.push_back(std::pair<GLint, const char *>(bufferWorld->getColorText(1), "TexBlurred"));
+	Renderer->sendTexturesToShader(texts, shaderPostPross);*/
+
+	glUseProgram(shaderPostPross);
+	glUniform1i(glGetUniformLocation(shaderPostPross, "TexColor"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, bufferWorld->getColorText(0));
+	glDisable(GL_DEPTH_TEST);
+
+	Renderer->sendNearFarToShader(shaderPostPross);
+	Renderer->sendScreenSizeToShader(shaderPostPross);
+	Renderer->sendMatricesToShader(shaderPostPross);
+	Renderer->drawFullScreenQuad();
 }

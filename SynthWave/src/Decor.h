@@ -41,12 +41,12 @@ class Decor
 				for (int y = 0; y < width; y++)
 				{
 					ground->SetFace(YVec3f(x * groundSize, y * groundSize, 0), YVec3f(1, 0, 0), YVec3f(0, 1, 0), groundSize, indexPosition, true);
-					YVec3 prod(YVec3f(1, 0, 0).cross(YVec3f(0, 1, 0)));
+					YVec3f prod(YVec3f(1, 0, 0).cross(YVec3f(0, 1, 0)));
 
 					for (int i = 0; i < 6; i++)
 					{
-						ground->setElementValue(1, indexColor, 1, 0, 1, 1);
-						ground->setElementValue(2, indexColor, 0, 0, 15.0 / 255.0, 1);
+						ground->setElementValue(1, indexColor, 0, 1, 1, 1);
+						ground->setElementValue(2, indexColor, 0, 0, 35.0 / 255.0, 1);
 						indexColor++;
 					}
 				}
