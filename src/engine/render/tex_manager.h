@@ -57,6 +57,11 @@ public:
 		Visible = true;
 	}
 
+	void * getBuffer()
+	{
+		return static_cast<void *>(_Buffer);
+	}
+
 	int setAsShaderInput(GLint shader, int location = GL_TEXTURE0, const char * texSamplerName = "colorTex1")
 	{
 		if (shader == 0)

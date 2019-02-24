@@ -126,10 +126,14 @@
   <ItemGroup>
     <ClCompile Include="..\src\engine\render\fbo.cpp" />
     <ClCompile Include="..\src\engine\render\vbo.cpp" />
+    <ClCompile Include="..\src\engine\utils\utils.cpp" />
     <ClCompile Include="src\engine_Synthwave.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\SkyBox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\engine\render\stb_image.h" />
+    <ClInclude Include="SkyBox.h" />
     <ClInclude Include="src\Decor.h" />
     <ClInclude Include="src\engine_synthwave.h" />
   </ItemGroup>
@@ -138,9 +142,14 @@
     <None Include="run\shaders\Blur\vs.glsl" />
     <None Include="run\shaders\postprocess\fs.glsl" />
     <None Include="run\shaders\postprocess\vs.glsl" />
+    <None Include="run\shaders\Sun\fs.glsl" />
+    <None Include="run\shaders\Sun\vs.glsl" />
     <None Include="run\shaders\SynthBase\fs.glsl" />
     <None Include="run\shaders\SynthBase\gs.glsl" />
     <None Include="run\shaders\SynthBase\vs.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="run\textures\Sun.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

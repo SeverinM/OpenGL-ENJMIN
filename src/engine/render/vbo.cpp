@@ -51,7 +51,16 @@ void YVbo::render(GBuffer * inBuffer) {
 	//La stat globales
 	YRenderer::NbVBOFacesRendered += NbVertices / 3;
 
-	if (textureIndex) glBindTexture(GL_TEXTURE_2D, textureIndex);
+	if (textureIndex)
+	{
+		glBindTexture(GL_TEXTURE_2D, textureIndex);
+	}
+
+	if (textureCubeIndex)
+	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP, textureCubeIndex);
+	}
+
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
@@ -76,4 +85,5 @@ void YVbo::render(GBuffer * inBuffer) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }

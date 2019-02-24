@@ -3,6 +3,8 @@
 
 #include "engine/engine.h"
 #include "Decor.h"
+#include "engine/render/tex_manager.h"
+#include "../SkyBox.h"
 
 class SynthEngine : public YEngine
 {
@@ -13,6 +15,7 @@ class SynthEngine : public YEngine
 		GLuint shaderPostPross;
 		GLuint shaderBlur;
 		GLuint shaderWorld;
+		GLuint shaderSun;
 
 		//Buffers
 		GBuffer * bufferWorld;
@@ -27,6 +30,10 @@ class SynthEngine : public YEngine
 		int X;
 		int Z;
 
+		//SkyBox
+		YTexFile * textures[6];
+		SkyBox * box;
+
 		static YEngine * getInstance()
 		{
 			if (Instance == NULL)
@@ -38,6 +45,7 @@ class SynthEngine : public YEngine
 			shaderWorld = Renderer->createProgram("shaders/SynthBase");
 			shaderBlur = Renderer->createProgram("shaders/Blur");
 			shaderPostPross = Renderer->createProgram("shaders/postprocess");
+			shaderSun = Renderer->createProgram("shaders/Sun");
 		}
 
 		void init();
@@ -50,6 +58,13 @@ class SynthEngine : public YEngine
 			YRenderer::getInstance()->updateMatricesFromOgl();
 			YRenderer::getInstance()->sendMatricesToShader(shaderWorld);
 			source->render();
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+
+		void ClearBuffer(GBuffer * buffer)
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, buffer->getGBuffer());
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 

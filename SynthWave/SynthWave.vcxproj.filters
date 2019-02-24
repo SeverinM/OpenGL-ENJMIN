@@ -28,6 +28,12 @@
     <Filter Include="shaders\postprocess">
       <UniqueIdentifier>{7992344d-8298-42d6-a4c5-461df51f5ae1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="textures">
+      <UniqueIdentifier>{ed02b383-781a-49fc-9a97-d62618f29f9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders\Sun">
+      <UniqueIdentifier>{8dfe370e-11ea-4385-85ac-439fd026e734}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -42,12 +48,24 @@
     <ClCompile Include="src\engine_Synthwave.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\engine\utils\utils.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SkyBox.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine_synthwave.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="src\Decor.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\render\stb_image.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
@@ -73,5 +91,16 @@
     <None Include="run\shaders\postprocess\vs.glsl">
       <Filter>shaders\postprocess</Filter>
     </None>
+    <None Include="run\shaders\Sun\fs.glsl">
+      <Filter>shaders\Sun</Filter>
+    </None>
+    <None Include="run\shaders\Sun\vs.glsl">
+      <Filter>shaders\Sun</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="run\textures\Sun.png">
+      <Filter>textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -258,6 +258,5 @@ public:
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		gluLookAt(Position.X, Position.Y, Position.Z, LookAt.X, LookAt.Y, LookAt.Z, UpVec.X, UpVec.Y, UpVec.Z);
-		
 	}
 };

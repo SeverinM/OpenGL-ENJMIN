@@ -17,10 +17,16 @@ void SynthEngine::init()
 	//Config
 	glEnable(GL_BLEND);
 
+	string allNames[] = { "textures/right.png" , "textures/left.png" , "textures/top.png" , "textures/bottom.png" , "textures/back.png", "textures/front.png" };
+
+	box = new SkyBox();
+	box->Init(allNames);
+
 	//Vbos
 	dec = new Decor();
 	dec->GenerateGround(20, 100, 3);
 	dec->GenerateMountains(20, 20, 0.3, 3, YVec3f(0, 300, 0));
+	dec->GenerateSun(box);
 }
 
 void SynthEngine::update(float elapsed)
@@ -35,13 +41,23 @@ void SynthEngine::update(float elapsed)
 
 void SynthEngine::renderObjects()
 {
+	ClearBuffer(bufferWorld);
+	glEnable(GL_DEPTH_TEST);
+
+	YVec3f previousPos = Renderer->Camera->Position;
+	Renderer->Camera->moveTo(YVec3f(0, 0, 0));
+	glUseProgram(shaderSun);
+	Renderer->updateMatricesFromOgl();
+	Renderer->sendMatricesToShader(shaderSun);
+	renderInTexture(bufferWorld, dec->getSun());
+
+	Renderer->Camera->moveTo(previousPos);
+	Renderer->updateMatricesFromOgl();
+	Renderer->sendMatricesToShader(shaderSun);
+
+
 	//Rendu FBO 1
 	glUseProgram(shaderWorld);
-	glBindFramebuffer(GL_FRAMEBUFFER, bufferWorld->getGBuffer());
-	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	glBindFramebuffer(GL_FRAMEBUFFER,0);
-
-	glEnable(GL_DEPTH_TEST);
 	glPushMatrix();
 	glTranslatef(dec->getoriginGround().X, dec->getoriginGround().Y, dec->getoriginGround().Z);
 	renderInTexture(bufferWorld, dec->getGround());

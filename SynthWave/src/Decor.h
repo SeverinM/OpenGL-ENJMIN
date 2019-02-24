@@ -2,6 +2,7 @@
 
 #include "engine/render/vbo.h"
 #include "engine/noise/perlin.h"
+#include "../SkyBox.h"
 
 class Decor
 {
@@ -10,9 +11,12 @@ class Decor
 		float sizeGround;
 		YVec3f originGround;
 
+		YVbo * sun;
+
 		YVbo * mountains;
 		float * sizeMountains;
 		YVec3f originMountains;
+
 
 	public:
 
@@ -24,6 +28,11 @@ class Decor
 		YVbo * getMountains()
 		{
 			return mountains;
+		}
+
+		YVbo * getSun()
+		{
+			return sun;
 		}
 
 		YVec3f getoriginGround()
@@ -64,6 +73,32 @@ class Decor
 
 			ground->createVboGpu();
 			ground->deleteVboCpu();
+		}
+
+		void GenerateSun(SkyBox * sb)
+		{
+			sun = new YVbo(1, 36, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
+			sun->setElementDescription(0, YVbo::Element(3)); //Position
+			sun->createVboCpu();
+
+			int indexPos(0);
+
+			//Face X / Y
+			sun->SetFace(YVec3f(-1, -1, -1), YVec3f(1, 0, 0), YVec3f(0, 1, 0), 2, indexPos, true);
+			sun->SetFace(YVec3f(-1, -1, 1), YVec3f(1, 0, 0), YVec3f(0, 1, 0), 2, indexPos, true);
+
+			//Face Y / Z
+			sun->SetFace(YVec3f(-1, -1, -1), YVec3f(0, 1, 0), YVec3f(0, 0, 1), 2, indexPos, true);
+			sun->SetFace(YVec3f(1, -1, -1), YVec3f(0, 1, 0), YVec3f(0, 0, 1), 2, indexPos, true);
+
+			//Face X / Z
+			sun->SetFace(YVec3f(-1, -1, -1), YVec3f(1, 0, 0), YVec3f(0, 0, 1), 2, indexPos, true);
+			sun->SetFace(YVec3f(-1, 1, -1), YVec3f(1, 0, 0), YVec3f(0, 0, 1), 2, indexPos, true);
+
+			sun->createVboGpu();
+			sun->deleteVboCpu();
+
+			sun->SetTextureCube(sb->GetCube());
 		}
 
 		void GenerateMountains(int lenght, int width, float noise, float size, YVec3f origin)

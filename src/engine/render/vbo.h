@@ -45,6 +45,7 @@ private:
 	int heightTex;
 	int widthTex;
 	unsigned int textureIndex;
+	unsigned int textureCubeIndex;
 
 public:		
 		
@@ -78,6 +79,11 @@ public:
 	const unsigned int GetTextureIndex()
 	{
 		return textureIndex;
+	}
+
+	const unsigned int GetTextureCubeIndex()
+	{
+		return textureCubeIndex;
 	}
 
 	int getNbVertices() {
@@ -120,6 +126,11 @@ public:
 	void SetTexture(unsigned int index)
 	{
 		textureIndex = index;
+	}
+
+	void SetTextureCube(unsigned int cubeIndex)
+	{
+		textureCubeIndex = cubeIndex;
 	}
 
 	//Cr�ation des buffers en RAM pour stoquer toutes les valeurs
