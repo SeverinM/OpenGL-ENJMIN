@@ -17,8 +17,17 @@ class Decor
 		float * sizeMountains;
 		YVec3f originMountains;
 
+		YPerlin * perl;
+
 
 	public:
+
+		Decor(float seed)
+		{
+			seed *= 0.000000001f;
+			perl = new YPerlin();
+			perl->setOffset(seed);
+		}
 
 		YVbo * getGround()
 		{
@@ -103,7 +112,6 @@ class Decor
 
 		void GenerateMountains(int lenght, int width, float noise, float size, YVec3f origin)
 		{
-			YPerlin perl;
 			float frequence(noise);
 
 			originMountains = origin;
@@ -124,10 +132,10 @@ class Decor
 			{
 				for (int y = 0; y < width; y++)
 				{
-					random = max(0,(perl.sample(x * frequence, y * frequence, 0) * 50) - 20);
-					randomXp = max(0, (perl.sample((x + 1) * frequence, y * frequence, 0) * 50) - 20);
-					randomYp = max(0, (perl.sample(x * frequence, (y + 1) * frequence, 0) * 50) - 20);
-					randomXpYp = max(0, (perl.sample((x + 1) * frequence, (y + 1) * frequence, 0) * 50) - 20);
+					random = max(0,(perl->sample(x * frequence, y * frequence, 0) * 50) - 20);
+					randomXp = max(0, (perl->sample((x + 1) * frequence, y * frequence, 0) * 50) - 20);
+					randomYp = max(0, (perl->sample(x * frequence, (y + 1) * frequence, 0) * 50) - 20);
+					randomXpYp = max(0, (perl->sample((x + 1) * frequence, (y + 1) * frequence, 0) * 50) - 20);
 
 					//Avant derniere colonne
 					if (x == lenght - 2)

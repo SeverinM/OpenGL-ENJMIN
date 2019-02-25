@@ -13,5 +13,9 @@ void main()
 	vec4 sampledColor = texture(skybox, TexCoords);
 	vec3 normCoords = normalize(TexCoords);
 	color = mix(top, bottom, clamp(1 - ((normCoords.z + 1) / 2), 0, 1)) / 1.5;
+	if (sampledColor.a == 1)
+	{
+		color = sampledColor / 2;
+	}
 	color.a = 1;
 }

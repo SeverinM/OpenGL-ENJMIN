@@ -1,4 +1,5 @@
 #include "engine_synthwave.h"
+#include <ctime>
 
 void SynthEngine::init()
 {
@@ -24,7 +25,7 @@ void SynthEngine::init()
 	box->Init(allNames);
 
 	//Vbos
-	dec = new Decor();
+	dec = new Decor((float)time(NULL));
 	dec->GenerateGround(20, 100, 3);
 	dec->GenerateMountains(20, 20, 0.3, 3, YVec3f(0, 300, 0));
 	dec->GenerateSun(box);
