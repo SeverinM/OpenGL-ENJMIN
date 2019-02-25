@@ -286,6 +286,21 @@ public:
 		SAFEDELETE_TAB(buffer);
 	}
 
+	sint8 loadTexCube(YTexFile & texFile, int index)
+	{
+		if (texFile._Buffer == NULL)
+			if (loadFromDisk(texFile))
+				return 1;
+
+		texFile.Texture = 0;
+		glGenTextures(1, (UINT*)&(texFile.Texture));
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + index, 0, GL_RGBA, texFile.SizeX, texFile.SizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, texFile._Buffer);
+
+		texFile.Loaded = true;
+
+		return 0;
+	}
+
 
 private:
 

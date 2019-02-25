@@ -16,6 +16,7 @@ void SynthEngine::init()
 	
 	//Config
 	glEnable(GL_BLEND);
+	
 
 	string allNames[] = { "textures/right.png" , "textures/left.png" , "textures/top.png" , "textures/bottom.png" , "textures/back.png", "textures/front.png" };
 
@@ -41,9 +42,12 @@ void SynthEngine::update(float elapsed)
 
 void SynthEngine::renderObjects()
 {
+	glDisable(GL_CULL_FACE);
 	ClearBuffer(bufferWorld);
 	glEnable(GL_DEPTH_TEST);
 
+	glDepthFunc(GL_LEQUAL);
+	//On bouge la camera a l'origine
 	YVec3f previousPos = Renderer->Camera->Position;
 	Renderer->Camera->moveTo(YVec3f(0, 0, 0));
 	glUseProgram(shaderSun);
@@ -51,10 +55,11 @@ void SynthEngine::renderObjects()
 	Renderer->sendMatricesToShader(shaderSun);
 	renderInTexture(bufferWorld, dec->getSun());
 
+	glEnable(GL_CULL_FACE);
+	//On la replace
 	Renderer->Camera->moveTo(previousPos);
 	Renderer->updateMatricesFromOgl();
-	Renderer->sendMatricesToShader(shaderSun);
-
+	glDepthFunc(GL_LESS);
 
 	//Rendu FBO 1
 	glUseProgram(shaderWorld);
