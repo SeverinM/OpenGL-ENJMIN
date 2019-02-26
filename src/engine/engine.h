@@ -68,13 +68,23 @@ public :
 			
 		glutInit(&argc, argv);
 		glutSetOption(
-			GLUT_ACTION_ON_WINDOW_CLOSE,
+			GLUT_ACTION_ON_WINDOW_CLOSE, 
 			GLUT_ACTION_GLUTMAINLOOP_RETURNS
 		);
 		
 		glutInitWindowSize(BaseWidth, BaseHeight);
 		glutInitWindowPosition(0, 0);
-		glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+		glHint(GL_SAMPLES, 8);
+		glEnable(GL_MULTISAMPLE);
+		glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_MULTISAMPLE);
+		glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
+
+		int sample(0);
+		glGetIntegerv(GL_SAMPLE_BUFFERS, &sample);
+		std::cout << "sample : " << sample << std::endl;
+		glGetIntegerv(GL_SAMPLES, &sample);
+		std::cout << "sample : " << sample << std::endl;
+
 
 		YLog::log(YLog::ENGINE_INFO, (toString(argc) + " arguments en ligne de commande.").c_str());
 		FullScreen = false;

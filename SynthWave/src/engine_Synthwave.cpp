@@ -4,8 +4,9 @@
 void SynthEngine::init()
 {
 	//MRT
-	bufferWorld = new GBuffer(3);
+	bufferWorld = new GBuffer(3);     
 	bufferWorld->Init(800, 600);
+
 	bufferBlur = new GBuffer(1);
 	bufferBlur->Init(800, 600);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -17,7 +18,6 @@ void SynthEngine::init()
 	
 	//Config
 	glEnable(GL_BLEND);
-	
 
 	string allNames[] = { "textures/right.png" , "textures/left.png" , "textures/top.png" , "textures/bottom.png" , "textures/back.png", "textures/front.png" };
 
@@ -47,7 +47,6 @@ void SynthEngine::renderObjects()
 	ClearBuffer(bufferWorld);
 	glEnable(GL_DEPTH_TEST);
 
-	glDepthFunc(GL_LEQUAL);
 	//On bouge la camera a l'origine
 	YVec3f previousPos = Renderer->Camera->Position;
 	Renderer->Camera->moveTo(YVec3f(0, 0, 0));
@@ -56,13 +55,12 @@ void SynthEngine::renderObjects()
 	Renderer->sendMatricesToShader(shaderSun);
 	renderInTexture(bufferWorld, dec->getSun());
 
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	//On la replace
 	Renderer->Camera->moveTo(previousPos);
 	Renderer->updateMatricesFromOgl();
-	glDepthFunc(GL_LESS);
 
-	//Rendu FBO 1
+	////Rendu FBO 1
 	glUseProgram(shaderWorld);
 	glPushMatrix();
 	glTranslatef(dec->getoriginGround().X, dec->getoriginGround().Y, dec->getoriginGround().Z);

@@ -61,6 +61,9 @@ public:
 
 	void resize(int width, int height)
 	{
+		widthText = width;
+		heightText = height;
+
 		for (unsigned int * text : allColorText)
 		{
 			glBindTexture(GL_TEXTURE_2D, *text);
@@ -88,7 +91,7 @@ public:
 		int i(0);
 		for (unsigned int * text : allColorText)
 		{
-			glBindTexture(GL_TEXTURE_2D, *text);
+			glBindTexture(GL_TEXTURE_2D , *text);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -104,6 +107,46 @@ public:
 		}
 
 		glDrawBuffers(i, attachments);
+	}
+
+	void InitMultiSampled(int width, int height)
+	{
+		widthText = width;
+		heightText = height;
+
+		glGenRenderbuffers(1, &rbo);
+		glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+		glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH_COMPONENT24, width, height);
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+		glGenFramebuffers(1, &gBuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+
+		int i(0);
+		for (unsigned int * text : allColorText)
+		{
+			glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, *text);
+			glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, width, height, GL_TRUE);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, *text, 0);
+			i++;
+		}
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+		unsigned int * attachments = new unsigned int[i];
+		for (int j = 0; j < i; j++)
+		{
+			attachments[j] = GL_COLOR_ATTACHMENT0 + j;
+		}
+
+		glDrawBuffers(i, attachments);
+	}
+
+	void CopyBuffer(GLuint source, GLuint destination)
+	{
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, source);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, destination);
+		glBlitFramebuffer(0, 0, widthText, heightText, 0, 0, widthText, heightText, GL_COLOR_BUFFER_BIT, GL_NEAREST);               
 	}
 
 	void RenderToTexture()

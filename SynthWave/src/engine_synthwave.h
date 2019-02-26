@@ -19,6 +19,7 @@ class SynthEngine : public YEngine
 
 		//Buffers
 		GBuffer * bufferWorld;
+		GBuffer * bufferInter;         
 		GBuffer * bufferBlur;
 
 		//Input Handling
