@@ -1,26 +1,22 @@
 #version 400
 
-in vec4 color_border;
-in vec4 color_fill;
-in vec3 bary;
+in vec4 colorBorder;
+in vec4 colorFill;
+in vec2 uv;
 
 layout (location = 0) out vec4 color;
 layout (location = 1) out vec4 passColor;
-layout(location = 2) out vec4 depth;
 
-float toleranceLight = 0.7;
+float toleranceLight = 0.4;
+
+uniform sampler2D textBorder;
 
 void main()
 {
 	vec4 interColor;
-	if ((bary.x) < 0.01 || (bary.y) < 0.01 || ((bary.z) < 0.01 && color_border.r == 0))
-	{
-		interColor = color_border;
-	}
-	else
-	{
-		interColor = color_fill;
-	}
+	vec4 sampledColor = texture2D(textBorder, uv);
+
+	interColor = mix(colorFill, colorBorder, sampledColor.r);
 	
 	if (max(interColor.r,max(interColor.g, interColor.b)) > toleranceLight)
 	{
@@ -31,5 +27,4 @@ void main()
 		passColor = vec4(0,0,0,1);
 	}
 	color = interColor;
-	depth = vec4(gl_FragCoord.zzz, 1.0);
 }

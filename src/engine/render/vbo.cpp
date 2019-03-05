@@ -76,10 +76,7 @@ void YVbo::render(GBuffer * inBuffer) {
 	}
 	
 	YEngine::Instance->TimerGPURender.startAccumPeriod();
-	if (inBuffer)
-		inBuffer->RenderToTexture();
-	else
-		glDrawArrays(GL_TRIANGLES, 0, NbVertices);
+	glDrawArrays(GL_TRIANGLES, 0, NbVertices);
 	YEngine::Instance->TimerGPURender.endAccumPeriod();
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

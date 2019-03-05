@@ -18,8 +18,7 @@ class SynthEngine : public YEngine
 		GLuint shaderSun;
 
 		//Buffers
-		GBuffer * bufferWorld;
-		GBuffer * bufferInter;         
+		GBuffer * bufferWorld;      
 		GBuffer * bufferBlur;
 
 		//Input Handling
@@ -33,6 +32,7 @@ class SynthEngine : public YEngine
 
 		//SkyBox
 		YTexFile * textures[6];
+		YTexFile * borderTex;
 		SkyBox * box;
 
 		static YEngine * getInstance()

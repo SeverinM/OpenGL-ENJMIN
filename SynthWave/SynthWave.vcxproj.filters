@@ -76,9 +76,6 @@
     <None Include="run\shaders\SynthBase\fs.glsl">
       <Filter>shaders\SynthBase</Filter>
     </None>
-    <None Include="run\shaders\SynthBase\gs.glsl">
-      <Filter>shaders\SynthBase</Filter>
-    </None>
     <None Include="run\shaders\Blur\fs.glsl">
       <Filter>shaders\Blur</Filter>
     </None>

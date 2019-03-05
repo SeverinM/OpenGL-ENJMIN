@@ -6,16 +6,16 @@ uniform float elapsed;
 layout(location = 0) in vec3 position_in;
 layout(location = 1) in vec4 color_border_in;
 layout(location = 2) in vec4 color_fill_in;
+layout(location = 3) in vec2 uv_in;
 
-out VertexAttrib
-{
-	vec4 colorFill;
-	vec4 colorBorder;
-} vertex;
+out	vec4 colorFill;
+out	vec4 colorBorder;
+out	vec2 uv;
 
 void main()
 {
 	gl_Position = mvp * vec4(position_in, 1);
-	vertex.colorBorder = color_border_in;
-	vertex.colorFill = color_fill_in;
+	colorBorder = color_border_in;
+	colorFill = color_fill_in;
+	uv = uv_in;
 }

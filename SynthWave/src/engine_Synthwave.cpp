@@ -4,7 +4,7 @@
 void SynthEngine::init()
 {
 	//MRT
-	bufferWorld = new GBuffer(3);     
+	bufferWorld = new GBuffer(3);
 	bufferWorld->Init(800, 600);
 
 	bufferBlur = new GBuffer(1);
@@ -16,19 +16,23 @@ void SynthEngine::init()
 	Renderer->Camera->setLookAt(YVec3f(0, 0, 0));
 	Renderer->setBackgroundColor(YColor(0, 0, 0, 1));
 	
-	//Config
-	glEnable(GL_BLEND);
-
 	string allNames[] = { "textures/right.png" , "textures/left.png" , "textures/top.png" , "textures/bottom.png" , "textures/back.png", "textures/front.png" };
 
 	box = new SkyBox();
 	box->Init(allNames);
 
+	//Config
+	glEnable(GL_BLEND);
+
 	//Vbos
+	borderTex = YTexManager::getInstance()->loadTextureFromDisk("textures/border.png");
+	YTexManager::getInstance()->loadTextureToOgl(*borderTex);
 	dec = new Decor((float)time(NULL));
-	dec->GenerateGround(20, 100, 3);
-	dec->GenerateMountains(20, 20, 0.3, 3, YVec3f(0, 300, 0));
+	dec->GenerateGround(100, 100, 3,borderTex->Texture, YVec3f(-50,-50,0));
 	dec->GenerateSun(box);
+	dec->GenerateMountains(120, 20, 0.3, 3, YVec3f(-80, 250, 0), borderTex->Texture);
+	dec->GenerateMountains(120, 20, 0.3, 3, YVec3f(-80, -110, 0), borderTex->Texture);
+	dec->GenerateMountains(20, 120, 0.3, 3, YVec3f(-110, -110, 0), borderTex->Texture);
 }
 
 void SynthEngine::update(float elapsed)
@@ -66,10 +70,14 @@ void SynthEngine::renderObjects()
 	glTranslatef(dec->getoriginGround().X, dec->getoriginGround().Y, dec->getoriginGround().Z);
 	renderInTexture(bufferWorld, dec->getGround());
 	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(dec->getoriginMountains().X, dec->getoriginMountains().Y, dec->getoriginMountains().Z);
-	renderInTexture(bufferWorld, dec->getMountains());
-	glPopMatrix();
+	
+	for (std::pair<YVec3f, YVbo *> data : dec->getMountains())
+	{
+		glPushMatrix();
+		glTranslatef(data.first.X, data.first.Y, data.first.Z);
+		renderInTexture(bufferWorld, data.second);
+		glPopMatrix();
+	}
 
 	//Rendu FBO 2
 	glUseProgram(shaderBlur);

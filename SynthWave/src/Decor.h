@@ -13,9 +13,9 @@ class Decor
 
 		YVbo * sun;
 
-		YVbo * mountains;
 		float * sizeMountains;
-		YVec3f originMountains;
+
+		std::vector<std::pair<YVec3f,YVbo *>> Mountains;
 
 		YPerlin * perl;
 
@@ -34,9 +34,9 @@ class Decor
 			return ground;
 		}
 
-		YVbo * getMountains()
+		std::vector<std::pair<YVec3f, YVbo *>> getMountains()
 		{
-			return mountains;
+			return Mountains;
 		}
 
 		YVbo * getSun()
@@ -49,22 +49,20 @@ class Decor
 			return originGround;
 		}
 
-		YVec3f getoriginMountains()
-		{
-			return originMountains;
-		}
-
-		void GenerateGround(int lenght, int width, float groundSize, YVec3f origin = YVec3f(0,0,0))
+		void GenerateGround(int lenght, int width, float groundSize,GLuint textureBorder, YVec3f origin = YVec3f(0,0,0))
 		{
 			originGround = origin;
-			ground = new YVbo(3, (lenght * width * 6), YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE, false);
+			ground = new YVbo(4, (lenght * width * 6), YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE, false);
+			ground->SetTexture(textureBorder);
 			ground->setElementDescription(0, YVbo::Element(3)); //Position
 			ground->setElementDescription(1, YVbo::Element(4)); //Color border
 			ground->setElementDescription(2, YVbo::Element(4)); //Color filled
+			ground->setElementDescription(3, YVbo::Element(2)); //UV
 			ground->createVboCpu();
 
 			int indexPosition(0);
 			int indexColor(0);
+			int indexUV(0);
 
 			for (int x = 0; x < lenght; x++)
 			{
@@ -76,6 +74,16 @@ class Decor
 						ground->setElementValue(1, indexColor, 1, 0, 1, 1);
 						ground->setElementValue(2, indexColor, 0, 0, 35.0 / 255.0, 1);
 						indexColor++;
+					}
+
+					for (int j = 0; j < 2; j++)
+					{
+						ground->setElementValue(3, indexUV, 0, 0);
+						indexUV++;
+						ground->setElementValue(3, indexUV, 1, 0);
+						indexUV++;
+						ground->setElementValue(3, indexUV, 0, 1);
+						indexUV++;
 					}
 				}
 			}
@@ -110,19 +118,25 @@ class Decor
 			sun->SetTextureCube(sb->GetCube());
 		}
 
-		void GenerateMountains(int lenght, int width, float noise, float size, YVec3f origin)
+		void GenerateMountains(int lenght, int width, float noise, float size, YVec3f origin, GLuint texture)
 		{
-			float frequence(noise);
+			YVbo * mountains;
+			std::pair<YVec3f, YVbo *> data;
+			data.first = origin;
 
-			originMountains = origin;
-			mountains = new YVbo(3, (lenght * width * 6), YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE, false);
+			float frequence(noise);
+			mountains = new YVbo(4, (lenght * width * 6), YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE, false);
 			mountains->setElementDescription(0, YVbo::Element(3)); //Position
 			mountains->setElementDescription(1, YVbo::Element(4)); //Color border
 			mountains->setElementDescription(2, YVbo::Element(4)); //Color filled
+			mountains->setElementDescription(3, YVbo::Element(2)); //UV
+			mountains->SetTexture(texture);
 			mountains->createVboCpu();
 
 			int indexPosition(0);
 			int indexColor(0);
+			int indexUV(0);
+
 			float random;
 			float randomXp;
 			float randomYp;
@@ -181,10 +195,22 @@ class Decor
 						mountains->setElementValue(2, indexColor, 0, 0, 35.0 / 255.0, 1);
 						indexColor++;
 					}
+
+					for (int j = 0; j < 2; j++)
+					{
+						mountains->setElementValue(3, indexUV, 0, 0);
+						indexUV++;
+						mountains->setElementValue(3, indexUV, 1, 0);
+						indexUV++;
+						mountains->setElementValue(3, indexUV, 0, 1);
+						indexUV++;
+					}
 				}
 			}
 
 			mountains->createVboGpu();
 			mountains->deleteVboCpu();
+			data.second = mountains;
+			Mountains.push_back(data);
 		}
 };

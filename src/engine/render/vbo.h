@@ -126,6 +126,9 @@ public:
 	void SetTexture(unsigned int index)
 	{
 		textureIndex = index;
+		glBindTexture(GL_TEXTURE_2D, index);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void SetTextureCube(unsigned int cubeIndex)
@@ -228,7 +231,7 @@ public:
 		startingIndex += isQuad ?6 : 3;
 	}
 
-	void SetTextureElt(int &startingIndex, std::vector<std::pair<int,int>> &UVs,float &valX,float &valY,float width, float height, int index = 0, int nbList = 0)
+	void SetTextureElt(int &startingIndex, std::vector<std::pair<int,int>> &UVs,float &valX,float &valY,float width = 1, float height = 1, int index = 0, int nbList = 0)
 	{
 		float XUnit(1 / width);
 		float YUnit(1 / height);
