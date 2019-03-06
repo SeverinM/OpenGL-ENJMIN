@@ -21,27 +21,18 @@ bool ObjImporter::Initialize()
 	objl::Loader loader;
 	if (loader.LoadFile(nameFile))
 	{
-		vbo = new YVbo(2, loader.LoadedVertices.size() , YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
-		vboIndex = new YVbo(2, loader.LoadedIndices.size(), YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE, true);
+		vbo = new YVbo(2, loader.LoadedIndices.size(), YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
 		vbo->setElementDescription(0, YVbo::Element(3)); //Positions
 		vbo->setElementDescription(1, YVbo::Element(3)); //Normales
-		vboIndex->setElementDescription(1, YVbo::Element(1)); //Index Normales
-		vboIndex->setElementDescription(0, YVbo::Element(1)); //Index Position
 		vbo->createVboCpu();
-		vboIndex->createVboCpu();
-
-		for (objl::Vertex vertex : loader.LoadedVertices)
-		{
-			vbo->setElementValue(0, index, vertex.Position.X, vertex.Position.Y, vertex.Position.Z);
-			vbo->setElementValue(1, index, vertex.Normal.X, vertex.Normal.Y, vertex.Normal.Z);
-			index++;
-		}
 
 		for (GLuint ind : loader.LoadedIndices)
 		{
-			vboIndex->setElementValue(0, indexInd, ind);
-			vboIndex->setElementValue(1, indexInd, ind);
-			indexInd++;
+			objl::Vector3 sampled = loader.LoadedVertices[ind].Position;
+			objl::Vector3 sampledNorm = loader.LoadedVertices[ind].Normal;
+			vbo->setElementValue(0, index, sampled.X, sampled.Y, sampled.Z);
+			vbo->setElementValue(1, index, sampledNorm.X, sampledNorm.Y, sampledNorm.Z);
+			index++;
 		}
 	}
 	else
@@ -49,9 +40,8 @@ bool ObjImporter::Initialize()
 		std::cout << "error" << std::endl;
 	}
 
-	vbo->createVboGpu(vboIndex);
+	vbo->createVboGpu();
 	vbo->deleteVboCpu();
-	vboIndex->deleteVboCpu();
 
 	return true;
 }

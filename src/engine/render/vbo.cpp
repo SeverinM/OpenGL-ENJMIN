@@ -16,17 +16,7 @@ void YVbo::createVboGpu(YVbo * index) {
 		glDeleteBuffers(1, &VBO);
 	glGenBuffers(1, &VBO);
 
-	if (index != NULL && *(index->getIndexVBO()) == 0)
-	{
-		glGenBuffers(1, index->getIndexVBO());
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(index->getIndexVBO()));
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, index->getVboSizeBytes(), index->getElement(0), GL_STATIC_DRAW);
-	}
-
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	YLog::log(YLog::ENGINE_INFO, (string("Creation VBO ") + toString(VBO)).c_str());
-	std::cout << TotalSizeFloats << std::endl;
 
 	//On alloue et copie les datas
 	glBufferData(GL_ARRAY_BUFFER,
@@ -34,13 +24,20 @@ void YVbo::createVboGpu(YVbo * index) {
 		ElementsValues,
 		GL_STATIC_DRAW);
 
-	YRenderer::checkGlError("glBufferData");
-
-	//On debind
-	if (index != NULL)
+	if (index != NULL && *(index->getIndexVBO()) == 0)
 	{
+		this->index = index;
+		glGenBuffers(1, index->getIndexVBO());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(index->getIndexVBO()));
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, index->getVboSizeBytes(), index->getElement(0), GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
+
+	YLog::log(YLog::ENGINE_INFO, (string("Creation VBO ") + toString(VBO)).c_str());
+
+	
+
+	YRenderer::checkGlError("glBufferData");
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -74,11 +71,23 @@ void YVbo::render(GBuffer * inBuffer) {
 		for (int i = 0; i<NbElements; i++)
 			glVertexAttribPointer(i, Elements[i].NbFloats, GL_FLOAT, GL_FALSE, TotalNbFloatForOneVertice * sizeof(float), (void*)(Elements[i].OffsetFloats * sizeof(float)));
 	}
-	
-	YEngine::Instance->TimerGPURender.startAccumPeriod();
-	glDrawArrays(GL_TRIANGLES, 0, NbVertices);
-	YEngine::Instance->TimerGPURender.endAccumPeriod();
 
+	if (index != NULL)
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *index->getIndexVBO());
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(3, GL_FLOAT, sizeof(GLfloat) * 3, NULL);
+		glDrawElements(GL_TRIANGLES, index->NbVertices, GL_UNSIGNED_INT, 0);
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
+	else
+	{
+		YEngine::Instance->TimerGPURender.startAccumPeriod();
+		glDrawArrays(GL_TRIANGLES, 0, NbVertices);
+		YEngine::Instance->TimerGPURender.endAccumPeriod();
+	}
+	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
