@@ -10,7 +10,6 @@ class ObjImporter
 		YVbo * vbo;
 		YVbo * vboIndex;
 		string nameFile;
-		void Interpret(string &value);
 		int countVertices;
 		int countIndex;
 		int countNormal;

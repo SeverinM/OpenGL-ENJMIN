@@ -158,6 +158,9 @@
     <ClInclude Include="..\src\engine\render\ObjImporter.h">
       <Filter>Fichiers d%27en-tête\engine\render</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\engine\render\OBJ_Loader.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="run\shaders\postprocess\fs.glsl">

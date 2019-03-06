@@ -48,6 +48,7 @@
     <ClInclude Include="..\src\engine\render\camera.h" />
     <ClInclude Include="..\src\engine\render\fbo.h" />
     <ClInclude Include="..\src\engine\render\ObjImporter.h" />
+    <ClInclude Include="..\src\engine\render\OBJ_Loader.h" />
     <ClInclude Include="..\src\engine\render\renderer.h" />
     <ClInclude Include="..\src\engine\render\text_engine.h" />
     <ClInclude Include="..\src\engine\render\tex_manager.h" />

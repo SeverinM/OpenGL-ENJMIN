@@ -3,7 +3,7 @@
 
 void SynthEngine::init()
 {
-	obj = new ObjImporter("obj/car.obj");
+	obj = new ObjImporter("obj/cube.obj");
 	obj->Initialize();
 
 	//MRT
@@ -85,6 +85,8 @@ void SynthEngine::renderObjects()
 
 	glUseProgram(shaderBasic);
 	glPushMatrix();
+	glRotated(90, 1, 0, 0);
+	glTranslatef(0, 4, 0);
 	Renderer->updateMatricesFromOgl();
 	Renderer->sendMatricesToShader(shaderBasic);
 	renderInTexture(bufferWorld, obj->getVbo() );

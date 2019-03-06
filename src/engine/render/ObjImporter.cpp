@@ -1,6 +1,7 @@
 #include "ObjImporter.h"
 #include <fstream>
 #include <vector>
+#include "OBJ_Loader.h"
 
 ObjImporter::ObjImporter(string fileName)
 {
@@ -14,33 +15,14 @@ ObjImporter::ObjImporter(string fileName)
 
 bool ObjImporter::Initialize()
 {
-	ifstream file;
-	string line;
-	file.open(nameFile);
+	int index(0);
+	int indexInd(0);
 
-	if (file)
+	objl::Loader loader;
+	if (loader.LoadFile(nameFile))
 	{
-		//On lit une premiere fois pour connaitre le nombre de vertices
-		while (std::getline(file, line))
-		{
-			string pref = line.substr(0, 2);
-			if (pref == "v ")
-			{
-				nbVertices++;
-			}
-
-			if (pref == "f ")
-			{
-				std::vector<string> values;
-				splitString(values, line, ' ');
-				nbIndex += values.size() - 1;
-			}
-		}
-
-		file.clear();
-		file.seekg(0);
-		vbo = new YVbo(2, nbVertices + 1, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
-		vboIndex = new YVbo(2, nbIndex + 1, YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE,true);
+		vbo = new YVbo(2, loader.LoadedVertices.size() , YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
+		vboIndex = new YVbo(2, loader.LoadedIndices.size(), YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE, true);
 		vbo->setElementDescription(0, YVbo::Element(3)); //Positions
 		vbo->setElementDescription(1, YVbo::Element(3)); //Normales
 		vboIndex->setElementDescription(1, YVbo::Element(1)); //Index Normales
@@ -48,16 +30,23 @@ bool ObjImporter::Initialize()
 		vbo->createVboCpu();
 		vboIndex->createVboCpu();
 
-		//On lit une deuxieme fois pour interpreter les données
-		while (std::getline(file, line))
+		for (objl::Vertex vertex : loader.LoadedVertices)
 		{
-			string pref = line.substr(0, 2);
-			if (pref == "v " || pref == "f " || pref == "vn")
-			{
-				Interpret(line);
-			}
+			vbo->setElementValue(0, index, vertex.Position.X, vertex.Position.Y, vertex.Position.Z);
+			vbo->setElementValue(1, index, vertex.Normal.X, vertex.Normal.Y, vertex.Normal.Z);
+			index++;
 		}
-		file.close();
+
+		for (GLuint ind : loader.LoadedIndices)
+		{
+			vboIndex->setElementValue(0, indexInd, ind);
+			vboIndex->setElementValue(1, indexInd, ind);
+			indexInd++;
+		}
+	}
+	else
+	{
+		std::cout << "error" << std::endl;
 	}
 
 	vbo->createVboGpu(vboIndex);
@@ -65,48 +54,5 @@ bool ObjImporter::Initialize()
 	vboIndex->deleteVboCpu();
 
 	return true;
-}
-
-void ObjImporter::Interpret(string &value)
-{
-	std::vector<string> values;
-	splitString(values, value, ' ');
-
-	//Vertice
-	if (values[0] == "v")
-	{
-		float value1 = std::stod(values[1]);
-		float value2 = std::stod(values[2]);
-		float value3 = std::stod(values[3]);
-		vbo->setElementValue(0, countVertices, value1, value2, value3);
-		countVertices++;
-	}
-
-	if (values[0] == "vn")
-	{
-		float value1 = std::stod(values[1]);
-		float value2 = std::stod(values[2]);
-		float value3 = std::stod(values[3]);
-		vbo->setElementValue(1, countNormal, value1, value2, value3);
-		countNormal++;
-	}
-
-	if (values[0] == "f")
-	{
-		std::vector<string> splittedSlash;
-		float value2;
-		float value1;
-		for (std::vector<string>::iterator it = values.begin() + 1; it != values.end(); it++)
-		{
-			countIndex++;
-			splitString(splittedSlash, (*it), '/');
-			value1 = std::stod(splittedSlash[0]);
-			value2 = std::stod(splittedSlash[1]);
-			vboIndex->setElementValue(0, countIndex, value1);
-			vboIndex->setElementValue(0, countIndex, value2);
-			splittedSlash.clear();
-		}
-	}
-	values.clear();
 }
 
