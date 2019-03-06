@@ -3,6 +3,9 @@
 
 void SynthEngine::init()
 {
+	obj = new ObjImporter("obj/car.obj");
+	obj->Initialize();
+
 	//MRT
 	bufferWorld = new GBuffer(3);
 	bufferWorld->Init(800, 600);
@@ -28,11 +31,12 @@ void SynthEngine::init()
 	borderTex = YTexManager::getInstance()->loadTextureFromDisk("textures/border.png");
 	YTexManager::getInstance()->loadTextureToOgl(*borderTex);
 	dec = new Decor((float)time(NULL));
-	dec->GenerateGround(100, 100, 3,borderTex->Texture, YVec3f(-50,-50,0));
+	dec->GenerateGround(100, 100, 3,borderTex->Texture, YVec3f(-150,-150,0));
 	dec->GenerateSun(box);
-	dec->GenerateMountains(120, 20, 0.3, 3, YVec3f(-80, 250, 0), borderTex->Texture);
-	dec->GenerateMountains(120, 20, 0.3, 3, YVec3f(-80, -110, 0), borderTex->Texture);
-	dec->GenerateMountains(20, 120, 0.3, 3, YVec3f(-110, -110, 0), borderTex->Texture);
+	dec->GenerateMountains(120, 10, 0.3, 3, YVec3f(-180, -180, 0), borderTex->Texture);
+	dec->GenerateMountains(10, 100, 0.3, 3, YVec3f(-180, -150, 0), borderTex->Texture);
+	dec->GenerateMountains(120, 10, 0.3, 3, YVec3f(-180, 150, 0), borderTex->Texture);
+	dec->GenerateMountains(10, 100, 0.3, 3, YVec3f(150, -150, 0), borderTex->Texture);
 }
 
 void SynthEngine::update(float elapsed)
@@ -65,7 +69,7 @@ void SynthEngine::renderObjects()
 	Renderer->updateMatricesFromOgl();
 
 	////Rendu FBO 1
-	glUseProgram(shaderWorld);
+	glUseProgram(shaderWorld); 
 	glPushMatrix();
 	glTranslatef(dec->getoriginGround().X, dec->getoriginGround().Y, dec->getoriginGround().Z);
 	renderInTexture(bufferWorld, dec->getGround());
@@ -78,6 +82,13 @@ void SynthEngine::renderObjects()
 		renderInTexture(bufferWorld, data.second);
 		glPopMatrix();
 	}
+
+	glUseProgram(shaderBasic);
+	glPushMatrix();
+	Renderer->updateMatricesFromOgl();
+	Renderer->sendMatricesToShader(shaderBasic);
+	renderInTexture(bufferWorld, obj->getVbo() );
+	glPopMatrix();
 
 	//Rendu FBO 2
 	glUseProgram(shaderBlur);

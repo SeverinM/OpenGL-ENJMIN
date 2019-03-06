@@ -125,6 +125,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\engine\render\fbo.cpp" />
+    <ClCompile Include="..\src\engine\render\ObjImporter.cpp" />
     <ClCompile Include="..\src\engine\render\vbo.cpp" />
     <ClCompile Include="..\src\engine\utils\utils.cpp" />
     <ClCompile Include="src\engine_Synthwave.cpp" />
@@ -132,12 +133,15 @@
     <ClCompile Include="src\SkyBox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\engine\render\ObjImporter.h" />
     <ClInclude Include="..\src\engine\render\stb_image.h" />
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="src\Decor.h" />
     <ClInclude Include="src\engine_synthwave.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="run\shaders\Basic\fs.glsl" />
+    <None Include="run\shaders\Basic\vs.glsl" />
     <None Include="run\shaders\Blur\fs.glsl" />
     <None Include="run\shaders\Blur\vs.glsl" />
     <None Include="run\shaders\postprocess\fs.glsl" />

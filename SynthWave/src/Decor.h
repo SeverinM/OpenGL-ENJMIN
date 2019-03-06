@@ -151,26 +151,17 @@ class Decor
 					randomYp = max(0, (perl->sample(x * frequence, (y + 1) * frequence, 0) * 50) - 20);
 					randomXpYp = max(0, (perl->sample((x + 1) * frequence, (y + 1) * frequence, 0) * 50) - 20);
 
-					//Avant derniere colonne
-					if (x == lenght - 2)
+					if (x == lenght - 1)
 					{
 						randomXp = randomXpYp = 0;
 					}
 
-					//Premiere colonne
 					if (x == 0)
 					{
 						random = randomYp = 0;
 					}
 
-					//Derniere colonne
-					if (x == lenght - 1 || y == width - 1)
-					{
-						randomXp = randomXpYp = randomYp = random = 0;
-					}
-
-					//Avant derniere ligne
-					if (y == lenght - 2)
+					if (y == width - 1)
 					{
 						randomYp = randomXpYp = 0;
 					}

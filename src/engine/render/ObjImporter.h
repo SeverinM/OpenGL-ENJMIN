@@ -24,6 +24,11 @@ class ObjImporter
 		{
 			vbo->render();
 		}
+
+		YVbo * getVbo()
+		{
+			return vbo;
+		}
 };
 
 #endif OBJ_IMPORTER_H

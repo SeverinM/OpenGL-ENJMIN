@@ -34,6 +34,9 @@
     <Filter Include="shaders\Sun">
       <UniqueIdentifier>{8dfe370e-11ea-4385-85ac-439fd026e734}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders\Basic">
+      <UniqueIdentifier>{7a37de5e-2029-4cad-aa5f-23830d7cc397}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -54,6 +57,9 @@
     <ClCompile Include="src\SkyBox.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\engine\render\ObjImporter.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine_synthwave.h">
@@ -66,6 +72,9 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="..\src\engine\render\stb_image.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\render\ObjImporter.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
@@ -93,6 +102,12 @@
     </None>
     <None Include="run\shaders\Sun\vs.glsl">
       <Filter>shaders\Sun</Filter>
+    </None>
+    <None Include="run\shaders\Basic\fs.glsl">
+      <Filter>shaders\Basic</Filter>
+    </None>
+    <None Include="run\shaders\Basic\vs.glsl">
+      <Filter>shaders\Basic</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

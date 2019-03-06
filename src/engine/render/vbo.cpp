@@ -16,7 +16,7 @@ void YVbo::createVboGpu(YVbo * index) {
 		glDeleteBuffers(1, &VBO);
 	glGenBuffers(1, &VBO);
 
-	if (index != NULL && index->getIndexVBO() == 0)
+	if (index != NULL && *(index->getIndexVBO()) == 0)
 	{
 		glGenBuffers(1, index->getIndexVBO());
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(index->getIndexVBO()));

@@ -46,6 +46,7 @@ private:
 	int widthTex;
 	unsigned int textureIndex;
 	unsigned int textureCubeIndex;
+	YVbo * index;
 
 public:		
 		
@@ -60,6 +61,7 @@ public:
 		textureIndex = 0;
 		widthTex = 0;
 		heightTex = 0;
+		VBO = 0;
 	}
 
 	~YVbo()

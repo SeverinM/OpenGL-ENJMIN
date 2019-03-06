@@ -5,6 +5,7 @@
 #include "Decor.h"
 #include "engine/render/tex_manager.h"
 #include "../SkyBox.h"
+#include "engine/render/ObjImporter.h"
 
 class SynthEngine : public YEngine
 {
@@ -16,6 +17,7 @@ class SynthEngine : public YEngine
 		GLuint shaderBlur;
 		GLuint shaderWorld;
 		GLuint shaderSun;
+		GLuint shaderBasic;
 
 		//Buffers
 		GBuffer * bufferWorld;      
@@ -35,6 +37,11 @@ class SynthEngine : public YEngine
 		YTexFile * borderTex;
 		SkyBox * box;
 
+		//VBO
+		ObjImporter * obj;
+		YVbo * vbo;
+		YVbo * index;
+
 		static YEngine * getInstance()
 		{
 			if (Instance == NULL)
@@ -47,6 +54,7 @@ class SynthEngine : public YEngine
 			shaderBlur = Renderer->createProgram("shaders/Blur");
 			shaderPostPross = Renderer->createProgram("shaders/postprocess");
 			shaderSun = Renderer->createProgram("shaders/Sun");
+			shaderBasic = Renderer->createProgram("shaders/Basic");
 		}
 
 		void init();
