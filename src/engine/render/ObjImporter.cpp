@@ -21,17 +21,18 @@ bool ObjImporter::Initialize()
 	objl::Loader loader;
 	if (loader.LoadFile(nameFile))
 	{
-		vbo = new YVbo(2, loader.LoadedIndices.size(), YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
+		vbo = new YVboIndex(1, loader.LoadedIndices.size(), YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
 		vbo->setElementDescription(0, YVbo::Element(3)); //Positions
-		vbo->setElementDescription(1, YVbo::Element(3)); //Normales
 		vbo->createVboCpu();
 
 		for (GLuint ind : loader.LoadedIndices)
 		{
-			objl::Vector3 sampled = loader.LoadedVertices[ind].Position;
-			objl::Vector3 sampledNorm = loader.LoadedVertices[ind].Normal;
-			vbo->setElementValue(0, index, sampled.X, sampled.Y, sampled.Z);
-			vbo->setElementValue(1, index, sampledNorm.X, sampledNorm.Y, sampledNorm.Z);
+			vbo->_Indices.push_back(ind);
+		}
+
+		for (objl::Vertex vert : loader.LoadedVertices)
+		{
+			vbo->setElementValue(0, index, vert.Position.X, vert.Position.Y, vert.Position.Z);
 			index++;
 		}
 	}

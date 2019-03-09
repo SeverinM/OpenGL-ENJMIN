@@ -3,7 +3,27 @@
 
 void SynthEngine::init()
 {
-	obj = new ObjImporter("obj/car.obj");
+	//Test
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBOIndex);
+	glGenBuffers(1, &VBO);
+
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * 9, vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOIndex);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices) * 3, indices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindVertexArray(0);
+
+	obj = new ObjImporter("obj/cube.obj");
 	obj->Initialize();
 
 	//MRT
@@ -37,6 +57,8 @@ void SynthEngine::init()
 	dec->GenerateMountains(10, 100, 0.3, 3, YVec3f(-180, -150, 0), borderTex->Texture);
 	dec->GenerateMountains(120, 10, 0.3, 3, YVec3f(-180, 150, 0), borderTex->Texture);
 	dec->GenerateMountains(10, 100, 0.3, 3, YVec3f(150, -150, 0), borderTex->Texture);
+
+	sunPos = YVec3f(10, 10, 10);
 }
 
 void SynthEngine::update(float elapsed)
@@ -68,6 +90,7 @@ void SynthEngine::renderObjects()
 	Renderer->Camera->moveTo(previousPos);
 	Renderer->updateMatricesFromOgl();
 
+
 	////Rendu FBO 1
 	glUseProgram(shaderWorld); 
 	glPushMatrix();
@@ -83,13 +106,17 @@ void SynthEngine::renderObjects()
 		glPopMatrix();
 	}
 
-	glUseProgram(shaderBasic);
 	glPushMatrix();
-	glRotated(90, 1, 0, 0);
-	glTranslatef(0, 4, 0);
-	Renderer->updateMatricesFromOgl();
-	Renderer->sendMatricesToShader(shaderBasic);
-	renderInTexture(bufferWorld, obj->getVbo() );
+	glScalef(3, 3, 3);
+	//renderInTexture(bufferWorld, obj->getVbo());
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, bufferWorld->getGBuffer());
+	glBindVertexArray(VAO);
+	YRenderer::getInstance()->updateMatricesFromOgl();
+	YRenderer::getInstance()->sendMatricesToShader(shaderBasic);
+	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glPopMatrix();
 
 	//Rendu FBO 2
@@ -106,3 +133,5 @@ void SynthEngine::renderObjects()
 	Renderer->sendTextureToShader(shaderPostPross, bufferWorld->getColorText(2), 2, "Depth");
 	renderInScreenQuad();
 }
+
+SynthEngine::SynthEngine() : vertices{0,0,1,1,0,1,0,1,1}, indices{0,1,2}{}

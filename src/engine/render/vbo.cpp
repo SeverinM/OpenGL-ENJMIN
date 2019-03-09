@@ -3,7 +3,7 @@
 #include "engine/engine.h"
 
 //Il ne faut pas le vbo soit deja crée
-void YVbo::createVboGpu(YVbo * index) {
+void YVbo::createVboGpu() {
 	
 	if (VAO != 0)
 		glDeleteVertexArrays(1, &VAO);
@@ -23,15 +23,6 @@ void YVbo::createVboGpu(YVbo * index) {
 		TotalSizeFloats * sizeof(float),
 		ElementsValues,
 		GL_STATIC_DRAW);
-
-	if (index != NULL && *(index->getIndexVBO()) == 0)
-	{
-		this->index = index;
-		glGenBuffers(1, index->getIndexVBO());
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(index->getIndexVBO()));
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, index->getVboSizeBytes(), index->getElement(0), GL_STATIC_DRAW);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
 
 	YLog::log(YLog::ENGINE_INFO, (string("Creation VBO ") + toString(VBO)).c_str());
 
@@ -72,21 +63,9 @@ void YVbo::render(GBuffer * inBuffer) {
 			glVertexAttribPointer(i, Elements[i].NbFloats, GL_FLOAT, GL_FALSE, TotalNbFloatForOneVertice * sizeof(float), (void*)(Elements[i].OffsetFloats * sizeof(float)));
 	}
 
-	if (index != NULL)
-	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *index->getIndexVBO());
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(3, GL_FLOAT, sizeof(GLfloat) * 3, NULL);
-		glDrawElements(GL_TRIANGLES, index->NbVertices, GL_UNSIGNED_INT, 0);
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
-	else
-	{
-		YEngine::Instance->TimerGPURender.startAccumPeriod();
-		glDrawArrays(GL_TRIANGLES, 0, NbVertices);
-		YEngine::Instance->TimerGPURender.endAccumPeriod();
-	}
+	YEngine::Instance->TimerGPURender.startAccumPeriod();
+	glDrawArrays(GL_TRIANGLES, 0, NbVertices);
+	YEngine::Instance->TimerGPURender.endAccumPeriod();
 	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);

@@ -1,14 +1,13 @@
 #ifndef OBJ_IMPORTER_H
 #define OBJ_IMPORTER_H
 
-#include "vbo.h"
+#include "VboIndex.h"
 #include <string>
 
 class ObjImporter
 {
 	private:
-		YVbo * vbo;
-		YVbo * vboIndex;
+		YVboIndex * vbo;
 		string nameFile;
 		int countVertices;
 		int countIndex;
@@ -24,7 +23,7 @@ class ObjImporter
 			vbo->render();
 		}
 
-		YVbo * getVbo()
+		YVboIndex * getVbo()
 		{
 			return vbo;
 		}

@@ -10,7 +10,10 @@
 class SynthEngine : public YEngine
 {
 	public:
+
+		//Sun
 		Decor * dec;
+		YVec3f sunPos;
 
 		//Shaders
 		GLuint shaderPostPross;
@@ -40,7 +43,13 @@ class SynthEngine : public YEngine
 		//VBO
 		ObjImporter * obj;
 		YVbo * vbo;
-		YVbo * index;
+
+		//Test
+		float vertices[9];
+		GLuint indices[3];
+		GLuint VAO;
+		GLuint VBOIndex;
+		GLuint VBO;
 
 		static YEngine * getInstance()
 		{
@@ -60,6 +69,7 @@ class SynthEngine : public YEngine
 		void init();
 		void update(float elapsed);
 		void renderObjects();
+		SynthEngine();
 
 		void renderInTexture(GBuffer * buffer, YVbo * source)
 		{

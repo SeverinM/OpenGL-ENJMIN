@@ -31,7 +31,7 @@ public:
 		PACK_BY_ELEMENT_TYPE,
 	}DATA_STORAGE_METHOD;
 
-private:
+protected:
 	Element * Elements = NULL; ///<La description des diff�rents elements du VBO : une coord de sommet, une normale, une  uv, un float...
 	int NbElements; ///< Le nomre d'elements diff�rents qu'on a dans le VBO
 	float * ElementsValues = NULL; ///< Des tableaux qui contiennent les valeurs des �l�ments
@@ -249,8 +249,8 @@ public:
 	}
 
 	//Creation et copie du VBO dans la m�moire du GPU
-	void createVboGpu(YVbo * index = NULL);
-	void render(GBuffer * inBuffer = NULL);
+	virtual void createVboGpu();
+	virtual void render(GBuffer * inBuffer = NULL);
 };
 
 #endif

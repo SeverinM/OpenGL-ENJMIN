@@ -127,6 +127,7 @@
     <ClCompile Include="..\src\engine\render\fbo.cpp" />
     <ClCompile Include="..\src\engine\render\ObjImporter.cpp" />
     <ClCompile Include="..\src\engine\render\vbo.cpp" />
+    <ClCompile Include="..\src\engine\render\VboIndex.cpp" />
     <ClCompile Include="..\src\engine\utils\utils.cpp" />
     <ClCompile Include="src\engine_Synthwave.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -136,6 +137,7 @@
     <ClInclude Include="..\src\engine\render\ObjImporter.h" />
     <ClInclude Include="..\src\engine\render\OBJ_Loader.h" />
     <ClInclude Include="..\src\engine\render\stb_image.h" />
+    <ClInclude Include="..\src\engine\render\VboIndex.h" />
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="src\Decor.h" />
     <ClInclude Include="src\engine_synthwave.h" />
