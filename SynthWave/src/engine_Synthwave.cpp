@@ -3,27 +3,7 @@
 
 void SynthEngine::init()
 {
-	//Test
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBOIndex);
-	glGenBuffers(1, &VBO);
-
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * 9, vertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOIndex);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices) * 3, indices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glBindVertexArray(0);
-
-	obj = new ObjImporter("obj/cube.obj");
+	obj = new ObjImporter("obj/car.obj");
 	obj->Initialize();
 
 	//MRT
@@ -81,9 +61,7 @@ void SynthEngine::renderObjects()
 	YVec3f previousPos = Renderer->Camera->Position;
 	Renderer->Camera->moveTo(YVec3f(0, 0, 0));
 	glUseProgram(shaderSun);
-	Renderer->updateMatricesFromOgl();
-	Renderer->sendMatricesToShader(shaderSun);
-	renderInTexture(bufferWorld, dec->getSun());
+	renderInTexture(bufferWorld, dec->getSun(),shaderSun);
 
 	//glEnable(GL_CULL_FACE);
 	//On la replace
@@ -95,28 +73,23 @@ void SynthEngine::renderObjects()
 	glUseProgram(shaderWorld); 
 	glPushMatrix();
 	glTranslatef(dec->getoriginGround().X, dec->getoriginGround().Y, dec->getoriginGround().Z);
-	renderInTexture(bufferWorld, dec->getGround());
+	renderInTexture(bufferWorld, dec->getGround(), shaderWorld);
 	glPopMatrix();
 	
 	for (std::pair<YVec3f, YVbo *> data : dec->getMountains())
 	{
 		glPushMatrix();
 		glTranslatef(data.first.X, data.first.Y, data.first.Z);
-		renderInTexture(bufferWorld, data.second);
+		renderInTexture(bufferWorld, data.second, shaderWorld);
 		glPopMatrix();
 	}
 
+	glUseProgram(shaderBasic);
+	glUniform3f(glGetUniformLocation(shaderBasic, "sunPos"), 10, 10, 10);
 	glPushMatrix();
-	glScalef(3, 3, 3);
-	//renderInTexture(bufferWorld, obj->getVbo());
-	
-	glBindFramebuffer(GL_FRAMEBUFFER, bufferWorld->getGBuffer());
-	glBindVertexArray(VAO);
-	YRenderer::getInstance()->updateMatricesFromOgl();
-	YRenderer::getInstance()->sendMatricesToShader(shaderBasic);
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glRotatef(90, 1, 0, 0);
+	glTranslatef(0, 4, 0);
+	renderInTexture(bufferWorld, obj->getVbo(), shaderBasic);	
 	glPopMatrix();
 
 	//Rendu FBO 2
@@ -133,5 +106,3 @@ void SynthEngine::renderObjects()
 	Renderer->sendTextureToShader(shaderPostPross, bufferWorld->getColorText(2), 2, "Depth");
 	renderInScreenQuad();
 }
-
-SynthEngine::SynthEngine() : vertices{0,0,1,1,0,1,0,1,1}, indices{0,1,2}{}

@@ -45,8 +45,6 @@ class SynthEngine : public YEngine
 		YVbo * vbo;
 
 		//Test
-		float vertices[9];
-		GLuint indices[3];
 		GLuint VAO;
 		GLuint VBOIndex;
 		GLuint VBO;
@@ -69,13 +67,12 @@ class SynthEngine : public YEngine
 		void init();
 		void update(float elapsed);
 		void renderObjects();
-		SynthEngine();
 
-		void renderInTexture(GBuffer * buffer, YVbo * source)
+		void renderInTexture(GBuffer * buffer, YVbo * source, GLuint shader)
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, buffer->getGBuffer());
 			YRenderer::getInstance()->updateMatricesFromOgl();
-			YRenderer::getInstance()->sendMatricesToShader(shaderWorld);
+			YRenderer::getInstance()->sendMatricesToShader(shader);
 			source->render();
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}

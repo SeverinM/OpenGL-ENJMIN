@@ -25,9 +25,6 @@ void YVbo::createVboGpu() {
 		GL_STATIC_DRAW);
 
 	YLog::log(YLog::ENGINE_INFO, (string("Creation VBO ") + toString(VBO)).c_str());
-
-	
-
 	YRenderer::checkGlError("glBufferData");
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
