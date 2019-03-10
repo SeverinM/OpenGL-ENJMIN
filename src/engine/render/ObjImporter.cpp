@@ -58,14 +58,14 @@ bool ObjImporter::Initialize()
 			if (splitted.size() >= 5)
 			{
 				splitString(subSplit4, splitted[4], '/');
+
 				indicesPositions.push_back(std::stoi(subSplit4[0]));
-				indicesPositions.push_back(std::stoi(subSplit1[0]));
 				indicesPositions.push_back(std::stoi(subSplit3[0]));
+				indicesPositions.push_back(std::stoi(subSplit1[0]));
 
 				indicesNormals.push_back(std::stoi(subSplit4[1]));
-				indicesNormals.push_back(std::stoi(subSplit1[1]));
 				indicesNormals.push_back(std::stoi(subSplit3[1]));
-				
+				indicesNormals.push_back(std::stoi(subSplit1[1]));
 			}
 		}
 
