@@ -7,6 +7,7 @@
 #include <memory.h> 
 #include <string>
 #include "utils.h"
+#include <functional>
 
 /** Une couleur en RVBA, 4 floats
 	*
@@ -283,10 +284,22 @@ public:
 template<typename T>
 class YVec3
 {
+	
+private:
+
 public:
 	T X;
 	T Y;
 	T Z;
+	
+
+	struct VecCompare
+	{
+		bool operator() (const YVec3& lhs, const YVec3& rhs) const
+		{
+			return std::tie(lhs.X, lhs.Y, lhs.Z) < std::tie(rhs.X, rhs.Y, rhs.Z);
+		}
+	};
 
 	YVec3() : X(0), Y(0), Z(0)
 	{
@@ -404,7 +417,7 @@ public:
 		return *this;
 	}
 
-	bool operator== (const YVec3 & vertex) const
+	bool operator == (const YVec3 & vertex) const
 	{
 		if (X == vertex.X && Y == vertex.Y && Z == vertex.Z)
 			return true;

@@ -1,7 +1,6 @@
-#include "ObjImporter.h"
-#include <fstream>
+#pragma once
 #include <vector>
-#include "OBJ_Loader.h"
+#include "ObjImporter.h"
 
 ObjImporter::ObjImporter(string fileName)
 {
@@ -16,36 +15,77 @@ ObjImporter::ObjImporter(string fileName)
 bool ObjImporter::Initialize()
 {
 	int index(0);
-	int indexInd(0);
 
-	objl::Loader loader;
-	if (loader.LoadFile(nameFile))
+	ifstream infile(nameFile);
+	string line;
+	vector<string> splitted;
+	while (std::getline(infile, line))
 	{
-		vbo = new YVboIndex(2, loader.LoadedIndices.size(), YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE);
-		vbo->setElementDescription(0, YVbo::Element(3)); //Positions
-		vbo->setElementDescription(1, YVbo::Element(3)); //Normale
-		vbo->createVboCpu();
-
-		for (GLuint ind : loader.LoadedIndices)
+		splitString(splitted, line, ' ');
+		
+		if (splitted[0] == "v")
 		{
-			vbo->_Indices.push_back(ind);
+			YVec3f temp(std::stof(splitted[1]), std::stof(splitted[2]), std::stof(splitted[3]));
+			listPosition.push_back(temp);
 		}
 
-		for (objl::Vertex vert : loader.LoadedVertices)
+		if (splitted[0] == "vn")
 		{
-			vbo->setElementValue(0, index, vert.Position.X, vert.Position.Y, vert.Position.Z);
-			vbo->setElementValue(1, index, vert.Normal.X, vert.Normal.Y, vert.Normal.Z);
-			index++;
+			YVec3f temp(std::stof(splitted[1]), std::stof(splitted[2]), std::stof(splitted[3]));
+			listNormales.push_back(temp);
 		}
-	}
-	else
-	{
-		std::cout << "error" << std::endl;
+
+		if (splitted[0] == "f")
+		{
+			std::vector<string> subSplit1;
+			std::vector<string> subSplit2;
+			std::vector<string> subSplit3;
+			std::vector<string> subSplit4;
+
+			splitString(subSplit1, splitted[1], '/');
+			splitString(subSplit2, splitted[2], '/');
+			splitString(subSplit3, splitted[3], '/');
+			splitString(subSplit4, splitted[4], '/');
+
+ 			indicesPositions.push_back(std::stoi(subSplit1[0]));
+			indicesPositions.push_back(std::stoi(subSplit2[0]));
+			indicesPositions.push_back(std::stoi(subSplit3[0]));
+			indicesPositions.push_back(std::stoi(subSplit4[0]));
+
+			indicesNormals.push_back(std::stoi(subSplit1[1]));
+			indicesNormals.push_back(std::stoi(subSplit2[1]));
+			indicesNormals.push_back(std::stoi(subSplit3[1]));
+			indicesNormals.push_back(std::stoi(subSplit4[1]));
+		}
+
+		splitted.clear();
 	}
 
-	vbo->createVboGpu();
-	vbo->deleteVboCpu();
+	getSumNormal();
 
 	return true;
+}
+
+map<YVec3f, YVec3f, YVec3<float>::VecCompare> ObjImporter::getSumNormal()
+{
+	map<YVec3f, YVec3f, YVec3<float>::VecCompare> output;
+	for (int indexPosition = 0; indexPosition < indicesPositions.size(); indexPosition++)
+	{
+		int indPos = indicesPositions[indexPosition];
+		int indNorm = indicesNormals[indexPosition];
+		YVec3f sampledPosition = listPosition[indPos - 1];
+		YVec3f sampledNormal = listNormales[indNorm - 1];
+
+		//La clé existe
+		if (output.find(sampledPosition) != output.end())
+		{
+			output[sampledPosition] += sampledNormal.normalize();
+		}
+		else
+		{
+			output[sampledPosition] = sampledNormal.normalize();
+		}
+	}
+	return output;
 }
 

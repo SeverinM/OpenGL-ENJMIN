@@ -3,7 +3,7 @@
 
 void SynthEngine::init()
 {
-	obj = new ObjImporter("obj/car.obj");
+	obj = new ObjImporter("obj/cube.obj");
 	obj->Initialize();
 
 	//MRT

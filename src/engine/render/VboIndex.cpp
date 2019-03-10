@@ -26,7 +26,7 @@ void YVboIndex::createVboGpu()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOIndex);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _Indices.size() * sizeof(_Indices[0]), &_Indices[0], GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, TotalNbFloatForOneVertice * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, TotalNbFloatForOneVertice * sizeof(float), (void*)(Elements[0].NbFloats * sizeof(float)));

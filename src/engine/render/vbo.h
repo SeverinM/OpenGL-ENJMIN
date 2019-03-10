@@ -26,6 +26,13 @@ public:
 		int OffsetFloats = 0; ///< Calcul� automatiquement
 	};
 
+	template <typename T>
+	struct MemorySegment
+	{
+		T * begin;
+		T * end;
+	};
+
 	typedef enum {
 		PACK_BY_VERTICE,
 		PACK_BY_ELEMENT_TYPE,
@@ -95,6 +102,14 @@ public:
 	float * getElement(unsigned int index)
 	{
 		return &ElementsValues[index];
+	}
+
+	MemorySegment<float> getElement(unsigned int index, unsigned int nbList)
+	{
+		MemorySegment<float> output;
+		output.begin = &ElementsValues[Elements[nbList].OffsetFloats + (TotalNbFloatForOneVertice * index)];
+		output.end = output.begin + (Elements[nbList].NbFloats * sizeof(float));
+		return output;
 	}
 
 	bool isArrayIndexType()
