@@ -1,4 +1,4 @@
-#include "../SkyBox.h"
+#include "SkyBox.h"
 #include "engine/render/tex_manager.h"
 
 void SkyBox::Init(string textures[6])

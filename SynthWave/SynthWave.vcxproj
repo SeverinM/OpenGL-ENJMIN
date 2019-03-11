@@ -129,6 +129,7 @@
     <ClCompile Include="..\src\engine\render\vbo.cpp" />
     <ClCompile Include="..\src\engine\render\VboIndex.cpp" />
     <ClCompile Include="..\src\engine\utils\utils.cpp" />
+    <ClCompile Include="src\Car.cpp" />
     <ClCompile Include="src\engine_Synthwave.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\SkyBox.cpp" />
@@ -138,9 +139,10 @@
     <ClInclude Include="..\src\engine\render\OBJ_Loader.h" />
     <ClInclude Include="..\src\engine\render\stb_image.h" />
     <ClInclude Include="..\src\engine\render\VboIndex.h" />
-    <ClInclude Include="SkyBox.h" />
+    <ClInclude Include="src\Car.h" />
     <ClInclude Include="src\Decor.h" />
     <ClInclude Include="src\engine_synthwave.h" />
+    <ClInclude Include="src\SkyBox.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="run\shaders\Basic\fs.glsl" />

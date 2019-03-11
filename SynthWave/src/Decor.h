@@ -1,8 +1,8 @@
 #pragma once
 
-#include "engine/render/vbo.h"
+#include "engine/render/VboIndex.h"
 #include "engine/noise/perlin.h"
-#include "../SkyBox.h"
+#include "SkyBox.h"
 
 class Decor
 {
@@ -10,13 +10,9 @@ class Decor
 		YVbo * ground;
 		float sizeGround;
 		YVec3f originGround;
-
 		YVbo * sun;
-
 		float * sizeMountains;
-
 		std::vector<std::pair<YVec3f,YVbo *>> Mountains;
-
 		YPerlin * perl;
 
 

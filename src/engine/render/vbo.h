@@ -159,7 +159,7 @@ public:
 		ElementsValues = new float[TotalSizeFloats];
 	}
 
-	void deleteVboCpu() {
+	virtual void deleteVboCpu() {
 		SAFEDELETE_TAB(ElementsValues);
 		ElementsValues = NULL;
 	}

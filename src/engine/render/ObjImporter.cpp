@@ -74,6 +74,7 @@ bool ObjImporter::Initialize()
 
 	setNormals(getSumNormal());
 	vbo->createVboGpu();
+	vbo->deleteVboCpu();
 
 	return true;
 }

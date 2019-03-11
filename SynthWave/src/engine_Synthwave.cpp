@@ -3,8 +3,9 @@
 
 void SynthEngine::init()
 {
-	obj = new ObjImporter("obj/car.obj");
-	obj->Initialize();
+	car = new Car("obj/car.obj");
+	car->setPosition(0, 1.5, 0, false);
+	speed = 2;
 
 	//MRT
 	bufferWorld = new GBuffer(3);
@@ -15,8 +16,8 @@ void SynthEngine::init()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	//Camera
-	Renderer->Camera->setPosition(YVec3f(10, 10, 10));
-	Renderer->Camera->setLookAt(YVec3f(0, 0, 0));
+	Renderer->Camera->moveTo(-car->getPosition() + YVec3f(0, 10, 10));
+	Renderer->Camera->setLookAt(-car->getPosition() + YVec3f(0,0,2));
 	Renderer->setBackgroundColor(YColor(0, 0, 0, 1));
 	
 	string allNames[] = { "textures/right.png" , "textures/left.png" , "textures/top.png" , "textures/bottom.png" , "textures/back.png", "textures/front.png" };
@@ -31,24 +32,18 @@ void SynthEngine::init()
 	borderTex = YTexManager::getInstance()->loadTextureFromDisk("textures/border.png");
 	YTexManager::getInstance()->loadTextureToOgl(*borderTex);
 	dec = new Decor((float)time(NULL));
-	dec->GenerateGround(100, 100, 3,borderTex->Texture, YVec3f(-150,-150,0));
+	dec->GenerateGround(40, 40, 3,borderTex->Texture, YVec3f(-60,-60,0));
 	dec->GenerateSun(box);
-	dec->GenerateMountains(120, 10, 0.3, 3, YVec3f(-180, -180, 0), borderTex->Texture);
-	dec->GenerateMountains(10, 100, 0.3, 3, YVec3f(-180, -150, 0), borderTex->Texture);
-	dec->GenerateMountains(120, 10, 0.3, 3, YVec3f(-180, 150, 0), borderTex->Texture);
-	dec->GenerateMountains(10, 100, 0.3, 3, YVec3f(150, -150, 0), borderTex->Texture);
+	dec->GenerateMountains(10, 40, 0.3, 3, YVec3f(-90, -60, 0), borderTex->Texture);
+	dec->GenerateMountains(10, 40, 0.3, 3, YVec3f(60, -60, 0), borderTex->Texture);
 
 	sunPos = YVec3f(10, 10, 10);
 }
 
 void SynthEngine::update(float elapsed)
 {
-	YVec3f ZDir(Renderer->Camera->Direction);
-	ZDir *= Z;
-	YVec3f XDir(Renderer->Camera->RightVec);
-	XDir *= X;
-
-	Renderer->Camera->move(ZDir + XDir);
+	car->setPosition(0,0,DeltaTime * speed, false);
+	Renderer->Camera->move(YVec3f(0,DeltaTime * speed,0));
 }
 
 void SynthEngine::renderObjects()
@@ -84,13 +79,10 @@ void SynthEngine::renderObjects()
 		glPopMatrix();
 	}
 
+	//Rendu voiture
 	glUseProgram(shaderBasic);
 	glUniform3f(glGetUniformLocation(shaderBasic, "sunPos"), 10, 10, 10);
-	glPushMatrix();
-	glRotatef(90, 1, 0, 0);
-	glTranslatef(0, 4, 0);
-	renderInTexture(bufferWorld, obj->getVbo(), shaderBasic);	
-	glPopMatrix();
+	car->render(shaderBasic, bufferWorld->getGBuffer());
 
 	//Rendu FBO 2
 	glUseProgram(shaderBlur);

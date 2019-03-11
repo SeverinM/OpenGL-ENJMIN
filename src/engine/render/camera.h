@@ -202,7 +202,7 @@ public:
 
 		//On ne monte pas trop haut pour ne pas passer de l'autre coté
 		YVec3f previousPos = Position;
-		Position.rotate(RightVec, angle);
+		Position.rotate(UpVec, angle);
 		YVec3f normPos = Position;
 		normPos.normalize();
 		float newAngle = normPos.dot(UpRef);
