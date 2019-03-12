@@ -37,6 +37,9 @@
     <Filter Include="shaders\Basic">
       <UniqueIdentifier>{7a37de5e-2029-4cad-aa5f-23830d7cc397}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders\postprocess2">
+      <UniqueIdentifier>{4ef484b0-ca25-4510-8c77-4559f75e49f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -123,6 +126,12 @@
     </None>
     <None Include="run\shaders\Basic\vs.glsl">
       <Filter>shaders\Basic</Filter>
+    </None>
+    <None Include="run\shaders\postprocess2\fs.glsl">
+      <Filter>shaders\postprocess2</Filter>
+    </None>
+    <None Include="run\shaders\postprocess2\vs.glsl">
+      <Filter>shaders\postprocess2</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

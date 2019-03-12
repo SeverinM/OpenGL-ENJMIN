@@ -21,14 +21,19 @@ class SynthEngine : public YEngine
 		GLuint shaderWorld;
 		GLuint shaderSun;
 		GLuint shaderBasic;
+		GLuint shaderPostPross2;
 
 		//Buffers
 		GBuffer * bufferWorld;      
 		GBuffer * bufferBlur;
+		GBuffer * bufferPostPross;
 
 		//Input Handling
 		float xMouse;
 		float yMouse;
+		float lastX;
+		float lastY;
+		bool firstMove;
 
 		//SkyBox
 		YTexFile * textures[6];
@@ -58,6 +63,7 @@ class SynthEngine : public YEngine
 			shaderPostPross = Renderer->createProgram("shaders/postprocess");
 			shaderSun = Renderer->createProgram("shaders/Sun");
 			shaderBasic = Renderer->createProgram("shaders/Basic");
+			shaderPostPross2 = Renderer->createProgram("shaders/postprocess2");
 		}
 
 		void init();
@@ -96,20 +102,20 @@ class SynthEngine : public YEngine
 		{
 			bufferWorld->resize(width, height);
 			bufferBlur->resize(width, height);
+			bufferPostPross->resize(width, height);
 		}
 
 		void mouseMove(int x, int y, bool pressed, bool inUi)
 		{
 			showMouse(pressed);
-			float deltaX(x - xMouse);
-			float deltaY(y - yMouse);
-			if (xMouse > 0 && yMouse > 0)
-			{
-				Renderer->Camera->rotateAround(deltaX / 2.0f);
-				Renderer->Camera->rotateUpAround(deltaY / 5.0f);
-			}
 			xMouse = x;
 			yMouse = y;
+			
+			if (xMouse > 0 && yMouse > 0)
+			{
+				Renderer->Camera->rotateAround((xMouse - lastX) / 2.0f);
+				Renderer->Camera->rotateUpAround((yMouse - lastY) / 5.0f);
+			}
 		}
 };
 

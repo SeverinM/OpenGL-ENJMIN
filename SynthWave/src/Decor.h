@@ -7,14 +7,13 @@
 class Decor
 {
 	private :
-		YVbo * ground;
+		std::vector<std::pair<YVec3f, YVbo *>> Grounds;
 		float sizeGround;
-		YVec3f originGround;
 		YVbo * sun;
 		float * sizeMountains;
 		std::vector<std::pair<YVec3f,YVbo *>> Mountains;
 		YPerlin * perl;
-
+		YVec3f cursor;
 
 	public:
 
@@ -23,11 +22,39 @@ class Decor
 			seed *= 0.000000001f;
 			perl = new YPerlin();
 			perl->setOffset(seed);
+			cursor = YVec3f(0, 0, 0);
 		}
 
-		YVbo * getGround()
+		bool NeedGeneration(YVec3f currPos, YVec3f &output)
 		{
-			return ground;
+			YVec3f last = Grounds[Grounds.size() - 1].first;
+			//Moitié avant dernier
+			if (currPos.Z - last.Y > -60)
+			{
+				cursor += YVec3f(0, 120, 0);
+				output = cursor;
+				return true;
+			}
+			return false;
+		}
+
+		void TestDelete(YVec3f currPos)
+		{
+			if (Grounds.size() == 0)
+				return;
+
+			YVec3f first = Grounds[0].first;
+			if (currPos.Z - first.Y > 240)
+			{
+				Grounds.erase(Grounds.begin());
+				Mountains.erase(Mountains.begin());
+				Mountains.erase(Mountains.begin());
+			}
+		}
+
+		std::vector<std::pair<YVec3f, YVbo *>> getGround()
+		{
+			return Grounds;
 		}
 
 		std::vector<std::pair<YVec3f, YVbo *>> getMountains()
@@ -40,14 +67,12 @@ class Decor
 			return sun;
 		}
 
-		YVec3f getoriginGround()
-		{
-			return originGround;
-		}
-
 		void GenerateGround(int lenght, int width, float groundSize,GLuint textureBorder, YVec3f origin = YVec3f(0,0,0))
 		{
-			originGround = origin;
+			std::pair<YVec3f, YVbo *> output;
+			output.first = origin;
+			YVbo * ground;
+
 			ground = new YVbo(4, (lenght * width * 6), YVbo::DATA_STORAGE_METHOD::PACK_BY_VERTICE, false);
 			ground->SetTexture(textureBorder);
 			ground->setElementDescription(0, YVbo::Element(3)); //Position
@@ -86,6 +111,8 @@ class Decor
 
 			ground->createVboGpu();
 			ground->deleteVboCpu();
+			output.second = ground;
+			Grounds.push_back(output);
 		}
 
 		void GenerateSun(SkyBox * sb)

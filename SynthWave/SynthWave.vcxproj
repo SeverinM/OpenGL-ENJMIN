@@ -149,6 +149,8 @@
     <None Include="run\shaders\Basic\vs.glsl" />
     <None Include="run\shaders\Blur\fs.glsl" />
     <None Include="run\shaders\Blur\vs.glsl" />
+    <None Include="run\shaders\postprocess2\fs.glsl" />
+    <None Include="run\shaders\postprocess2\vs.glsl" />
     <None Include="run\shaders\postprocess\fs.glsl" />
     <None Include="run\shaders\postprocess\vs.glsl" />
     <None Include="run\shaders\Sun\fs.glsl" />
